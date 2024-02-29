@@ -1,0 +1,17 @@
+.buttonContainer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+.button {
+    margin-right: 8px;
+}
+
+.controlContainer{
+  margin: 3px 15px;
+  padding: 10px 10px;
+  background: white
+}
+
+

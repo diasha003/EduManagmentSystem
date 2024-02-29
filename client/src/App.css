@@ -1,0 +1,47 @@
+@import "../node_modules/antd/dist/reset.css";
+
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+
+.layout {
+  margin-left: 80px;
+  height: 100vh;
+}
+
+.navbar {
+  overflow: auto;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+
+}
+
+.content {
+  height: 100vh;
+  overflow-y: scroll;
+  background-color: #eee7e7;
+}
+
+.footer {
+  text-align: center;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  background-color: #decaca;
+
+}
+
+
+.header {
+  background: #a8c1d6;
+}
+
+.itemMenu {
+  margin-left: 150px
+}

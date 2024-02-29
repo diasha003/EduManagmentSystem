@@ -1,0 +1,24 @@
+.formStyle {
+  background: #ffffff;
+  width: 65%;
+}
+
+/* 
+.ant-col {
+  flex: 1;
+} */
+
+.ant-row {
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.ant-collapse>.ant-collapse-item>.ant-collapse-header {
+  color: #1677ff;
+}
+
+
+.ant-collapse .ant-collapse-content>.ant-collapse-content-box {
+  padding: 0;
+
+}

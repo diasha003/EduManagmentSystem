@@ -1,0 +1,10 @@
+.ant-dropdown-menu {
+    max-height: 350px;
+    overflow: auto;
+    
+}
+
+.ant-btn
+{
+  margin-right: 8px
+}
