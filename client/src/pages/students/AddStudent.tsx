@@ -5,9 +5,12 @@ import AddStudentForm from "./components/studentAddition/AddStudentForm"
 const AddStudent: React.FC = () => {
     return (
         <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            <Link to="/students" style={{alignSelf: "flex-start", margin: "10px 0 10px 250px" }}>Back to Students</Link>
+            <div style={{width: "65%", margin: "10px 0"}}>
+                <Link to="/students" style={{ margin: "10px 0" }}>Back to Students</Link>
+
+            </div>
             <AddStudentForm />
-            <p>test</p>
+
         </div>
     )
 }

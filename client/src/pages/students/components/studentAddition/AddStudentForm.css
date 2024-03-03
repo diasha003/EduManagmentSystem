@@ -1,6 +1,7 @@
 .formStyle {
   background: #ffffff;
   width: 65%;
+  margin-bottom: 20px;
 }
 
 /* 
@@ -20,5 +21,13 @@
 
 .ant-collapse .ant-collapse-content>.ant-collapse-content-box {
   padding: 0;
+}
 
+.ant-divider-horizontal {
+  margin: 10px 0;
+
+}
+
+.ant-input-suffix{
+  color:gray
 }
