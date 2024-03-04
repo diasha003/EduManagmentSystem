@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id               Int          @id @default(autoincrement())
+  createdAt        DateTime     @default(now()) @map("created_at")
+  updatedAt        DateTime     @updatedAt @map("updated_at")
+  firstName        String       @map("first_name")
+  lastName         String       @map("last_name")
+  email            String       @unique
+  phoneNumber      String?      @map("phone_number")
+  birthdayDate     DateTime?    @map("birthday_date")
+  dataSinceStudent DateTime?    @map("data_since_student")
+  address          String?
+  avatarUrl        String?      @map("avatar_url")
+  gender           Gender?
+  institution      Institution? @relation(fields: [institutionid], references: [id])
+  institutionid    Int?
+  group            Group?        @relation(fields: [groupId], references: [id])
+  groupId          Int?
+  status           Status
+  type             Type
+  skills           String?
+  password         String?
+}
+
+enum Gender {
+  male
+  female
+}
+
+model Institution {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Student Student[]
+}
+
+model Group {
+  id      Int       @id @default(autoincrement())
+  name    String    @unique
+  Student Student[]
+}
+
+enum Status {
+  active
+  trial
+  inactive
+}
+
+enum Type {
+  adult
+  child
+}
+
+model Family {
+  id              Int     @id @default(autoincrement())
+  parentFirstName String  @map("parent_first_name")
+  parentLastName  String  @map("parent_last_name")
+  email           String  @unique
+  phoneNumber     String? @map("phone_number")
+  address         String?
+  password        String?
+}
