@@ -14,24 +14,24 @@ datasource db {
 }
 
 model Student {
-  id               Int          @id @default(autoincrement())
-  createdAt        DateTime     @default(now()) @map("created_at")
-  updatedAt        DateTime     @updatedAt @map("updated_at")
-  firstName        String       @map("first_name")
-  lastName         String       @map("last_name")
-  email            String       @unique
-  phoneNumber      String?      @map("phone_number")
-  birthdayDate     DateTime?    @map("birthday_date")
-  dataSinceStudent DateTime?    @map("data_since_student")
+  id               Int           @id @default(autoincrement())
+  createdAt        DateTime      @default(now()) @map("created_at")
+  updatedAt        DateTime      @updatedAt @map("updated_at")
+  firstName        String        @map("first_name")
+  lastName         String        @map("last_name")
+  email            String        @unique
+  phoneNumber      String?       @map("phone_number")
+  birthdayDate     DateTime?     @map("birthday_date")
+  dataSinceStudent DateTime?     @map("data_since_student")
   address          String?
-  avatarUrl        String?      @map("avatar_url")
+  avatarUrl        String?       @map("avatar_url")
   gender           Gender?
-  institution      Institution? @relation(fields: [institutionid], references: [id])
+  institution      Institution?  @relation(fields: [institutionid], references: [id])
   institutionid    Int?
   group            Group?        @relation(fields: [groupId], references: [id])
   groupId          Int?
-  status           Status
-  type             Type
+  status           StatusStudent
+  type             TypeStudent
   skills           String?
   password         String?
 }
@@ -53,13 +53,13 @@ model Group {
   Student Student[]
 }
 
-enum Status {
+enum StatusStudent {
   active
   trial
   inactive
 }
 
-enum Type {
+enum TypeStudent {
   adult
   child
 }
@@ -73,3 +73,33 @@ model Family {
   address         String?
   password        String?
 }
+
+model Emloyee {
+  id Int @id @default(autoincrement())
+
+  firstName String         @map("first_name")
+  lastName  String         @map("last_name")
+  email     String         @unique
+  address   String?
+  password  String?
+  type      TypeEmployee
+  status    StatusEmployee
+  payrollType PayrollType
+}
+
+enum TypeEmployee {
+  teacher
+  staff
+}
+
+enum StatusEmployee {
+  active
+  inactive
+}
+
+enum PayrollType {
+  auto
+  percentage 
+  hourlyRate
+}
+
