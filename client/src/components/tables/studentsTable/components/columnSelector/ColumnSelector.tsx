@@ -1,7 +1,7 @@
 import { Button, Checkbox, Dropdown } from "antd";
 import { useState } from "react";
-import { useActions } from "../../../../hooks/actions";
-import { useAppSelector } from "../../../../hooks/redux";
+import { useActions } from "../../../../../hooks/actions"
+import { useAppSelector } from "../../../../../hooks/redux"
 import "./ColumnSelector.style.css";
 import { checkBoxes } from "./constants";
 import { CaretDownOutlined } from "@ant-design/icons";
