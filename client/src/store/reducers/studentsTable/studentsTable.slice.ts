@@ -1,8 +1,4 @@
 import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
-import { act } from "@testing-library/react";
-import { TableColumnsType } from "antd";
-import { stat } from "fs";
-import { checkBoxes } from "../../../components/tables/components/columnSelector/constants";
 import columns, {
   DataType,
 } from "../../../components/tables/studentsTable/constants/columns";
