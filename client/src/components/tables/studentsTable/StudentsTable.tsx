@@ -11,7 +11,7 @@ import "./StudentsTable.css";
 import columns from "./constants/columns";
 import sortMenuItems from "./constants/sortMenuItems";
 import { useAppSelector } from "../../../hooks/redux";
-import ColumnSelector from "../components/columnSelector/ColumnSelector";
+import ColumnSelector from  "./components/columnSelector/ColumnSelector"
 import studentAddOptions from "./constants/studentAddOptions";
 import { useNavigate } from "react-router-dom";
 
