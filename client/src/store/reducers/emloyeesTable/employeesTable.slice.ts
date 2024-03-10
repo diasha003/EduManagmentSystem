@@ -1,17 +1,15 @@
 import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
-import columns, {
-  DataType,
-} from "../../../components/tables/studentsTable/constants/columnsStudentsTable";
+import columns from "../../../components/tables/employeesTable/constants/columnsEmployeesTable";
 
 interface SelectedColumns {
   [key: string]: boolean;
 }
 
-interface StudentsTableState {
+interface EmployeesTableState {
   selectedColumns: SelectedColumns;
 }
 
-const initialState: StudentsTableState = {
+const initialState: EmployeesTableState = {
   selectedColumns: {
     ...Object.fromEntries(
       new Map<string, boolean>(
@@ -23,11 +21,11 @@ const initialState: StudentsTableState = {
   },
 };
 
-export const studentsTableSlice = createSlice({
-  name: "studentsTable",
+export const employeesTableSlice = createSlice({
+  name: "employeesTable",
   initialState,
   reducers: {
-    updateCheckBoxesStudentsTable(state, action: PayloadAction<string>) {
+    updateCheckBoxesEmployeesTable(state, action: PayloadAction<string>) {
       if (action.payload === "default") {
         state.selectedColumns = initialState.selectedColumns;
       } else if (action.payload === "all") {
@@ -47,5 +45,5 @@ export const studentsTableSlice = createSlice({
   },
 });
 
-export const studentsTableActions = studentsTableSlice.actions;
-export const studentsTableReducer = studentsTableSlice.reducer;
+export const employeesTableActions = employeesTableSlice.actions;
+export const employeesTableReducer = employeesTableSlice.reducer;

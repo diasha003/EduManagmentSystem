@@ -7,6 +7,7 @@ import { Route, Routes } from "react-router-dom";
 import InfoStudents from "./pages/students/InfoStudents";
 
 import AddStudent from "./pages/students/AddStudent";
+import InfoEmployees from "./pages/employees/InfoEmloyess";
 
 
 // const { Header } = Layout;
@@ -22,6 +23,9 @@ const App: React.FC = () => {
       <Layout className="layout">
         <Header className="header">Header</Header>
         <Content className="content">
+          <Routes>
+            <Route element={<InfoEmployees />} path="/employees"></Route>
+          </Routes>
           <Routes>
             <Route element={<InfoStudents />} path="/students"></Route>
           </Routes>

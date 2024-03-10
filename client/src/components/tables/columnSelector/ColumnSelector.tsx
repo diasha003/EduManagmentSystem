@@ -1,18 +1,23 @@
 import { Button, Checkbox, Dropdown } from "antd";
 import { useState } from "react";
-import { useActions } from "../../../../../hooks/actions"
-import { useAppSelector } from "../../../../../hooks/redux"
+import { useActions } from "../../../hooks/actions"
+import { useAppSelector } from "../../../hooks/redux"
 import "./ColumnSelector.style.css";
-import { checkBoxes } from "./constants";
 import { CaretDownOutlined } from "@ant-design/icons";
 
-const ColumnSelector = () => {
+
+interface ColumnSelectorProps {
+  checkBoxes: Map<string, { displayName: string }>,
+  table: string
+}
+
+const ColumnSelector = (props: ColumnSelectorProps) => {
   const [open, setOpen] = useState<boolean>(false);
-  const { updateCheckBoxes } = useActions();
+  const { updateCheckBoxesEmployeesTable, updateCheckBoxesStudentsTable } = useActions();
 
-  const { selectedColumns } = useAppSelector((state) => state.studentsTable);
+  const { selectedColumns } = useAppSelector((state) => props.table === "students" ? state.studentsTable : state.employeesTable);
 
-  const options = Array.from(checkBoxes).map(([key, { displayName }]) => ({
+  const options = Array.from(props.checkBoxes).map(([key, { displayName }]) => ({
     key,
     label: (
       <Checkbox
@@ -23,7 +28,7 @@ const ColumnSelector = () => {
         }
         checked={selectedColumns[`${key}`]}
         onChange={(e) => {
-          updateCheckBoxes(e.target.value);
+          props.table === "students" ? updateCheckBoxesStudentsTable(e.target.value) : updateCheckBoxesEmployeesTable(e.target.value);
           setOpen(true);
         }}
         onClick={() => setOpen(true)}

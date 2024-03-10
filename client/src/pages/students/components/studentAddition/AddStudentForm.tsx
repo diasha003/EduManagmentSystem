@@ -40,8 +40,12 @@ const AddStudentForm: React.FC = () => {
     setBillingType(e.target.value);
   }
 
+  const onFinish = (values: any) => {
+    console.log('Received values of form: ', values);
+  };
+
   return (
-    <Form layout="vertical" className="formStyle">
+    <Form layout="vertical" className="formStyle" onFinish={onFinish}>
       <Row gutter={10}>
         <Col span={11}>
           <Form.Item
@@ -379,7 +383,7 @@ const AddStudentForm: React.FC = () => {
         <Col span={11} style={{ display: "flex", justifyContent: "flex-end" }}>
           <Form.Item>
             <Space>
-              <Button htmlType="button" >
+              <Button htmlType="submit" >
                 Cancel
               </Button>
               <Button style={{ display: 'flex', alignItems: 'center', marginRight: 0 }} type="primary">
@@ -401,3 +405,8 @@ const AddStudentForm: React.FC = () => {
 
 export default AddStudentForm;
 
+
+
+// <Button type="primary" htmlType="submit">
+// Submit
+// </Button>

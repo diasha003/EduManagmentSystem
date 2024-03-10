@@ -1,6 +1,6 @@
 import React from "react";
 import { items } from "../../components/tables/studentsTable/constants/tabItems";
-import "./InfoStudent.style.css";
+import "./InfoStudents.style.css";
 import { Tabs } from "antd";
 
 const InfoStudents: React.FC = () => {

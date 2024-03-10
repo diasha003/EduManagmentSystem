@@ -7,13 +7,14 @@ import {
   PlusOutlined,
   DownOutlined,
 } from "@ant-design/icons";
-import "./StudentsTable.css";
-import columns from "./constants/columns";
+import "./StudentsTable.style.css";
+import columns from "./constants/columnsStudentsTable";
 import sortMenuItems from "./constants/sortMenuItems";
 import { useAppSelector } from "../../../hooks/redux";
-import ColumnSelector from  "./components/columnSelector/ColumnSelector"
+import ColumnSelector from "../columnSelector/ColumnSelector"
 import studentAddOptions from "./constants/studentAddOptions";
 import { useNavigate } from "react-router-dom";
+import { checkBoxes } from "./constants/columnSelectorStudentsTable";
 
 const StudentsTable: React.FC = () => {
   const { selectedColumns } = useAppSelector((state) => state.studentsTable);
@@ -52,7 +53,7 @@ const StudentsTable: React.FC = () => {
           </Button>
         </div>
         <div>
-          <ColumnSelector></ColumnSelector>
+          <ColumnSelector checkBoxes={checkBoxes} table="students"></ColumnSelector>
 
           <Dropdown menu={{ items: sortMenuItems }} trigger={["click"]}>
             <Button icon={<SortAscendingOutlined />} className="button">

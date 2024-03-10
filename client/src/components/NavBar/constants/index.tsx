@@ -13,7 +13,7 @@ const items: MenuItemType[] = [
     label: "Home",
   },
   {
-    key: "/teachers&staff",
+    key: "/employees",
     icon: <UserOutlined />,
     label: "Teachers & Staff",
   },
