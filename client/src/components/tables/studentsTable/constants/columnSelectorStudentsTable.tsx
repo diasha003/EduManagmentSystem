@@ -1,7 +1,7 @@
 export const checkBoxes: Map<string, { displayName: string }> = new Map([
     ["all", { displayName: "Show All" }],
     ["default", { displayName: "Show Default" }],
-  
+    ["divider", { displayName: "<Divider />" }],
     ["student", { displayName: "Student" }],
     ["contact", { displayName: "Contact" }],
     ["family", { displayName: "Family" }],

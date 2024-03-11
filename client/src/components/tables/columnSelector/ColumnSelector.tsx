@@ -1,4 +1,4 @@
-import { Button, Checkbox, Dropdown } from "antd";
+import { Button, Checkbox, Divider, Dropdown } from "antd";
 import { useState } from "react";
 import { useActions } from "../../../hooks/actions"
 import { useAppSelector } from "../../../hooks/redux"
@@ -36,6 +36,7 @@ const ColumnSelector = (props: ColumnSelectorProps) => {
         {displayName}
       </Checkbox>
     ),
+    type: key === "divider" ? "divider" : "checkbox",
   }));
 
   return (
@@ -45,14 +46,18 @@ const ColumnSelector = (props: ColumnSelectorProps) => {
         setOpen(e);
       }}
       menu={{
-        items: options,
+        items: options
+
       }}
+
+
+
       trigger={["click"]}
     >
       <Button onClick={() => setOpen(true)}>
         Columns <CaretDownOutlined />
       </Button>
-    </Dropdown>
+    </Dropdown >
   );
 };
 
