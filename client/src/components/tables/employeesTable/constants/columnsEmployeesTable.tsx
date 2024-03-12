@@ -3,15 +3,15 @@ import type { TableColumnsType } from "antd";
 export interface DataType {
     key: string;
     name: string;
-    contact: string;
-    students: Array<string>;
-    payrollBalance: number;
-    defaultPrice: number;
-    defaultLessonCategory: string;
-    defaultDuration: number;
-    payRate: number;
-    calendarColor: string;
-    payrollOverrides: boolean
+    contact?: string;
+    students?: Array<string>;
+    payrollBalance?: number;
+    defaultPrice?: number;
+    defaultLessonCategory?: string;
+    defaultDuration?: number;
+    payRate?: number;
+    calendarColor?: string;
+    payrollOverrides?: boolean
 }
 
 const columns: TableColumnsType<DataType> = [
@@ -22,6 +22,8 @@ const columns: TableColumnsType<DataType> = [
         width: 200,
         fixed: "left",
         hidden: false,
+        sorter: (a, b) => a.name.length - b.name.length,
+        ellipsis: true,
     },
     {
         title: "Contact Info",
