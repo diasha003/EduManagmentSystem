@@ -1,17 +1,14 @@
-export const checkBoxes: Map<string, { displayName: string }> = new Map([
+import columns from "./columnsEmployeesTable";
+
+export const checkBoxes = new Map<string, { displayName: string }>([
   ["all", { displayName: "Show All" }],
   ["default", { displayName: "Show Default" }],
-  ["divider", { displayName: "<Divider />" }],
-  ["name", { displayName: "Name" }],
-  ["contact", { displayName: "Contact Info" }],
-  ["students", { displayName: "Assigned Students" }],
-  ["payrollBalance", { displayName: "Payroll Balance" }],
-  ["defaultPrice", { displayName: "Default Price" }],
-  ["defaultLessonCategory", { displayName: "Default Lesson Category" }],
-  ["defaultDuration", { displayName: "Default Duration" }],
-  ["payRate", { displayName: "Pay Rate" }],
-  ["calendarColor", { displayName: "Calendar Color" }],
-  ["payrollOverrides", { displayName: "Payroll Overrides" }],
+  ["divider", { displayName: "<Divider/>" }],
+  ...columns.map(
+    ({ key, title }) =>
+      [key as string, { displayName: title as string }] as [
+        string,
+        { displayName: string }
+      ]
+  ),
 ]);
-
-

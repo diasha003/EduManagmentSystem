@@ -1,22 +1,14 @@
-export const checkBoxes: Map<string, { displayName: string }> = new Map([
-    ["all", { displayName: "Show All" }],
-    ["default", { displayName: "Show Default" }],
-    ["divider", { displayName: "<Divider />" }],
-    ["student", { displayName: "Student" }],
-    ["contact", { displayName: "Contact" }],
-    ["family", { displayName: "Family" }],
-    ["notes", { displayName: "Notes" }],
-    ["groups", { displayName: "Groups" }],
-    ["teachers", { displayName: "Teachers" }],
-    ["lastLesson", { displayName: "Last Lesson" }],
-    ["nextLesson", { displayName: "Next Lesson" }],
-    ["avgAttendance", { displayName: "Attendance Average" }],
-    ["birthday", { displayName: "Birthday" }],
-    ["age", { displayName: "Age" }],
-    ["gender", { displayName: "Gender" }],
-    ["education", { displayName: "School/University" }],
-    ["lastLog", { displayName: "Last Login" }],
-    ["studentSince", { displayName: "Student Since" }],
-    ["avgAttendance", { displayName: "Attendance Average" }],
-  ]);
-  
+import columns from "./columnsStudentsTable";
+
+export const checkBoxes = new Map<string, { displayName: string }>([
+  ["all", { displayName: "Show All" }],
+  ["default", { displayName: "Show Default" }],
+  ["divider", { displayName: "<Divider/>" }],
+  ...columns.map(
+    ({ key, title }) =>
+      [key as string, { displayName: title as string }] as [
+        string,
+        { displayName: string }
+      ]
+  ),
+]);
