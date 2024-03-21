@@ -63,8 +63,8 @@ const EmployeesTable: React.FC = () => {
   ];
 
   const handleChange: OnChange = (pagination, filters, sorter) => {
-    console.log("Various parameters", pagination, filters, sorter);
-    //setSortedInfo(sorter as Sorts);
+    //console.log("Various parameters", pagination, filters, sorter);
+    setSortedInfo(sorter as Sorts);
   };
 
   return (
@@ -92,15 +92,6 @@ const EmployeesTable: React.FC = () => {
           ></ColumnSelector>
 
           <Dropdown menu={{ items: sortMenuItems }} trigger={["click"]}>
-            <Button icon={<SortAscendingOutlined />} className="button">
-              <Space>
-                Sort
-                <CaretDownOutlined />
-              </Space>
-            </Button>
-          </Dropdown>
-
-          <Dropdown menu={{ items: [] }} trigger={["click"]}>
             <Button icon={<SortAscendingOutlined />} className="button">
               <Space>
                 Sort
