@@ -19,7 +19,8 @@ export const store = configureStore({
     [studentApi.reducerPath]: studentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(studentApi.middleware),
+    //getDefaultMiddleware().concat(studentApi.middleware),
+    getDefaultMiddleware({ serializableCheck: false }),
   //devTools: { serialize: { options: true } },
 });
 

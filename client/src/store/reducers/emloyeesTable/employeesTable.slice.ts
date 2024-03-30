@@ -1,5 +1,14 @@
-import { createSlice, current, PayloadAction } from "@reduxjs/toolkit";
-import columns from "../../../components/tables/employeesTable/constants/columnsEmployeesTable";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import columns, {
+  DataType,
+} from "../../../components/tables/employeesTable/constants/columnsEmployeesTable";
+import { TableColumnsType, TableProps } from "antd";
+import { Key } from "react";
+import { SortOrder } from "antd/es/table/interface";
+
+type OnChange = NonNullable<TableProps<DataType>["onChange"]>;
+type GetSingle<T> = T extends (infer U)[] ? U : never;
+type Sorts = GetSingle<Parameters<OnChange>[2]>;
 
 interface SelectedColumns {
   [key: string]: boolean;
@@ -7,6 +16,7 @@ interface SelectedColumns {
 
 interface EmployeesTableState {
   selectedColumns: SelectedColumns;
+  columnSortState: TableColumnsType<DataType>;
 }
 
 const initialState: EmployeesTableState = {
@@ -19,6 +29,7 @@ const initialState: EmployeesTableState = {
     all: false,
     default: true,
   },
+  columnSortState: columns,
 };
 
 export const employeesTableSlice = createSlice({
@@ -41,6 +52,25 @@ export const employeesTableSlice = createSlice({
           ["default"]: false,
         };
       }
+      state.columnSortState = state.columnSortState.map((item) => ({
+        ...item,
+        hidden: !(state.selectedColumns[`${item.key}`] as boolean),
+      }));
+    },
+
+    updateColumnSortEmployeesTable(state, action: PayloadAction<Sorts>) {
+      state.columnSortState = state.columnSortState.map((item) =>
+        item.key === action.payload.columnKey
+          ? {
+              ...item,
+              sortOrder: action.payload.order
+                ? action.payload.order
+                : item.sortOrder === "ascend"
+                ? "descend"
+                : "ascend",
+            }
+          : { ...item, sortOrder: null }
+      );
     },
   },
 });
