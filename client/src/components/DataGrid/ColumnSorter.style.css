@@ -1,0 +1,8 @@
+.sorterIcon {
+  display: none;
+}
+
+.sorterItem:hover > .sorterIcon {
+  display: inline-flex;
+  color: gray;
+}

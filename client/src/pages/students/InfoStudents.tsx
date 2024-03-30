@@ -1,5 +1,5 @@
 import React from "react";
-import { items } from "../../components/tables/studentsTable/constants/tabItems";
+import { items } from "./components/constants/tabItems";
 import "./InfoStudents.style.css";
 import { Tabs } from "antd";
 

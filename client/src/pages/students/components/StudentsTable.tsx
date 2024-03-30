@@ -1,6 +1,12 @@
-import type { TableColumnsType } from "antd";
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, Space, Dropdown } from "antd";
+import { CaretDownOutlined, PlusOutlined } from "@ant-design/icons";
 
-export interface DataType {
+import studentAddOptions from "./constants/studentAddOptions";
+import { DataGrid, DataGridColumn } from "../../../components/DataGrid/DataGrid";
+
+export interface StudentModel {
   key: string;
   student: string;
   contact: string;
@@ -20,7 +26,7 @@ export interface DataType {
   operation: React.ReactElement;
 }
 
-const columns: TableColumnsType<DataType> = [
+const columns: DataGridColumn<StudentModel>[] = [
   {
     title: "Student",
     dataIndex: "student",
@@ -137,4 +143,43 @@ const columns: TableColumnsType<DataType> = [
   },
 ];
 
-export default columns;
+const StudentsTable: React.FC = () => {
+  const nav = useNavigate();
+
+  return (
+    <DataGrid
+      columns={columns}
+      dataSource={[]}
+      showColumnsSelector
+      showSort
+      toolbar={
+        <Space>
+          <Dropdown menu={{ items: studentAddOptions }} trigger={["click"]}>
+            <Button
+              icon={<PlusOutlined />}
+              type="primary"
+              className="button"
+              onClick={() => {
+                nav("/students/add");
+              }}
+            >
+              <Space>
+                Add new
+                <CaretDownOutlined />
+              </Space>
+            </Button>
+          </Dropdown>
+
+          <Button type="primary" className="button">
+            Messaging
+          </Button>
+          <Button type="primary" className="button">
+            Options
+          </Button>
+        </Space>
+      }
+    />
+  );
+};
+
+export default StudentsTable;

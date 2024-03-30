@@ -14,7 +14,7 @@ const initialState: StudentSlice = {
 export const studentSlice = createSlice({
     name: "student", 
     initialState, 
-    reducers:{
+    reducers: {
 
     }
 })

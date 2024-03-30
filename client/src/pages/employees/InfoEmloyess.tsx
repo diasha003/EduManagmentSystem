@@ -1,4 +1,4 @@
-import EmployeesTable from "../../components/tables/employeesTable/EmployeesTable";
+import EmployeesTable from "./components/EmployeesTable";
 
 
 const InfoEmployees: React.FC = () => {
