@@ -1,4 +1,4 @@
-import { Button, Dropdown, MenuProps } from "antd";
+import { Button, Dropdown, MenuProps, Space } from "antd";
 import {
   CaretDownOutlined,
   MailOutlined,
@@ -7,7 +7,10 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
-import { DataGrid, DataGridColumn } from "../../../components/DataGrid/DataGrid";
+import {
+  DataGrid,
+  DataGridColumn,
+} from "../../../components/DataGrid/DataGrid";
 
 export interface EmployeeModel {
   key: string;
@@ -140,7 +143,7 @@ const EmployeesTable: React.FC = () => {
       showColumnsSelector
       showSort
       toolbar={
-        <div>
+        <Space>
           <Dropdown menu={{ items }} trigger={["click"]}>
             <Button icon={<PlusOutlined />} type="primary" className="button">
               Add new
@@ -154,7 +157,7 @@ const EmployeesTable: React.FC = () => {
           <Button type="default" className="button" icon={<SettingOutlined />}>
             Options
           </Button>
-        </div>
+        </Space>
       }
     />
   );

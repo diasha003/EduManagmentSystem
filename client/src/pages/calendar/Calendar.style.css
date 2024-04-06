@@ -1,0 +1,32 @@
+.ant-radio-group-small :where(.css-dev-only-do-not-override-zl9ks2).ant-radio-button-wrapper:first-child{
+    display: none;
+}
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date{
+    height: 5.5em;
+    width: 100%;
+}
+
+.blockFrequencyType{
+    display: flex;
+    flex-direction: column;
+    background: #efeff1;
+    padding: 15px;
+    margin-top: 10px; 
+
+    div{ 
+        margin: 7px 0;       
+    }
+
+    .additionalBlockFrequencyType{
+        div{
+            margin-bottom: 15px;
+        }
+    }
+
+    p{
+        font-weight: 600;
+    }
+
+
+}

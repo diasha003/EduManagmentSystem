@@ -1,4 +1,4 @@
-import { Space, Table } from "antd";
+import { Button, Space, Table } from "antd";
 import { ColumnSorter } from "./ColumnSorter";
 import { ColumnType } from "antd/es/table";
 import { ColumnSelector } from "./ColumnSelector";
@@ -130,6 +130,7 @@ export function DataGrid<T>({
               onSwitchSortOrder={onSwitchSortOrder}
             />
           )}
+          <Button>Search</Button>
         </Space>
       </div>
 
