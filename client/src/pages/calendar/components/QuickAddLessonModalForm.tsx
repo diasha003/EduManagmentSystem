@@ -15,7 +15,9 @@ import {
 } from "antd";
 import { Option } from "antd/es/mentions";
 import { useState } from "react";
-import dayjs from "dayjs";
+
+import { RedoOutlined } from "@ant-design/icons";
+import dayjs, { Dayjs } from "dayjs";
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -62,6 +64,7 @@ const QuickAddLessonModalForm: React.FC = () => {
         onOk={handleOk}
         confirmLoading={confirmLoading}
         onCancel={handleCancel}
+        width="720px"
       >
         <Form layout="vertical">
           <Row gutter={14}>
@@ -77,7 +80,7 @@ const QuickAddLessonModalForm: React.FC = () => {
               <Form.Item
                 label="Student"
                 name="student"
-                //rules={[{ required: true, message: "Please input " }]}
+              //rules={[{ required: true, message: "Please input " }]}
               >
                 <Select placeholder="select">
                   <Option value="student_1">Student_1</Option>
@@ -108,8 +111,13 @@ const QuickAddLessonModalForm: React.FC = () => {
           </Checkbox>
 
           <div className="blockFrequencyType">
-            <div>
-              <p>Recurring Event</p>
+
+            <div style={{ display: "flex", flexDirection: "row", marginBottom: "10px" }}>
+              <RedoOutlined />
+              <h3 style={{ margin: "0 0 0 10px" }}>Recurring Event</h3>
+            </div>
+
+            <div style={{ marginBottom: "10px" }}>
               <p>Frequency</p>
               <Radio.Group
                 name="frequency"
@@ -123,45 +131,80 @@ const QuickAddLessonModalForm: React.FC = () => {
                 <Radio value="4">Yearly</Radio>
               </Radio.Group>
             </div>
+
             {frequencyType === "1" && (
-              <div className="additionalBlockFrequencyType">
-                <div>
+              <div>
+                <div style={{ marginBottom: "10px" }}>
                   <p>Repeat On</p>
                   <CheckboxGroup options={plainOptions} onChange={onChange} />
                 </div>
-                <div>
+                <div style={{ marginBottom: "10px" }}>
                   <p>Repeat Until</p>
                   <DatePicker style={{ width: "100%" }} />
                 </div>
                 <div>
-                  <Checkbox onChange={() => {}}>Repeat indefinitely</Checkbox>
+                  <Checkbox onChange={() => { }}>Repeat indefinitely</Checkbox>
                 </div>
               </div>
             )}
 
             {frequencyType === "2" && (
-              <div className="additionalBlockFrequencyType">
-                <div>
-                  <p>Repeat On</p>
-                  <CheckboxGroup options={plainOptions} onChange={onChange} />
-                </div>
+              <>
+                <Row gutter={14}>
+                  <Col span={12}>
+                    <Form.Item name="every_week" label="Every">
+                      <Input defaultValue="1" suffix="Week(s)"></Input>
+                    </Form.Item>
 
-                <Row gutter={14} style={{ margin: 0 }}>
-                  <Col span={22}>
-                    <DatePicker
-                      style={{
-                        width: "100%",
-                        margin: 0,
-                        //padding: "4px 11px 4px",
-                      }}
-                    />
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Repeat Until"
+                      name=""
+                    >
+
+                      <DatePicker style={{ width: "100%" }} />
+                    </Form.Item>
                   </Col>
                 </Row>
-
                 <div>
-                  <Checkbox onChange={() => {}}>Repeat indefinitely</Checkbox>
+                  <Checkbox onChange={() => { }}>Repeat indefinitely</Checkbox>
                 </div>
-              </div>
+              </>
+            )}
+
+
+            {frequencyType === "3" && (
+              <>
+                <div style={{ marginBottom: "10px" }}>
+                  <p>Repeat On</p>
+                  <Radio.Group onChange={() => {}}>
+                    <Radio value={1}>A</Radio>
+                    <Radio value={2}>B</Radio>
+
+                  </Radio.Group>
+                </div>
+                <Row gutter={14}>
+                  <Col span={12}>
+                    <Form.Item name="every_month" label="Every">
+                      <Input defaultValue="1" suffix="Month(s)"></Input>
+                    </Form.Item>
+
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Repeat Until"
+                      name=""
+                    >
+
+                      <DatePicker style={{ width: "100%" }} />
+                    </Form.Item>
+                  </Col>
+                </Row>
+                <div>
+                  <Checkbox onChange={() => { }}>Repeat indefinitely</Checkbox>
+                </div>
+              </>
             )}
           </div>
         </Form>

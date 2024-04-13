@@ -9,7 +9,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Dropdown, MenuProps, Space, Calendar } from "antd";
 import "./Calendar.style.css";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import QuickAddLessonModalForm from "./components/QuickAddLessonModalForm";
 
@@ -67,20 +67,14 @@ const calendarDisplayType: MenuProps["items"] = [
 ];
 
 const CalendarTest: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<string>(
-    new Date().toLocaleString("en-GB", {
-      month: "long",
-      year: "numeric",
-    })
-  );
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
 
-  const onSelectDate = (date: Dayjs) => {
-    const d = new Date(date.toDate());
-    const monthName = d.toLocaleString("en-GB", {
-      month: "long",
-      year: "numeric",
-    });
-    setSelectedDate(monthName);
+  console.log(selectedDate)
+
+
+  const onSelectDate = (date: dayjs.Dayjs) => {
+
+    setSelectedDate(new Date(date.format()));
   };
 
   const dateSelectionOption: MenuProps["items"] = [
@@ -93,12 +87,20 @@ const CalendarTest: React.FC = () => {
           <Calendar
             fullscreen={false}
             mode="year"
+            defaultValue={dayjs(selectedDate)}
             onSelect={(date) => onSelectDate(date)}
           />
         </div>
       ),
     },
   ];
+
+
+
+  useEffect(() => {
+    console.log("1")
+
+  }, [selectedDate])
 
   return (
     <>
@@ -112,13 +114,16 @@ const CalendarTest: React.FC = () => {
       >
         <Dropdown menu={{ items: dateSelectionOption }} trigger={["click"]}>
           <Space>
-            {selectedDate}
+            {selectedDate.toLocaleString("en-GB", {
+              month: "long",
+              year: "numeric",
+            })}
             <CaretDownOutlined />
           </Space>
         </Dropdown>
 
         {/* <a>Today</a> */}
-        <QuickAddLessonModalForm></QuickAddLessonModalForm>
+        <QuickAddLessonModalForm ></QuickAddLessonModalForm>
       </div>
 
       <div
@@ -185,6 +190,7 @@ const CalendarTest: React.FC = () => {
             borderTopStyle: "groove",
           }}
           onSelect={(date) => onSelectDate(date)}
+          defaultValue={dayjs(selectedDate)}
         ></Calendar>
       </div>
     </>
