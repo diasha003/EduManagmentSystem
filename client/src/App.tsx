@@ -14,29 +14,41 @@ import { Layout } from "antd";
 const { Header, Content } = Layout;
 
 const App: React.FC = () => {
-  return (
-    <Layout hasSider>
-      <NavBar></NavBar>
+  const routes: {
+    element: JSX.Element;
+    path: string;
+    hideWrapper?: boolean;
+  }[] = [];
 
-      <Layout className="layout">
-        <Header className="header">Header</Header>
-        <Content className="content">
-          <Routes>
-            <Route element={<InfoEmployees />} path="/employees"></Route>
-          </Routes>
-          <Routes>
-            <Route element={<InfoStudents />} path="/students"></Route>
-          </Routes>
-          <Routes>
-            <Route element={<AddStudent />} path="/students/add"></Route>
-          </Routes>
-          <Routes>
-            <Route element={<CalendarTest />} path="/calendar"></Route>
-          </Routes>
-        </Content>
-        {/* <Footer className="footer">Footer</Footer> */}
-      </Layout>
-    </Layout>
+  routes.push({ path: "/home", element: <></> });
+  routes.push({ path: "/employees", element: <InfoEmployees /> });
+  routes.push({ path: "/students", element: <InfoStudents /> });
+  routes.push({ path: "/students/add", element: <AddStudent /> });
+  routes.push({ path: "/calendar", element: <CalendarTest /> });
+
+  return (
+    <Routes>
+      {routes.map((x) => (
+        <Route
+          path={x.path}
+          element={
+            x.hideWrapper ? (
+              x.element
+            ) : (
+              <>
+                <Layout hasSider>
+                  <NavBar></NavBar>
+                  <Layout className="layout">
+                    <Header className="header">Header</Header>
+                    <Content className="content">{x.element}</Content>
+                  </Layout>
+                </Layout>
+              </>
+            )
+          }
+        />
+      ))}
+    </Routes>
   );
 };
 
