@@ -25,7 +25,8 @@
 .content {
   height: 100vh;
   overflow-y: scroll;
-  background-color: #eee7e7;
+  /* background-color: #eee7e7; */
+  background: #c8d3d324;
 }
 
 .footer {
@@ -33,15 +34,22 @@
   position: sticky;
   bottom: 0;
   width: 100%;
-  background-color: #decaca;
+  background-color: white;
 
 }
 
 
 .header {
-  background: #a8c1d6;
+  background: #fafafa;
+  box-shadow: 0 2px 4px #033c561a,0 0 1px #033c5680!important;
+  z-index: 1;
 }
 
 .itemMenu {
   margin-left: 150px
+}
+
+
+#root{
+  height: 100%;
 }

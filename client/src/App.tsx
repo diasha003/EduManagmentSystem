@@ -9,6 +9,8 @@ import AddStudent from "./pages/students/AddStudent";
 import InfoEmployees from "./pages/employees/InfoEmloyess";
 import CalendarTest from "./pages/calendar/Calendar";
 import { Layout } from "antd";
+import Login from "./pages/login/Login";
+import Register from "./pages/register/Register";
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -25,6 +27,8 @@ const App: React.FC = () => {
   routes.push({ path: "/students", element: <InfoStudents /> });
   routes.push({ path: "/students/add", element: <AddStudent /> });
   routes.push({ path: "/calendar", element: <CalendarTest /> });
+  routes.push({ path: "/login", element: <Login/>, hideWrapper: true });
+  routes.push({ path: "/signup", element: <Register/>, hideWrapper: true });
 
   return (
     <Routes>
