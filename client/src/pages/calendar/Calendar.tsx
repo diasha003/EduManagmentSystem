@@ -7,11 +7,27 @@ import {
   PrinterOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { Button, Dropdown, MenuProps, Space, Calendar } from "antd";
+import {
+  Button,
+  Dropdown,
+  MenuProps,
+  Space,
+  Calendar,
+  CalendarProps,
+  Divider,
+  Row,
+  Col,
+  DropdownProps,
+  Layout,
+  Card,
+} from "antd";
 import "./Calendar.style.css";
 import React, { useEffect, useState } from "react";
 import dayjs, { Dayjs } from "dayjs";
 import QuickAddLessonModalForm from "./components/QuickAddLessonModalForm";
+import { dayOfWeek, monthOfYear } from "../../helpers/NumberHelper";
+import Icon from "@ant-design/icons/lib/components/Icon";
+import Meta from "antd/es/card/Meta";
 
 const calendarAddOptions: MenuProps["items"] = [
   {
@@ -67,13 +83,10 @@ const calendarDisplayType: MenuProps["items"] = [
 ];
 
 const CalendarTest: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date())
-
-  console.log(selectedDate)
-
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
   const onSelectDate = (date: dayjs.Dayjs) => {
-
+    new Date(date.date());
     setSelectedDate(new Date(date.format()));
   };
 
@@ -95,12 +108,70 @@ const CalendarTest: React.FC = () => {
     },
   ];
 
+  const cellRenderer: CalendarProps<Dayjs>["fullCellRender"] = (
+    current,
+    info
+  ) => {
+    const renderAction = (
+      icon: JSX.Element,
+      title: string,
+      description: string
+    ) => {
+      return (
+        <Row gutter={14} style={{ marginBottom: "8px", cursor: "pointer" }}>
+          <Col span={2}>{icon}</Col>
+          <Col span={12}>
+            <h4>{title}</h4>
+            <span>{description}</span>
+          </Col>
+        </Row>
+      );
+    };
 
+    const items: MenuProps["items"] = [];
 
-  useEffect(() => {
-    console.log("1")
+    const dropdownRender: DropdownProps["dropdownRender"] = (origin) => {
+      return (
+        <Card>
+          <Meta
+            title={`${dayOfWeek(current.day())}, ${monthOfYear(
+              current.month()
+            )} ${current.date()}, ${current.year()}`}
+            description="0 Scheduled Event(s)"
+          />
+          <Divider />
+          {renderAction(
+            <CarryOutOutlined />,
+            "Quick-Add Lesson",
+            "Create a new lesson with your default category, length, and price"
+          )}
+          {renderAction(
+            <CarryOutOutlined />,
+            "New Event",
+            "Create a new event with custom settings"
+          )}
+          {renderAction(
+            <CarryOutOutlined />,
+            "New Non-Teaching Event",
+            "Create a new event that doesn't require students"
+          )}
+        </Card>
+      );
+    };
 
-  }, [selectedDate])
+    return (
+      <Dropdown
+        menu={{ items }}
+        trigger={["click"]}
+        dropdownRender={dropdownRender}
+      >
+        <div className="ant-picker-cell-inner ant-picker-calendar-date">
+          <div className="ant-picker-calendar-date-value">{current.date()}</div>
+          <div className="ant-picker-calendar-date-content"></div>
+        </div>
+      </Dropdown>
+    );
+  };
 
   return (
     <>
@@ -123,7 +194,9 @@ const CalendarTest: React.FC = () => {
         </Dropdown>
 
         {/* <a>Today</a> */}
-        <QuickAddLessonModalForm ></QuickAddLessonModalForm>
+        <QuickAddLessonModalForm
+          selectedDate={selectedDate}
+        ></QuickAddLessonModalForm>
       </div>
 
       <div
@@ -191,7 +264,8 @@ const CalendarTest: React.FC = () => {
           }}
           onSelect={(date) => onSelectDate(date)}
           defaultValue={dayjs(selectedDate)}
-        ></Calendar>
+          fullCellRender={cellRenderer}
+        />
       </div>
     </>
   );
