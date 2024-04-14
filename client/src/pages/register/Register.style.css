@@ -1,7 +1,13 @@
-.item{
+.item {
     font-size: 17px;
 }
 
-.ant-select-selector{
+.ant-select-single .ant-select-selector {
+    font-size: 17px;
+}
+
+
+.ant-select-single {
+    height: 40px;
     font-size: 17px;
 }

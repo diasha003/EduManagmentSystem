@@ -88,8 +88,21 @@ const Register: React.FC = () => {
                 </Form.Item>
 
 
-                <Form.Item name="agree" rules={[{ required: true }]}>
-                    <Checkbox >I agree to the Terms of Service and Privacy Policy</Checkbox>
+
+                <Form.Item
+                    name="agreement"
+                    valuePropName="checked"
+                    rules={[
+                        {
+                            validator: (_, value) =>
+                                value ? Promise.resolve() : Promise.reject(new Error('Should accept agreement')),
+                        },
+                    ]}
+
+                >
+                    <Checkbox>
+                        I agree to the Terms of Service and Privacy Policy
+                    </Checkbox>
                 </Form.Item>
 
 
