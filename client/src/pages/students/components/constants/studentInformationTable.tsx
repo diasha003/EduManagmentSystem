@@ -1,6 +1,6 @@
 interface InfoStudent {
-  key: string;
-  name: string;
-  age: string;
-  address: string;
+    key: string;
+    name: string;
+    age: string;
+    address: string;
 }

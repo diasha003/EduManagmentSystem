@@ -1,4 +1,4 @@
-export interface IStudent{
+export interface IStudent {
     id: number;
     firstName: string;
     lastName: string;
@@ -12,5 +12,5 @@ export interface IStudent{
     address: string;
     student_type_id: number;
     family_id: number;
-    photo_url?: string
+    photo_url?: string;
 }

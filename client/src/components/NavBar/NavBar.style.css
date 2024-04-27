@@ -1,6 +1,6 @@
-@import "../../../node_modules/antd/dist/reset.css";
+@import '../../../node_modules/antd/dist/reset.css';
 
-:where(.css-dev-only-do-not-override-zl9ks2).ant-layout .ant-layout-sider{
+:where(.css-dev-only-do-not-override-zl9ks2).ant-layout .ant-layout-sider {
     position: fixed;
     background: #001529;
     overflow: auto;
@@ -8,16 +8,13 @@
     left: 0;
     top: 0;
     bottom: 0;
-    z-index: 3
+    z-index: 3;
 }
 
-
-.logo{
+.logo {
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
     margin: 10px 0px;
 }
-
-

@@ -1,7 +1,7 @@
 .formStyle {
-  background: #ffffff;
-  width: 65%;
-  margin-bottom: 20px;
+    background: #ffffff;
+    width: 65%;
+    margin-bottom: 20px;
 }
 
 /* 
@@ -10,24 +10,22 @@
 } */
 
 .ant-row {
-  justify-content: center;
-  align-items: flex-start;
+    justify-content: center;
+    align-items: flex-start;
 }
 
-.ant-collapse>.ant-collapse-item>.ant-collapse-header {
-  color: #1677ff;
+.ant-collapse > .ant-collapse-item > .ant-collapse-header {
+    color: #1677ff;
 }
 
-
-.ant-collapse .ant-collapse-content>.ant-collapse-content-box {
-  padding: 0;
+.ant-collapse .ant-collapse-content > .ant-collapse-content-box {
+    padding: 0;
 }
 
 .ant-divider-horizontal {
-  margin: 10px 0;
-
+    margin: 10px 0;
 }
 
-.ant-input-suffix{
-  color:gray
+.ant-input-suffix {
+    color: gray;
 }

@@ -1,20 +1,20 @@
-import StudentsTable from "../StudentsTable";
+import StudentsTable from '../StudentsTable';
 
 interface TabItem {
-  label: string;
-  key: string;
-  children: React.ReactElement;
+    label: string;
+    key: string;
+    children: React.ReactElement;
 }
 
 export const items: TabItem[] = [
-  {
-    label: "Students",
-    key: "1",
-    children: <StudentsTable />,
-  },
-  {
-    label: "Groups",
-    key: "2",
-    children: <>element 2</>,
-  },
+    {
+        label: 'Students',
+        key: '1',
+        children: <StudentsTable />
+    },
+    {
+        label: 'Groups',
+        key: '2',
+        children: <>element 2</>
+    }
 ];

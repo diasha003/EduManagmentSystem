@@ -1,26 +1,24 @@
-.ant-radio-group-small :where(.css-dev-only-do-not-override-zl9ks2).ant-radio-button-wrapper:first-child{
+.ant-radio-group-small :where(.css-dev-only-do-not-override-zl9ks2).ant-radio-button-wrapper:first-child {
     display: none;
 }
 
-:where(.css-dev-only-do-not-override-zl9ks2).ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date{
+:where(.css-dev-only-do-not-override-zl9ks2).ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date {
     height: 5.5em;
     width: 100%;
 }
 
-.blockFrequencyType{
+.blockFrequencyType {
     display: flex;
     flex-direction: column;
     background: #efeff1;
     padding: 15px;
     margin-top: 10px;
-    
-    .additionalBlockFrequencyType{
+
+    .additionalBlockFrequencyType {
         margin-bottom: 10px;
     }
 
-    p{
+    p {
         font-weight: 600;
     }
 }
-
-
