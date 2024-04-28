@@ -4,12 +4,8 @@ import { UserModule } from './user/user.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    UserModule,
-    ConfigModule.forRoot({ isGlobal: true }),
-  ],
-  controllers: [],
-  providers: [],
+    imports: [DatabaseModule, UserModule, ConfigModule.forRoot({ isGlobal: true })],
+    controllers: [],
+    providers: []
 })
 export class AppModule {}
