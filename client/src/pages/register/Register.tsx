@@ -1,6 +1,8 @@
 import React from 'react';
 import { Button, Checkbox, Form, Input, InputNumber, Select } from 'antd';
 import './Register.style.css';
+import { useRegisterMutation } from '../../features/api/extensions/authApiExtension';
+import { IRegisterRequest } from '../../models/api/auth/auth.user';
 
 const layout = {
     labelCol: { span: 8 },
@@ -19,13 +21,31 @@ const validateMessages = {
     }
 };
 
-const onFinish = (values: any) => {
-    console.log(values);
-};
+interface IFormModel {
+    eduCenterName: string;
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    size: string;
+}
 
 const { Option } = Select;
 
 const Register: React.FC = () => {
+    const [registerUser] = useRegisterMutation();
+    const [form] = Form.useForm<IFormModel>();
+
+    const onFinish = async (formModel: IFormModel) => {
+        await registerUser({
+            email: formModel.email,
+            firstName: formModel.firstName,
+            lastName: formModel.lastName,
+            password: formModel.password,
+            centerName: formModel.eduCenterName
+        } as IRegisterRequest);
+    };
+
     return (
         <div
             style={{
@@ -39,9 +59,10 @@ const Register: React.FC = () => {
             }}
         >
             <Form
+                form={form}
                 {...layout}
                 //name="nest-messages"
-                onFinish={onFinish}
+                onFinish={(formModel) => void onFinish(formModel)}
                 style={{
                     maxWidth: 500,
                     width: '100%',
