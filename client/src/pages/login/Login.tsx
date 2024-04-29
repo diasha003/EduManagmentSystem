@@ -1,6 +1,9 @@
 import React from 'react';
 import { Button, Checkbox, Form, Input, InputNumber, Select } from 'antd';
 import './Login.style.css';
+import { Link, useNavigate } from 'react-router-dom';
+import { useLoginMutation } from '../../features/api/extensions/authApiExtension';
+import { ILoginRequest } from '../../models/api/auth/auth.user';
 
 const layout = {
     labelCol: { span: 8 },
@@ -14,11 +17,26 @@ const validateMessages = {
     }
 };
 
-const onFinish = (values: any) => {
-    console.log(values);
-};
+interface IFormModel {
+    email: string;
+    password: string;
+}
 
 const Login: React.FC = () => {
+    const [loginUser] = useLoginMutation();
+    const [form] = Form.useForm<IFormModel>();
+
+    const navigate = useNavigate();
+
+    const onFinish = async (formModel: IFormModel) => {
+        await loginUser({
+            email: formModel.email,
+            password: formModel.password
+        } as ILoginRequest);
+        form.resetFields();
+        navigate('/home');
+    };
+
     return (
         <div
             style={{
@@ -33,8 +51,8 @@ const Login: React.FC = () => {
         >
             <Form
                 {...layout}
-                //name="nest-messages"
-                onFinish={onFinish}
+                form={form}
+                onFinish={(formModule) => void onFinish(formModule)}
                 style={{
                     maxWidth: 500,
                     width: '100%',
@@ -60,6 +78,12 @@ const Login: React.FC = () => {
                         Log In
                     </Button>
                 </Form.Item>
+
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <p style={{ color: 'gray' }}>
+                        Not a member? <Link to={'/signup'}>Get started today!</Link>
+                    </p>
+                </div>
             </Form>
         </div>
     );

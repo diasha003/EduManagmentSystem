@@ -1,8 +1,9 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input, InputNumber, Select } from 'antd';
+import { Button, Checkbox, Flex, Form, Input, InputNumber, Select } from 'antd';
 import './Register.style.css';
 import { useRegisterMutation } from '../../features/api/extensions/authApiExtension';
 import { IRegisterRequest } from '../../models/api/auth/auth.user';
+import { Link, useNavigate } from 'react-router-dom';
 
 const layout = {
     labelCol: { span: 8 },
@@ -36,6 +37,8 @@ const Register: React.FC = () => {
     const [registerUser] = useRegisterMutation();
     const [form] = Form.useForm<IFormModel>();
 
+    const navigate = useNavigate();
+
     const onFinish = async (formModel: IFormModel) => {
         await registerUser({
             email: formModel.email,
@@ -44,6 +47,8 @@ const Register: React.FC = () => {
             password: formModel.password,
             centerName: formModel.eduCenterName
         } as IRegisterRequest);
+        form.resetFields();
+        navigate('/login');
     };
 
     return (
@@ -61,7 +66,6 @@ const Register: React.FC = () => {
             <Form
                 form={form}
                 {...layout}
-                //name="nest-messages"
                 onFinish={(formModel) => void onFinish(formModel)}
                 style={{
                     maxWidth: 500,
@@ -119,6 +123,12 @@ const Register: React.FC = () => {
                         Create My Account
                     </Button>
                 </Form.Item>
+
+                <div style={{ display: 'flex', justifyContent: 'center' }}>
+                    <p style={{color: "gray"}}>
+                        Already a member? <Link to={'/login'}>Log In</Link>
+                    </p>
+                </div>
             </Form>
         </div>
     );
