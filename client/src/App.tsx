@@ -11,6 +11,7 @@ import CalendarTest from './pages/calendar/Calendar';
 import { Layout } from 'antd';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
+import CreateEmployeeForm from './pages/employees/components/createEmployeeForm/CreateEmployeeForm';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -24,6 +25,7 @@ const App: React.FC = () => {
 
     routes.push({ path: '/home', element: <></> });
     routes.push({ path: '/employees', element: <InfoEmployees /> });
+    routes.push({ path: '/employees/add', element: <CreateEmployeeForm /> });
     routes.push({ path: '/students', element: <InfoStudents /> });
     routes.push({ path: '/students/add', element: <AddStudent /> });
     routes.push({ path: '/calendar', element: <CalendarTest /> });

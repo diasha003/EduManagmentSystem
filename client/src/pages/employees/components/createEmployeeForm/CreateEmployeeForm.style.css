@@ -1,0 +1,31 @@
+.formStyle {
+    background: #ffffff;
+    /* width: 65%; */
+    margin: 20px 0px;
+}
+
+.ant-steps {
+    margin: 10px 0;
+    width: 70%; 
+}
+
+.ant-row {
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.ant-divider-horizontal {
+    margin: 10px 15px;
+}
+
+.divider{
+    margin: 0px 10px;
+}
+
+.ant-input-suffix {
+    color: gray;
+}
+
+.ant-form-item-label{
+    font-weight: 500;
+}
