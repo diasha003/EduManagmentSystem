@@ -4,19 +4,22 @@ import { RootState } from '../store';
 const baseQuery = fetchBaseQuery({
     baseUrl: 'http://localhost:5000',
     credentials: 'include',
-    prepareHeaders: (headers, { getState }) => {
+
+    prepareHeaders(headers, api) {
         headers.set('Content-type', 'application/json; charset=UTF-8');
 
-        // const token = (getState() as RootState).auth.user?.access_token;
-        // if (token) {
-        //     headers.set('authorization', `Bearer ${token}`);
-        //     return headers;
-        // }
+        const accessToken = (api.getState() as RootState).auth.token;
+
+        if (accessToken) {
+            headers.set('authorization', `Bearer ${accessToken}`);
+            return headers;
+        }
     }
 });
 
 export const baseQueryWithErrorHandling: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
     const result = await baseQuery(args, api, extraOptions);
+
     if (result.error) {
         if (result.error.status.toString().startsWith('4')) {
             console.log('Client error', result.error);

@@ -4,6 +4,8 @@ import './Login.style.css';
 import { Link, useNavigate } from 'react-router-dom';
 import { useLoginMutation } from '../../features/api/extensions/authApiExtension';
 import { ILoginRequest } from '../../models/api/auth/auth.user';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const layout = {
     labelCol: { span: 8 },
@@ -17,24 +19,26 @@ const validateMessages = {
     }
 };
 
-interface IFormModel {
-    email: string;
-    password: string;
-}
-
 const Login: React.FC = () => {
     const [loginUser] = useLoginMutation();
-    const [form] = Form.useForm<IFormModel>();
+    const [form] = Form.useForm<ILoginRequest>();
 
     const navigate = useNavigate();
 
-    const onFinish = async (formModel: IFormModel) => {
-        await loginUser({
+    const onFinish = async (formModel: ILoginRequest) => {
+        let result = await loginUser({
             email: formModel.email,
             password: formModel.password
         } as ILoginRequest);
-        form.resetFields();
-        navigate('/home');
+
+        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        if (error) {
+            alert(JSON.stringify(error));
+            console.log(error);
+        } else {
+            form.resetFields();
+            navigate('/home');
+        }
     };
 
     return (

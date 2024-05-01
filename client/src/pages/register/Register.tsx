@@ -4,6 +4,8 @@ import './Register.style.css';
 import { useRegisterMutation } from '../../features/api/extensions/authApiExtension';
 import { IRegisterRequest } from '../../models/api/auth/auth.user';
 import { Link, useNavigate } from 'react-router-dom';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const layout = {
     labelCol: { span: 8 },
@@ -22,33 +24,31 @@ const validateMessages = {
     }
 };
 
-interface IFormModel {
-    eduCenterName: string;
-    email: string;
-    password: string;
-    firstName: string;
-    lastName: string;
-    size: string;
-}
-
 const { Option } = Select;
 
 const Register: React.FC = () => {
     const [registerUser] = useRegisterMutation();
-    const [form] = Form.useForm<IFormModel>();
+    const [form] = Form.useForm<IRegisterRequest>();
 
     const navigate = useNavigate();
 
-    const onFinish = async (formModel: IFormModel) => {
-        await registerUser({
+    const onFinish = async (formModel: IRegisterRequest) => {
+        const result = await registerUser({
             email: formModel.email,
             firstName: formModel.firstName,
             lastName: formModel.lastName,
             password: formModel.password,
             centerName: formModel.eduCenterName
         } as IRegisterRequest);
-        form.resetFields();
-        navigate('/login');
+
+        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        if (error) {
+            alert(JSON.stringify(error));
+            console.log(error);
+        } else {
+            form.resetFields();
+            navigate('/login');
+        }
     };
 
     return (
@@ -125,7 +125,7 @@ const Register: React.FC = () => {
                 </Form.Item>
 
                 <div style={{ display: 'flex', justifyContent: 'center' }}>
-                    <p style={{color: "gray"}}>
+                    <p style={{ color: 'gray' }}>
                         Already a member? <Link to={'/login'}>Log In</Link>
                     </p>
                 </div>
