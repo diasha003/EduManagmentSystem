@@ -15,7 +15,7 @@ export class AuthService {
     async login(email: string, password: string) {
         const user = await this.validateUser(email, password);
 
-        return { ...user, token: this.generateToken(user.id, user.roles) };
+        return { ...user, token: await this.generateToken(user.id, user.roles) };
     }
 
     async register(createUserDto: CreateUserDto) {
@@ -32,11 +32,12 @@ export class AuthService {
             password: hashPassword
         });
 
-        return { ...newUser, token: this.generateToken(newUser.id, newUser.roles) };
+        return { ...newUser, token: await this.generateToken(newUser.id, newUser.roles) };
     }
 
     private async generateToken(id: number, roles: Role[]): Promise<string> {
         const accessToken = await this.jwtService.signAsync({ id, roles });
+        //console.log(accessToken)
         return accessToken;
     }
 
