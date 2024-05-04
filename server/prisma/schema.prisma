@@ -14,18 +14,67 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  email     String   @unique
-  firstName String   @map("first_name")
-  lastName  String   @map("last_name")
-  password  String
-  centerName String?
-  roles     Role[]  @default([USER])
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  email       String   @unique
+  firstName   String   @map("first_name")
+  lastName    String   @map("last_name")
+  password    String
+  phoneNumber String?  @map("phone_number")
+  address     String?
+
+  centerName String
+
+  roles       Role[]            @default([USER])
+  emloyeeInfo EmloyeeInfo[]
+  permissions PermissionsUser[]
 }
 
 enum Role {
   USER
   ADMIN
+  TEACHER
+  STUDENT
+  STAFF
+}
+
+model EmloyeeInfo {
+  id Int @id @default(autoincrement())
+
+  isActive             Boolean              @default(true) @map("is_active")
+  payrollType          PayrollType
+  additionalLessonType AdditionalLessonType
+  user                 User                 @relation(fields: [userId], references: [id])
+  userId               Int
+}
+
+enum TypeEmployee {
+  teacher
+  staff
+}
+
+enum PayrollType {
+  auto
+  percentage
+  hourlyRate
+}
+
+enum AdditionalLessonType {
+  issued
+  used
+}
+
+model Permissions {
+  id              Int               @id @default(autoincrement())
+  displayName     String            @map("display_name")
+  permissionsUser PermissionsUser[]
+}
+
+model PermissionsUser {
+  id            Int         @id
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int
+  permissions   Permissions @relation(fields: [permissionsId], references: [id])
+  permissionsId Int
 }
