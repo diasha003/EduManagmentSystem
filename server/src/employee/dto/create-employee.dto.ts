@@ -1,28 +1,12 @@
-import { Role } from '@prisma/client';
-import { IsArray, IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
+import { IsBoolean, IsNumber, IsOptional, IsString, IsEmpty } from 'class-validator';
+import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateEmployeeDto {
-    @IsEmail()
-    email: string;
-
+export class CreateEmployeeDto extends PartialType(CreateUserDto) {
     @IsString()
-    @Length(3, 50)
-    password: string;
+    payrollType: string;
 
-    @IsString()
-    @IsOptional()
-    firstName: string;
+    payRate: number | null;
 
-    @IsString()
-    @IsOptional()
-    lastName: string;
-
-    @IsString()
-    @IsOptional()
-    centerName?: string;
-
-    @IsOptional()
-    @IsArray()
-    @IsEnum(Role, { each: true })
-    roles?: Role[];
+    makeUpCredits: boolean | null;
 }

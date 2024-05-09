@@ -42,16 +42,26 @@ enum Role {
 model EmloyeeInfo {
   id Int @id @default(autoincrement())
 
-  isActive             Boolean              @default(true) @map("is_active")
-  payrollType          PayrollType
-  additionalLessonType AdditionalLessonType
-  user                 User                 @relation(fields: [userId], references: [id])
-  userId               Int
+  isActive Boolean @default(true) @map("is_active")
+
+  payroll   Payroll @relation(fields: [payrollId], references: [id])
+  payrollId Int     @map("payroll_id")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @map("user_id")
 }
 
 enum TypeEmployee {
   teacher
   staff
+}
+
+model Payroll {
+  id            Int           @id @default(autoincrement())
+  type          PayrollType
+  payRate       Int?          @map("pay_rate")
+  makeUpCredits Boolean?      @default(false) @map("make_up_credits")
+  emloyeeInfo   EmloyeeInfo[]
 }
 
 enum PayrollType {
@@ -60,21 +70,16 @@ enum PayrollType {
   hourlyRate
 }
 
-enum AdditionalLessonType {
-  issued
-  used
-}
-
-model Permissions {
+model Permission {
   id              Int               @id @default(autoincrement())
   displayName     String            @map("display_name")
   permissionsUser PermissionsUser[]
 }
 
 model PermissionsUser {
-  id            Int         @id
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int
-  permissions   Permissions @relation(fields: [permissionsId], references: [id])
-  permissionsId Int
+  id           Int        @id
+  user         User       @relation(fields: [userId], references: [id])
+  userId       Int
+  permissions  Permission @relation(fields: [permissionId], references: [id])
+  permissionId Int        @map("permossion_id")
 }

@@ -1,12 +1,11 @@
 import { Role } from '@prisma/client';
-import { IsArray, IsEmail, IsEnum, IsOptional, IsString, Length } from 'class-validator';
+import { IsArray, IsBoolean, IsEmail, IsEnum, IsNumber, IsOptional, IsString, Length } from 'class-validator';
 
-export class CreateUserDto {
+export class CreateUserDto  {
     @IsEmail()
     email: string;
 
-    @IsString()
-    @Length(3, 50)
+    
     password: string;
 
     @IsString()
@@ -18,11 +17,17 @@ export class CreateUserDto {
     lastName: string;
 
     @IsString()
+    centerName: string;
+
     @IsOptional()
-    centerName?: string;
+    phoneNumber?: string;
+
+    @IsOptional()
+    address?: string;
 
     @IsOptional()
     @IsArray()
     @IsEnum(Role, { each: true })
     roles?: Role[];
 }
+
