@@ -4,6 +4,10 @@ import { Button, Checkbox, Col, Divider, Form, Input, Radio, Row, Space, Steps }
 import TextArea from 'antd/es/input/TextArea';
 import { Link, useNavigate } from 'react-router-dom';
 import './CreateEmployeeForm.style.css';
+import { useCreateMutation } from '../../../../features/api/extensions/employeesApiExtension';
+import { IEmployeeRequest } from '../../../../models/api/employee/employee';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const CreateEmployeeForm: React.FC = () => {
     const [payrollType, setPayrollType] = useState<string>('');
@@ -13,7 +17,9 @@ const CreateEmployeeForm: React.FC = () => {
 
     const navigate = useNavigate();
 
-    const onFinish = (type?: string) => {
+    const [createEmployee] = useCreateMutation();
+
+    const onNextFinish = () => {
         stepForm
             .validateFields({ validateOnly: false })
             .then(() => {
@@ -21,11 +27,39 @@ const CreateEmployeeForm: React.FC = () => {
                 setFormData((prev) => {
                     return { ...prev, ...formData };
                 });
-                type === 'next' ? next() : type === 'done' && navigate('/employees');
+                next();
             })
-            .catch(() => {
-              
-            });
+            .catch(() => {});
+    };
+
+    const onDoneFinish = async () => {
+        const data = { ...formData, ...stepForm.getFieldsValue() };
+        console.log(data);
+
+        const result = await createEmployee({
+            email: data.email,
+            firstName: data.firstName,
+            lastName: data.lastName,
+            payrollType: data.payroll,
+            access: data.access,
+            address: data.address,
+            admin: data.admin,
+            makeUpCredits: data.makeUpCredits ? data.makeUpCredits : null,
+            payRate: data.payRate ? data.payRate : null,
+            manageOtherTeachers: data.manageOtherTeachers,
+            manageSelf: data.manageSelf,
+            manageStudentsParents: data.manageStudentsParents,
+            otherPrivileges: data.otherPrivileges,
+            password: null
+        });
+
+        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        if (error) {
+            alert(JSON.stringify(error));
+            console.log(error);
+        } else {
+            navigate('/employees');
+        }
     };
 
     const validateMessages = {
@@ -317,7 +351,7 @@ const CreateEmployeeForm: React.FC = () => {
                         type="primary"
                         htmlType="submit"
                         onClick={() => {
-                            onFinish('next');
+                            onNextFinish();
                         }}
                     >
                         Next
@@ -327,7 +361,7 @@ const CreateEmployeeForm: React.FC = () => {
                     <Button
                         type="primary"
                         onClick={() => {
-                            onFinish('done');
+                            onDoneFinish();
                         }}
                     >
                         Done
@@ -344,4 +378,3 @@ const CreateEmployeeForm: React.FC = () => {
 };
 
 export default CreateEmployeeForm;
-

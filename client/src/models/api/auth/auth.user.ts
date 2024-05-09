@@ -1,9 +1,8 @@
-import { IUser } from "../../../types/user";
-
+import { IUser } from '../../../types/user';
 
 export interface IRegisterRequest {
     email: string;
-    password: string;
+    password: string | null;
     firstName: string;
     lastName: string;
     eduCenterName?: string;
@@ -17,7 +16,4 @@ export interface ILoginRequest {
 export interface IAuthState {
     token: string | null;
     user: IUser | null;
-    
 }
-
-
