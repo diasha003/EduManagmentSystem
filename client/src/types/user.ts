@@ -1,6 +1,6 @@
 export interface IUser {
     id?: number;
-    eduCenterName?: string;
+    centerName: string;
     email: string;
     password: string;
     firstName?: string;

@@ -38,7 +38,7 @@ const Register: React.FC = () => {
             firstName: formModel.firstName,
             lastName: formModel.lastName,
             password: formModel.password,
-            centerName: formModel.eduCenterName
+            centerName: formModel.centerName
         } as IRegisterRequest);
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;

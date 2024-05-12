@@ -14,7 +14,6 @@ export const employeesApiExtensions = baseApi.injectEndpoints({
             async onQueryStarted(arg, api) {
                 try {
                     const { data } = await api.queryFulfilled;
-                    console.log(data);
                     api.dispatch(authActions.setCredentials(data));
                 } catch (error) {
                     console.log(error);

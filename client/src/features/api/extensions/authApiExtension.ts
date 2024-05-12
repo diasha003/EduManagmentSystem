@@ -11,12 +11,10 @@ export const authApi = baseApi.injectEndpoints({
                 body: userData
             }),
             async onQueryStarted(arg, api) {
-                
                 try {
                     const { data } = await api.queryFulfilled;
-                    console.log(data);
+
                     api.dispatch(authActions.setCredentials(data));
-                   
                 } catch (error) {
                     console.log(error);
                 }
@@ -33,7 +31,7 @@ export const authApi = baseApi.injectEndpoints({
                 try {
                     const { data } = await api.queryFulfilled;
                     api.dispatch(authActions.setCredentials(data));
-                    //console.log(await api.queryFulfilled);
+                   
                 } catch (error) {
                     console.log(error);
                 }

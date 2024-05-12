@@ -5,7 +5,7 @@ export interface IRegisterRequest {
     password: string | null;
     firstName: string;
     lastName: string;
-    eduCenterName?: string;
+    centerName: string;
 }
 
 export interface ILoginRequest {
@@ -14,6 +14,6 @@ export interface ILoginRequest {
 }
 
 export interface IAuthState {
-    token: string | null;
-    user: IUser | null;
+    token?: string | null;
+    user?: IUser | null;
 }

@@ -8,16 +8,17 @@ import { useCreateMutation } from '../../../../features/api/extensions/employees
 import { IEmployeeRequest } from '../../../../models/api/employee/employee';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import { useAppSelector } from '../../../../hooks/redux';
 
 const CreateEmployeeForm: React.FC = () => {
+    const [formData, setFormData] = useState<{ [key: string]: any }>({});
     const [payrollType, setPayrollType] = useState<string>('');
     const [stepForm] = Form.useForm();
-
-    const [formData, setFormData] = useState<{ [key: string]: any }>({});
 
     const navigate = useNavigate();
 
     const [createEmployee] = useCreateMutation();
+    const user = useAppSelector((state) => state.auth.user);
 
     const onNextFinish = () => {
         stepForm
@@ -33,24 +34,21 @@ const CreateEmployeeForm: React.FC = () => {
     };
 
     const onDoneFinish = async () => {
-        const data = { ...formData, ...stepForm.getFieldsValue() };
-        console.log(data);
+        const data = { ...formData, ...stepForm.getFieldsValue() } as IEmployeeRequest;
 
         const result = await createEmployee({
             email: data.email,
             firstName: data.firstName,
             lastName: data.lastName,
-            payrollType: data.payroll,
+            payrollType: data.payrollType,
             access: data.access,
             address: data.address,
             admin: data.admin,
-            makeUpCredits: data.makeUpCredits ? data.makeUpCredits : null,
-            payRate: data.payRate ? data.payRate : null,
-            manageOtherTeachers: data.manageOtherTeachers,
-            manageSelf: data.manageSelf,
-            manageStudentsParents: data.manageStudentsParents,
-            otherPrivileges: data.otherPrivileges,
-            password: null
+            makeUpCredits: data.makeUpCredits,
+            payRate: data.payRate,
+            centerName: user ? user.centerName : '',
+            permissions: [...(data.manageOtherTeachers || []), ...(data.manageSelf || []), ...(data.manageStudentsParents || []), ...(data.otherPrivileges || [])],
+            password: data.password
         });
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
@@ -139,7 +137,7 @@ const CreateEmployeeForm: React.FC = () => {
                 <Row>
                     <Col span={22}>
                         <Form.Item
-                            name="payroll"
+                            name="payrollType"
                             label="Payroll"
                             rules={[
                                 {
@@ -251,7 +249,7 @@ const CreateEmployeeForm: React.FC = () => {
                                     <Checkbox value="recordPayments">Record payments with attendance</Checkbox>
                                     <Checkbox value="editOwnLessonsEvents">Edit own lessons/events</Checkbox>
                                     <Checkbox value="viewOwnPayroll">View own payroll privileges</Checkbox>
-                                    <Checkbox value="addEditMileage">Add/edit mileage</Checkbox>
+                                    {/* <Checkbox value="addEditMileage">Add/edit mileage</Checkbox> */}
                                 </div>
                             </Checkbox.Group>
                         </Form.Item>

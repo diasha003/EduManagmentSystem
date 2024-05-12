@@ -7,8 +7,12 @@ export interface IEmployeeRequest extends IRegisterRequest {
     makeUpCredits: boolean | null;
     access?: boolean;
     admin?: boolean;
-    manageOtherTeachers?: String[];
-    manageSelf?: String[];
-    manageStudentsParents?: String[];
-    otherPrivileges?: String[];
+    manageOtherTeachers?: string[];
+    manageSelf?: string[];
+    manageStudentsParents?: string[];
+    otherPrivileges?: string[];
+    permissions?: string[] 
 }
+
+
+
