@@ -13,8 +13,10 @@ export class AuthController {
 
     @Post('/login')
     async login(@Body() dto: CreateUserDto) {
+       
         const userData = await this.authService.login(dto.email, dto.password);
-        //console.log(userData);
+        
+        
         return userData;
     }
 }

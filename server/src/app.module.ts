@@ -7,8 +7,15 @@ import { AuthModule } from './auth/auth.module';
 import { EmployeeModule } from './employee/employee.module';
 
 @Module({
-    imports: [DatabaseModule, UserModule, JwtModule, ConfigModule.forRoot({ isGlobal: true }), AuthModule, EmployeeModule],
+    imports: [
+        DatabaseModule,
+        UserModule,
+        JwtModule,
+        ConfigModule.forRoot({ isGlobal: true }),
+        AuthModule,
+        EmployeeModule,
+    ],
     controllers: [],
-    providers: []
+    providers: [],
 })
 export class AppModule {}

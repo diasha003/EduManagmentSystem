@@ -1,4 +1,12 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Delete,
+    Get,
+    Param,
+    Patch,
+    Post,
+} from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { EmloyeeInfo } from '@prisma/client';
@@ -17,7 +25,7 @@ export class EmployeeController {
 
     //auth
     @Post('/')
-    async createEmployee(@Body() dto: CreateEmployeeDto){
+    async createEmployee(@Body() dto: CreateEmployeeDto) {
         return this.employeeService.createEmployee(dto);
     }
 

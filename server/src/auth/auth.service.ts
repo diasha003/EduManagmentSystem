@@ -9,17 +9,22 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
     constructor(
         private readonly userService: UserService,
-        private readonly jwtService: JwtService
+        private readonly jwtService: JwtService,
     ) {}
 
     async login(email: string, password: string) {
         const user = await this.validateUser(email, password);
 
-        return { ...user, token: await this.generateToken(user.id, user.roles) };
+        return {
+            user,
+            token: await this.generateToken(user.id, user.roles),
+        };
     }
 
     async register(createUserDto: CreateUserDto) {
-        const canditate = await this.userService.getUserByEmail(createUserDto.email);
+        const canditate = await this.userService.getUserByEmail(
+            createUserDto.email,
+        );
         if (canditate) {
             throw new BadRequestException('Such user is already exists');
         }
@@ -27,12 +32,15 @@ export class AuthService {
         const salt = 10;
         const hashPassword = await bcrypt.hash(createUserDto.password, salt);
 
-        let newUser = await this.userService.createUser({
+        const newUser = await this.userService.createUser({
             ...createUserDto,
-            password: hashPassword
+            password: hashPassword,
         });
 
-        return { ...newUser, token: await this.generateToken(newUser.id, newUser.roles) };
+        return {
+            ...newUser,
+            token: await this.generateToken(newUser.id, newUser.roles),
+        };
     }
 
     private async generateToken(id: number, roles: Role[]): Promise<string> {
@@ -42,6 +50,7 @@ export class AuthService {
     }
 
     private async validateUser(email: string, password: string): Promise<User> {
+       
         const currentUser = await this.userService.getUserByEmail(email);
 
         if (!currentUser) {
@@ -54,6 +63,7 @@ export class AuthService {
             throw new BadRequestException('Invalid password');
         }
 
+        
         return currentUser;
     }
 }

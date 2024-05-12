@@ -1,12 +1,14 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { IsBoolean, IsNumber, IsOptional, IsString, IsEmpty } from 'class-validator';
+import { IsString } from 'class-validator';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
-export class CreateEmployeeDto extends PartialType(CreateUserDto) {
+export class CreateEmployeeDto extends CreateUserDto {
     @IsString()
     payrollType: string;
 
     payRate: number | null;
 
-    makeUpCredits: boolean | null;
+    makeUpCredits: string | null;
+
+    permissions: string[];
 }
