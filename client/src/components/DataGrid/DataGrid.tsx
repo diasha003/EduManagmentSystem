@@ -1,17 +1,20 @@
-import { Button, Space, Table } from 'antd';
-import { ColumnSorter } from './ColumnSorter';
+import { Button, Select, SelectProps, Space, Table } from 'antd';
+import { ColumnSorter } from '../DataGrid/columnSorter/ColumnSorter';
 import { ColumnType } from 'antd/es/table';
-import { ColumnSelector } from './ColumnSelector';
+import { ColumnSelector } from '../DataGrid/columnSelector/ColumnSelector';
 import { useCallback, useState } from 'react';
 import { SorterResult } from 'antd/es/table/interface';
+import { SelectCenterName } from './selectCenterName/SelectCenterName';
 
 export type DataGridProps<T> = {
     toolbar?: JSX.Element;
     showColumnsSelector?: boolean;
     showSort?: boolean;
+    showSelectCenterName?: boolean;
 
     columns: DataGridColumn<T>[];
     dataSource: T[];
+    allCenterName?: string[];
 };
 
 export type DataGridColumn<T> = {
@@ -23,13 +26,14 @@ export type DataGridColumn<T> = {
     fixed?: 'left' | 'right';
     sorter?: (a: T, b: T) => number;
     sortOrder?: 'ascend' | 'descend';
+    render?: (value: any, record: T, index: number) => React.ReactNode;
 };
 
 export type DataGridExtendedColumn<T> = DataGridColumn<T> & {
     defaultHidden?: boolean;
 };
 
-export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, columns, dataSource }: DataGridProps<T>) {
+export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelectCenterName, columns, dataSource, allCenterName }: DataGridProps<T>) {
     const [cols, setCols] = useState<DataGridExtendedColumn<T>[]>(columns.map((c) => ({ ...c, defaultHidden: c.hidden })));
 
     const onSwitchShowColumn = useCallback(
@@ -99,14 +103,16 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, columns, d
                 style={{
                     display: 'flex',
                     justifyContent: 'space-between',
+
                     margin: '16px 0px'
                 }}
             >
                 {toolbar}
-                <Space>
+                <Space align="center">
                     {showColumnsSelector && <ColumnSelector columns={cols} onSwitchColumn={onSwitchShowColumn} />}
                     {showSort && <ColumnSorter columns={cols} onSwitchSortOrder={onSwitchSortOrder} />}
                     <Button>Search</Button>
+                    {showSelectCenterName && <SelectCenterName allCenterName={allCenterName}/>}
                 </Space>
             </div>
 

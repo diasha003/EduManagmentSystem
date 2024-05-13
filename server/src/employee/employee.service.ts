@@ -1,14 +1,16 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { EmloyeeInfo, PayrollType, Role } from '@prisma/client';
+import { EmloyeeInfo, PayrollType, Role, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class EmployeeService {
     constructor(
         private readonly prisma: DatabaseService,
-        private readonly userService: UserService
+        private readonly userService: UserService,
+        private readonly jwtService: JwtService
     ) {}
 
     getEmployee(emloyeeId: number) {
@@ -25,15 +27,21 @@ export class EmployeeService {
 
         const payroll = await this.prisma.payroll.create({
             data: {
-                type: PayrollType[dto.payrollType],
+                payrollType: PayrollType[dto.payrollType],
                 makeUpCredits: dto.makeUpCredits,
                 payRate: Number(dto.payRate)
             }
         });
 
         const userId = await this.userService.createUser({
-            ...dto,
-            roles: [Role.TEACHER]
+            email: dto.email,
+            firstName: dto.firstName,
+            lastName: dto.lastName,
+            centerName: dto.centerName,
+            phoneNumber: dto.phoneNumber,
+            address: dto.address,
+            roles: [Role.TEACHER],
+            password: dto.password
         });
 
         await this.prisma.emloyeeInfo.create({
@@ -49,13 +57,61 @@ export class EmployeeService {
             }
         });
 
-        const permissionsUserData = permissions.map(permission => ({
+        const permissionsUserData = permissions.map((permission) => ({
             userId: userId.id,
             permissionId: permission.id
         }));
-        
+
         await this.prisma.permissionsUser.createMany({
             data: permissionsUserData
         });
+    }
+
+    async getAllCenterName(headers: any): Promise<string[]> {
+        const decoded: { id: number; roles: string[] } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        if (decoded.roles.includes('ADMIN')) {
+            let allCenterName = await this.prisma.user.findMany({
+                select: {
+                    centerName: true
+                },
+                distinct: ['centerName']
+            });
+            return allCenterName.flatMap((obj) => obj.centerName);
+        } else {
+            return;
+        }
+    }
+
+    async getAllEmployees(headers: any): Promise<User[]> {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        let allEmployees = await this.prisma.user.findMany({
+            include: {
+                emloyeeInfo: {
+                    include: {
+                        payroll: true
+                    }
+                }
+            },
+            where: {
+                NOT: {
+                    emloyeeInfo: { none: {} }
+                },
+
+                centerName: {
+                    equals: decoded.centerName
+                }
+            }
+        });
+
+        const data = allEmployees.map((item) => {
+            delete item['password'];
+            return item;
+        });
+
+        console.log(data)
+
+        return data;
     }
 }

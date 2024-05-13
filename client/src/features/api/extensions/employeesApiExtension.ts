@@ -1,25 +1,9 @@
-import { IAuthState, ILoginRequest, IRegisterRequest } from '../../../models/api/auth/auth.user';
 import { IEmployeeRequest } from '../../../models/api/employee/employee';
-import { authActions } from '../../store/slices/authSlice';
+import { IEmployee } from '../../../types/employee';
 import { baseApi } from '../api';
 
-export const employeesApiExtensions = baseApi.injectEndpoints({
+export const employeesApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        login: builder.mutation<IAuthState, ILoginRequest>({
-            query: (userData) => ({
-                url: '/auth/login',
-                method: 'POST',
-                body: userData
-            }),
-            async onQueryStarted(arg, api) {
-                try {
-                    const { data } = await api.queryFulfilled;
-                    api.dispatch(authActions.setCredentials(data));
-                } catch (error) {
-                    console.log(error);
-                }
-            }
-        }),
         create: builder.mutation<void, IEmployeeRequest>({
             query: (userData) => ({
                 url: '/employee',
@@ -28,9 +12,32 @@ export const employeesApiExtensions = baseApi.injectEndpoints({
             }),
             async onQueryStarted(arg, api) {
                 try {
-                    // const { data } = await api.queryFulfilled;
-                    // api.dispatch(authActions.setCredentials(data));
-                    // //console.log(await api.queryFulfilled);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }),
+        getAllCenterName: builder.query<string[], void>({
+            query: () => ({
+                url: '/employee/allCenterName',
+                method: 'GET'
+            }),
+            async onQueryStarted(arg, api) {
+                try {
+                    //console.log(api.queryFulfilled)
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }),
+
+        getAllEmployees: builder.query<IEmployee[] | undefined, void>({
+            query: () => ({
+                url: '/employee',
+                method: 'GET'
+            }),
+            async onQueryStarted(arg, api) {
+                try {
                 } catch (error) {
                     console.log(error);
                 }
@@ -39,7 +46,7 @@ export const employeesApiExtensions = baseApi.injectEndpoints({
     })
 });
 
-export const { useLoginMutation, useCreateMutation } = employeesApiExtensions;
+export const { useGetAllEmployeesQuery, useCreateMutation, useGetAllCenterNameQuery } = employeesApi;
 export const {
-    endpoints: { login, create }
-} = employeesApiExtensions;
+    endpoints: { getAllEmployees, create }
+} = employeesApi;

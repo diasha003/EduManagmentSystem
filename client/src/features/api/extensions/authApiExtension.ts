@@ -31,19 +31,12 @@ export const authApi = baseApi.injectEndpoints({
                 try {
                     const { data } = await api.queryFulfilled;
                     api.dispatch(authActions.setCredentials(data));
-                   
                 } catch (error) {
                     console.log(error);
                 }
             }
-        })
+        }),
 
-        // current: builder.query<IAuthFields, void>({
-        //     query: () => ({
-        //         url: '/user/current',
-        //         method: 'GET'
-        //     })
-        // })
     })
 });
 

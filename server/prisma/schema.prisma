@@ -58,7 +58,7 @@ enum TypeEmployee {
 
 model Payroll {
   id            Int           @id @default(autoincrement())
-  type          PayrollType
+  payrollType   PayrollType
   payRate       Int?          @map("pay_rate")
   makeUpCredits String?       @map("make_up_credits")
   emloyeeInfo   EmloyeeInfo[]

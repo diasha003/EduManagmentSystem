@@ -1,19 +1,26 @@
-import { Button, Dropdown, MenuProps, Space } from 'antd';
-import { CaretDownOutlined, MailOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { Button, Col, Dropdown, MenuProps, Row, Space } from 'antd';
+import { CaretDownOutlined, HomeOutlined, MailOutlined, PhoneOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
+import { useAppSelector } from '../../../hooks/redux';
+import { useGetAllCenterNameQuery, useGetAllEmployeesQuery } from '../../../features/api/extensions/employeesApiExtension';
+
+import { IEmployee } from '../../../types/employee';
+import { isContentEditable } from '@testing-library/user-event/dist/utils';
 
 export interface EmployeeModel {
-    key: string;
+    key: number;
     name: string;
     contact?: string;
+    email: string;
+    address?: string;
     students?: Array<string>;
     payrollBalance?: number;
     defaultPrice?: number;
     defaultLessonCategory?: string;
     defaultDuration?: number;
-    payRate?: number;
+    payRate?: string;
     calendarColor?: string;
     payrollOverrides?: boolean;
 }
@@ -23,7 +30,7 @@ const columns: DataGridColumn<EmployeeModel>[] = [
         key: 'name',
         title: 'Name',
         dataIndex: 'name',
-        width: 200,
+        width: 150,
         hidden: false,
         sorter: (a: EmployeeModel, b: EmployeeModel) => a.name.length - b.name.length
     },
@@ -31,9 +38,33 @@ const columns: DataGridColumn<EmployeeModel>[] = [
         key: 'contact',
         title: 'Contact Info',
         dataIndex: 'contact',
-        width: 200,
+        width: 100,
         hidden: false,
-        sorter: (a: EmployeeModel, b: EmployeeModel) => (a.contact?.length ?? 0) - (b.contact?.length ?? 0)
+        sorter: (a: EmployeeModel, b: EmployeeModel) => (a.contact?.length ?? 0) - (b.contact?.length ?? 0),
+        render: (value, record) => {
+            return (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    {record.email && (
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <MailOutlined style={{ marginRight: '5px' }} />
+                            <>{record.email}</>
+                        </div>
+                    )}
+                    {record.address && record.address.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <HomeOutlined style={{ marginRight: '5px' }} />
+                            <>{record.address}</>
+                        </div>
+                    )}
+                    {record.contact && record.contact.length > 0 && (
+                        <div style={{ display: 'flex', flexDirection: 'row' }}>
+                            <PhoneOutlined style={{ marginRight: '5px' }} />
+                            <>{record.contact}</>
+                        </div>
+                    )}
+                </div>
+            );
+        }
     },
     {
         key: 'students',
@@ -93,19 +124,21 @@ const columns: DataGridColumn<EmployeeModel>[] = [
     }
 ];
 
-const data: EmployeeModel[] = [
-    {
-        key: '1',
-        name: 'John Brown'
-    },
-    {
-        key: '2',
-        name: 'Aim Green'
-    }
-];
-
 const EmployeesTable: React.FC = () => {
     const nav = useNavigate();
+    const user = useAppSelector((state) => state.auth.user);
+
+    const allCenterName = useGetAllCenterNameQuery().currentData;
+    const data: IEmployee[] | undefined = useGetAllEmployeesQuery().currentData;
+
+    const newData: EmployeeModel[] | undefined = data?.map((item, key) => ({
+        key,
+        name: item.lastName,
+        contact: item.phoneNumber,
+        email: item.email,
+        address: item.address,
+        payRate: item.employeeInfo?.payroll && `${item.employeeInfo?.payroll?.payRate} ${item.employeeInfo?.payroll?.payrollType}`
+    }));
 
     const items: MenuProps['items'] = [
         {
@@ -129,9 +162,11 @@ const EmployeesTable: React.FC = () => {
     return (
         <DataGrid
             columns={columns}
-            dataSource={data}
+            dataSource={newData ? newData : []}
+            allCenterName={allCenterName}
             showColumnsSelector
             showSort
+            showSelectCenterName={user?.roles.includes('ADMIN') ? true : false}
             toolbar={
                 <Space>
                     <Dropdown menu={{ items }} trigger={['click']}>

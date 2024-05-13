@@ -95,7 +95,7 @@ const Register: React.FC = () => {
                     <Input.Password placeholder="Password" className="item" />
                 </Form.Item>
 
-                <Form.Item name="eduCenterName" rules={[{ type: 'string' }]}>
+                <Form.Item name="centerName" rules={[{ type: 'string' }]}>
                     <Input placeholder="Educational Center Name (optional)" className="item" />
                 </Form.Item>
 

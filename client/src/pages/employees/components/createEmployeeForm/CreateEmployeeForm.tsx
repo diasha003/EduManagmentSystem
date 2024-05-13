@@ -48,7 +48,8 @@ const CreateEmployeeForm: React.FC = () => {
             payRate: data.payRate,
             centerName: user ? user.centerName : '',
             permissions: [...(data.manageOtherTeachers || []), ...(data.manageSelf || []), ...(data.manageStudentsParents || []), ...(data.otherPrivileges || [])],
-            password: data.password
+            password: data.password,
+            phoneNumber: data.phoneNumber
         });
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;

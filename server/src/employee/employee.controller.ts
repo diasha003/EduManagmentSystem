@@ -1,22 +1,23 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { EmloyeeInfo } from '@prisma/client';
+import { User } from '@prisma/client';
 
 @Controller('employee')
 export class EmployeeController {
     constructor(private readonly employeeService: EmployeeService) {}
 
+    //auth
     @Get('/')
-    async getEmployees() {}
+    async getEmployees(@Headers() headers: any): Promise<User[]> {
+        return await this.employeeService.getAllEmployees(headers);
+    }
+
+    //auth
+    @Get('/allCenterName')
+    async getAllCenterName(@Headers() headers: any): Promise<string[]> {
+        return await this.employeeService.getAllCenterName(headers);
+    }
 
     @Get(':id')
     async getEmployee(@Param('id') id: number) {

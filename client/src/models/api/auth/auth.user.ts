@@ -5,7 +5,9 @@ export interface IRegisterRequest {
     password: string | null;
     firstName: string;
     lastName: string;
-    centerName: string;
+    centerName: string | null;
+    address?: string;
+    phoneNumber?: string;
 }
 
 export interface ILoginRequest {

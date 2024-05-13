@@ -9,7 +9,7 @@ import { UserService } from 'src/user/user.service';
 export class AuthService {
     constructor(
         private readonly userService: UserService,
-        private readonly jwtService: JwtService,
+        private readonly jwtService: JwtService
     ) {}
 
     async login(email: string, password: string) {
@@ -17,14 +17,12 @@ export class AuthService {
 
         return {
             user,
-            token: await this.generateToken(user.id, user.roles),
+            token: await this.generateToken(user.id, user.roles, user.centerName)
         };
     }
 
     async register(createUserDto: CreateUserDto) {
-        const canditate = await this.userService.getUserByEmail(
-            createUserDto.email,
-        );
+        const canditate = await this.userService.getUserByEmail(createUserDto.email);
         if (canditate) {
             throw new BadRequestException('Such user is already exists');
         }
@@ -34,23 +32,22 @@ export class AuthService {
 
         const newUser = await this.userService.createUser({
             ...createUserDto,
-            password: hashPassword,
+            password: hashPassword
         });
 
         return {
             ...newUser,
-            token: await this.generateToken(newUser.id, newUser.roles),
+            token: await this.generateToken(newUser.id, newUser.roles, newUser.centerName)
         };
     }
 
-    private async generateToken(id: number, roles: Role[]): Promise<string> {
-        const accessToken = await this.jwtService.signAsync({ id, roles });
+    private async generateToken(id: number, roles: Role[], centerName: string): Promise<string> {
+        const accessToken = await this.jwtService.signAsync({ id, roles, centerName });
         //console.log(accessToken)
         return accessToken;
     }
 
     private async validateUser(email: string, password: string): Promise<User> {
-       
         const currentUser = await this.userService.getUserByEmail(email);
 
         if (!currentUser) {
@@ -63,7 +60,6 @@ export class AuthService {
             throw new BadRequestException('Invalid password');
         }
 
-        
         return currentUser;
     }
 }
