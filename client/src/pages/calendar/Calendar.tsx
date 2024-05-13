@@ -7,6 +7,7 @@ import QuickAddLessonModalForm from './components/QuickAddLessonModalForm';
 import { dayOfWeek, monthOfYear } from '../../helpers/NumberHelper';
 import Icon from '@ant-design/icons/lib/components/Icon';
 import Meta from 'antd/es/card/Meta';
+import NonTeachingEventModalForm from './components/NonTeachinEventModalForm';
 
 const calendarAddOptions: MenuProps['items'] = [
     {
@@ -63,6 +64,9 @@ const calendarDisplayType: MenuProps['items'] = [
 
 const CalendarTest: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [actionMenuDate, setActionMenuDate] = useState<dayjs.Dayjs | undefined>(undefined);
+    const [isQuickLessonFormOpen, setIsQuickLessonFormOpen] = useState(false);
+    const [isNonTeachingEventFormOpen, setIsNonTeachingEventFormOpen] = useState(false);
 
     const onSelectDate = (date: dayjs.Dayjs) => {
         new Date(date.date());
@@ -81,9 +85,9 @@ const CalendarTest: React.FC = () => {
     ];
 
     const cellRenderer: CalendarProps<Dayjs>['fullCellRender'] = (current, info) => {
-        const renderAction = (icon: JSX.Element, title: string, description: string) => {
+        const renderAction = (icon: JSX.Element, title: string, description: string, onClick?: () => void) => {
             return (
-                <Row gutter={14} style={{ marginBottom: '8px', cursor: 'pointer' }}>
+                <Row gutter={14} style={{ marginBottom: '8px', cursor: 'pointer' }} onClick={onClick}>
                     <Col span={2}>{icon}</Col>
                     <Col span={12}>
                         <h4>{title}</h4>
@@ -100,16 +104,22 @@ const CalendarTest: React.FC = () => {
                 <Card>
                     <Meta title={`${dayOfWeek(current.day())}, ${monthOfYear(current.month())} ${current.date()}, ${current.year()}`} description="0 Scheduled Event(s)" />
                     <Divider />
-                    {renderAction(<CarryOutOutlined />, 'Quick-Add Lesson', 'Create a new lesson with your default category, length, and price')}
+                    {renderAction(<CarryOutOutlined />, 'Quick-Add Lesson', 'Create a new lesson with your default category, length, and price', () => {
+                        setActionMenuDate(undefined);
+                        setIsQuickLessonFormOpen(true);
+                    })}
                     {renderAction(<CarryOutOutlined />, 'New Event', 'Create a new event with custom settings')}
-                    {renderAction(<CarryOutOutlined />, 'New Non-Teaching Event', "Create a new event that doesn't require students")}
+                    {renderAction(<CarryOutOutlined />, 'New Non-Teaching Event', "Create a new event that doesn't require students", () => {
+                        setActionMenuDate(undefined);
+                        setIsNonTeachingEventFormOpen(true);
+                    })}
                 </Card>
             );
         };
 
         return (
-            <Dropdown menu={{ items }} trigger={['click']} dropdownRender={dropdownRender}>
-                <div className="ant-picker-cell-inner ant-picker-calendar-date">
+            <Dropdown open={!!actionMenuDate && current.isSame(actionMenuDate)} menu={{ items }} dropdownRender={dropdownRender}>
+                <div className="ant-picker-cell-inner ant-picker-calendar-date" onClick={() => setActionMenuDate(current)}>
                     <div className="ant-picker-calendar-date-value">{current.date()}</div>
                     <div className="ant-picker-calendar-date-content"></div>
                 </div>
@@ -138,7 +148,8 @@ const CalendarTest: React.FC = () => {
                 </Dropdown>
 
                 {/* <a>Today</a> */}
-                <QuickAddLessonModalForm selectedDate={selectedDate}></QuickAddLessonModalForm>
+                <QuickAddLessonModalForm isOpen={isQuickLessonFormOpen} selectedDate={selectedDate} onCancel={() => setIsQuickLessonFormOpen(false)} onOk={() => {}} />
+                <NonTeachingEventModalForm isOpen={isNonTeachingEventFormOpen} selectedDate={selectedDate} onCancel={() => setIsNonTeachingEventFormOpen(false)} onOk={() => {}} />
             </div>
 
             <div
