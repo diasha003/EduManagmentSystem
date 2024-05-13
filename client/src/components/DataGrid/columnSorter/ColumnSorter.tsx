@@ -1,6 +1,6 @@
 import { ArrowDownOutlined, ArrowUpOutlined, CaretDownOutlined, SortAscendingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, MenuProps, Space } from 'antd';
-import { DataGridColumn } from './DataGrid';
+import { DataGridColumn } from '../DataGrid';
 import { useState } from 'react';
 
 import './ColumnSorter.style.css';

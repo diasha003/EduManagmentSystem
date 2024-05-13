@@ -2,7 +2,7 @@ import { CaretDownOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Dropdown, MenuProps } from 'antd';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { useEffect, useState } from 'react';
-import { DataGridExtendedColumn } from './DataGrid';
+import { DataGridExtendedColumn } from '../DataGrid';
 
 export type ColumnSelectorProps<T> = {
     columns: DataGridExtendedColumn<T>[];
