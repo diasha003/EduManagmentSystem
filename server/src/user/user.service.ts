@@ -19,4 +19,10 @@ export class UserService {
             where: { email }
         });
     }
+
+    async getById(id: number): Promise<User> {
+        return this.prisma.user.findFirst({
+            where: { id }
+        });
+    }
 }

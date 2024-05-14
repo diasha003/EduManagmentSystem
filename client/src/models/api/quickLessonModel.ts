@@ -1,10 +1,9 @@
 import { RepeatableEventInfo } from './repeatableEventInfo';
 
 export interface QuickLessonModel {
-    teacher: string;
-    student: string;
+    teacher: number;
+    student: number;
     date: Date;
-    time: Date;
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
 

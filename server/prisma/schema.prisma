@@ -25,11 +25,13 @@ model User {
   address     String?
 
   centerName String
-  isActive Boolean @default(true) @map("is_active")
+  isActive   Boolean @default(true) @map("is_active")
 
-  roles       Role[]            @default([USER])
-  employeeInfo EmployeeInfo?
-  permissions PermissionsUser[]
+  roles         Role[]            @default([USER])
+  employeeInfo  EmployeeInfo?
+  permissions   PermissionsUser[]
+  teacherEvents CalendarEvent[]   @relation(name: "calendar_event_teacher")
+  studentEvents CalendarEvent[]   @relation(name: "calendar_event_student")
 }
 
 enum Role {
@@ -48,7 +50,8 @@ model EmployeeInfo {
 
   user   User @relation(fields: [userId], references: [id])
   userId Int  @unique @map("user_id")
-	@@map("EmployeeInfo")
+
+  @@map("EmployeeInfo")
 }
 
 enum TypeEmployee {
@@ -57,11 +60,11 @@ enum TypeEmployee {
 }
 
 model Payroll {
-  id            Int           @id @default(autoincrement())
+  id            Int            @id @default(autoincrement())
   payrollType   PayrollType
-  payRate       Int?          @map("pay_rate")
-  makeUpCredits String?       @map("make_up_credits")
-  employeeInfo   EmployeeInfo[]
+  payRate       Int?           @map("pay_rate")
+  makeUpCredits String?        @map("make_up_credits")
+  employeeInfo  EmployeeInfo[]
 }
 
 enum PayrollType {
@@ -82,4 +85,21 @@ model PermissionsUser {
   userId       Int        @map("user_id")
   permissions  Permission @relation(fields: [permissionId], references: [id])
   permissionId Int        @map("permossion_id")
+}
+
+model CalendarEvent {
+  id                Int       @id @default(autoincrement())
+  teacher           User      @relation(name: "calendar_event_teacher", fields: [teacherId], references: [id])
+  teacherId         Int       @map("teacher_id")
+  student           User?     @relation(name: "calendar_event_student", fields: [studentId], references: [id])
+  studentId         Int?      @map("student_id")
+  date              DateTime
+  isPublic          Boolean?  @map("is_public")
+  stateMakeUpCredit Boolean?  @map("state_make_up_credit")
+  frequency         String?
+  repeatOn          String[]  @map("repeat_on")
+  repeatUntil       DateTime? @map("repeat_until")
+  everyWeek         Int?      @map("every_week")
+  everyMonth        Int?      @map("every_month")
+  everyYear         Int?      @map("every_year")
 }

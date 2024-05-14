@@ -1,6 +1,5 @@
 import { CalendarOutlined, CaretDownOutlined, CarryOutOutlined, CloudUploadOutlined, PlusOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card } from 'antd';
-import './Calendar.style.css';
+import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card, Badge } from 'antd';
 import React, { useEffect, useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import QuickAddLessonModalForm from './components/QuickAddLessonModalForm';
@@ -8,6 +7,12 @@ import { dayOfWeek, monthOfYear } from '../../helpers/NumberHelper';
 import Icon from '@ant-design/icons/lib/components/Icon';
 import Meta from 'antd/es/card/Meta';
 import NonTeachingEventModalForm from './components/NonTeachinEventModalForm';
+import { useGetEventsQuery } from '../../features/api/extensions/calendarApiExtension';
+import { EventsFilter } from '../../models/api/eventsFilter';
+import { EventModel } from '../../models/api/eventModel';
+import DateTimeService from '../../features/DateTimeService';
+
+import './Calendar.style.css';
 
 const calendarAddOptions: MenuProps['items'] = [
     {
@@ -68,9 +73,25 @@ const CalendarTest: React.FC = () => {
     const [isQuickLessonFormOpen, setIsQuickLessonFormOpen] = useState(false);
     const [isNonTeachingEventFormOpen, setIsNonTeachingEventFormOpen] = useState(false);
 
+    const [eventsFilter, setEventsFilter] = useState<EventsFilter>({
+        userId: 1,
+        dateFrom: DateTimeService.toFirstDayOfMonth(new Date()),
+        dateTo: DateTimeService.toLastDayOfMonth(new Date())
+    });
+    const { data: events } = useGetEventsQuery({ ...eventsFilter! });
+
+    useEffect(() => {
+        console.log(events);
+    }, [events]);
+
     const onSelectDate = (date: dayjs.Dayjs) => {
-        new Date(date.date());
-        setSelectedDate(new Date(date.format()));
+        const jsDate = new Date(date.format());
+        setSelectedDate(jsDate);
+        setEventsFilter({
+            userId: 1,
+            dateFrom: DateTimeService.toFirstDayOfMonth(jsDate),
+            dateTo: DateTimeService.toLastDayOfMonth(jsDate)
+        });
     };
 
     const dateSelectionOption: MenuProps['items'] = [
@@ -117,11 +138,22 @@ const CalendarTest: React.FC = () => {
             );
         };
 
+        const date = new Date(current.format());
+        const cellEvents = events?.filter((x) => DateTimeService.isSameDate(x.date, date)) ?? [];
+
         return (
             <Dropdown open={!!actionMenuDate && current.isSame(actionMenuDate)} menu={{ items }} dropdownRender={dropdownRender}>
-                <div className="ant-picker-cell-inner ant-picker-calendar-date" onClick={() => setActionMenuDate(current)}>
+                <div className="ant-picker-cell-inner ant-picker-calendar-date" style={{ overflowY: 'auto' }} onClick={() => setActionMenuDate(current)}>
                     <div className="ant-picker-calendar-date-value">{current.date()}</div>
-                    <div className="ant-picker-calendar-date-content"></div>
+                    <div className="ant-picker-calendar-date-content" style={{ height: 'min-content' }}>
+                        <ul className="events">
+                            {cellEvents.map((x) => (
+                                <li>
+                                    <Badge count={`Lesson with smth`} />
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </Dropdown>
         );

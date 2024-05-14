@@ -51,7 +51,7 @@ const RepeatableEventForm: React.FC<RepeatableEventFormProps> = (props: Repeatab
                     <Form.Item name="repeatOn" label="Repeat On" style={{ marginBottom: '10px' }}>
                         <CheckboxGroup options={plainOptions} />
                     </Form.Item>
-                    {repeatIdentity && (
+                    {!repeatIdentity && (
                         <Form.Item name="repeatUntil" label="RepeatUntil" style={{ marginBottom: '10px' }}>
                             <DatePicker style={{ width: '100%' }} />
                         </Form.Item>

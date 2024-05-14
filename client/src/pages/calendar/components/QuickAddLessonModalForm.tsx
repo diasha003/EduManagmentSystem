@@ -6,6 +6,7 @@ import dayjs from 'dayjs';
 import RepeatableEventForm from '../../../components/RepeatableEventForm';
 import { useForm } from 'antd/es/form/Form';
 import { QuickLessonModel } from '../../../models/api/quickLessonModel';
+import { useCreateEventMutation } from '../../../features/api/extensions/calendarApiExtension';
 
 export type QuickAddLessonModalFormProps = {
     selectedDate: Date;
@@ -17,9 +18,25 @@ export type QuickAddLessonModalFormProps = {
 const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: QuickAddLessonModalFormProps) => {
     const [form] = useForm<QuickLessonModel>();
     const [eventRepeats, setEventRepeats] = useState(false);
+    const [create] = useCreateEventMutation();
 
-    const handleOk = () => {
-        console.log(form.getFieldValue('repeatableEventInfo'));
+    const handleOk = async () => {
+        const formData = form.getFieldsValue();
+        const repeatableEventInfo = form.getFieldValue('repeatableEventInfo');
+        await create({
+            date: formData.date,
+            isPublic: formData.isPublic,
+            stateMakeUpCredit: formData.stateMakeUpCredit,
+            repeatUntil: repeatableEventInfo?.repeatUntil,
+            frequency: repeatableEventInfo?.frequency.toString(),
+            repeatOn: repeatableEventInfo?.repeatOn ? (Array.isArray(repeatableEventInfo?.repeatOn) ?repeatableEventInfo?.repeatOn : [repeatableEventInfo?.repeatOn]) : undefined,
+            everyMonth: repeatableEventInfo?.everyMonth ? +repeatableEventInfo.everyMonth : undefined,
+            everyWeek: repeatableEventInfo?.everyWeek ? +repeatableEventInfo.everyWeek : undefined,
+            everyYear: repeatableEventInfo?.everyYear ? +repeatableEventInfo.everyYear : undefined,
+            teacherId: +formData.teacher,
+            studentId: +formData.student,
+            repeatIdentity: formData.repeatableEventInfo?.repeatIdentity
+        });
     };
 
     return (
@@ -29,8 +46,8 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
                     <Col span={12}>
                         <Form.Item name="teacher" label="Teacher">
                             <Select placeholder="Teacher">
-                                <Option value="teacher_1">Teacher_1</Option>
-                                <Option value="teacher_2">Teacher_2</Option>
+                                <Option value="1">Teacher_1</Option>
+                                <Option value="2">Teacher_2</Option>
                             </Select>
                         </Form.Item>
                     </Col>

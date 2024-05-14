@@ -7,6 +7,8 @@
     width: 100%;
 }
 
+
+
 .blockFrequencyType {
     display: flex;
     flex-direction: column;
@@ -21,4 +23,18 @@
     p {
         font-weight: 600;
     }
+}
+
+.events {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  
+.events .ant-badge {
+  width: 100%;
+  overflow: hidden;
+  font-size: 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
