@@ -24,6 +24,7 @@ export interface EmployeeModel {
     calendarColor?: string;
     payrollOverrides?: boolean;
     roles: string[];
+    isActive: string;
 }
 
 const columns: DataGridColumn<EmployeeModel>[] = [
@@ -50,6 +51,8 @@ const columns: DataGridColumn<EmployeeModel>[] = [
                             {record.name}
                         </Link>
                         <Space>
+                            <Badge count={record.isActive} color={stc(record.isActive + ' light6')} />
+
                             {record.roles.map((role) => {
                                 const state = role.charAt(0) + role.toLocaleLowerCase().slice(1);
                                 const color = stc(state + ' light6');
@@ -166,7 +169,27 @@ const EmployeesTable: React.FC = () => {
     const allCenterName = useGetAllCenterNameQuery().currentData;
     const data: IEmployee[] | undefined = useGetAllEmployeesQuery().currentData;
 
-    console.log(data);
+    const renderPayRate = (employeeInfo?: {
+        payroll?: {
+            payrollType: string;
+            payRate: number | null;
+            makeUpCredits: string | boolean;
+        };
+    }): string => {
+        if (employeeInfo?.payroll) {
+            if (employeeInfo.payroll.payRate) {
+                if (employeeInfo.payroll.payrollType === 'hourlyRate') {
+                    return `$${employeeInfo?.payroll.payRate}/hour`;
+                } else {
+                    return `${employeeInfo?.payroll.payRate}%`;
+                }
+            } else {
+                return '-';
+            }
+        }
+
+        return '';
+    };
 
     const newData: EmployeeModel[] | undefined = data?.map((item, key) => ({
         key,
@@ -174,11 +197,10 @@ const EmployeesTable: React.FC = () => {
         contact: item.phoneNumber,
         email: item.email,
         address: item.address,
-        payRate: item.employeeInfo?.payroll && (item.employeeInfo?.payroll.payRate ? `${item.employeeInfo?.payroll.payRate}${item.employeeInfo?.payroll.payrollType === 'percentage' ? '%' : '/hour'}` : '-'),
-        roles: item.roles
+        payRate: renderPayRate(item.employeeInfo),
+        roles: item.roles,
+        isActive: item.isActive ? 'Active' : 'InActive'
     }));
-
-    console.log(newData);
 
     const items: MenuProps['items'] = [
         {

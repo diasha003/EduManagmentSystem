@@ -9,6 +9,7 @@ export interface IUser {
     address?: string;
     size?: string;
     roles: string[];
+    isActive: boolean;
     createdAt?: string;
     updatedAt?: string;
 }
