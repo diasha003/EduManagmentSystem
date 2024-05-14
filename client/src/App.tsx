@@ -6,7 +6,7 @@ import { Route, Routes } from 'react-router-dom';
 import InfoStudents from './pages/students/InfoStudents';
 
 import AddStudent from './pages/students/AddStudent';
-import InfoEmployees from './pages/employees/InfoEmloyess';
+import InfoEmployees from './pages/employees/InfoEmployess';
 import CalendarTest from './pages/calendar/Calendar';
 import { Layout } from 'antd';
 import Login from './pages/login/Login';
@@ -25,7 +25,7 @@ const App: React.FC = () => {
 
     routes.push({ path: '/home', element: <></> });
     routes.push({ path: '/employees', element: <InfoEmployees /> });
-    routes.push({ path: '/employees/add', element: <CreateEmployeeForm /> });
+    routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm /> });
     routes.push({ path: '/students', element: <InfoStudents /> });
     routes.push({ path: '/students/add', element: <AddStudent /> });
     routes.push({ path: '/calendar', element: <CalendarTest /> });

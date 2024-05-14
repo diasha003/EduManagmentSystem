@@ -3,8 +3,7 @@ import { IsString } from 'class-validator';
 import { CreateUserDto } from 'src/user/dto/create-user.dto';
 
 export class CreateEmployeeDto extends CreateUserDto {
-    @IsString()
-    payrollType: string;
+    payrollType: string | null;
 
     payRate: number | null;
 

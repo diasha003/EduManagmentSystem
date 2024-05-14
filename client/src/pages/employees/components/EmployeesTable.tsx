@@ -1,13 +1,13 @@
-import { Button, Col, Dropdown, MenuProps, Row, Space } from 'antd';
+import { Avatar, Badge, Button, Col, Dropdown, MenuProps, Row, Space } from 'antd';
 import { CaretDownOutlined, HomeOutlined, MailOutlined, PhoneOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
 import { useAppSelector } from '../../../hooks/redux';
 import { useGetAllCenterNameQuery, useGetAllEmployeesQuery } from '../../../features/api/extensions/employeesApiExtension';
 
 import { IEmployee } from '../../../types/employee';
-import { isContentEditable } from '@testing-library/user-event/dist/utils';
+import stc from 'string-to-color';
 
 export interface EmployeeModel {
     key: number;
@@ -23,6 +23,7 @@ export interface EmployeeModel {
     payRate?: string;
     calendarColor?: string;
     payrollOverrides?: boolean;
+    roles: string[];
 }
 
 const columns: DataGridColumn<EmployeeModel>[] = [
@@ -32,7 +33,38 @@ const columns: DataGridColumn<EmployeeModel>[] = [
         dataIndex: 'name',
         width: 150,
         hidden: false,
-        sorter: (a: EmployeeModel, b: EmployeeModel) => a.name.length - b.name.length
+        sorter: (a: EmployeeModel, b: EmployeeModel) => a.name.length - b.name.length,
+        render: (value, record) => {
+            return (
+                <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    <div>
+                        <Avatar style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}>
+                            {record.name
+                                .split(' ')
+                                .map((part) => part[0])
+                                .join('')}
+                        </Avatar>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '5px' }}>
+                        <Link to="" style={{ fontWeight: 500, color: 'blue', marginBottom: 0, cursor: 'pointer' }}>
+                            {record.name}
+                        </Link>
+                        <Space>
+                            {record.roles.map((role) => {
+                                const state = role.charAt(0) + role.toLocaleLowerCase().slice(1);
+                                const color = stc(state + ' light6');
+                                //console.log(color);
+                                return (
+                                    <>
+                                        <Badge count={state} color={color} />
+                                    </>
+                                );
+                            })}
+                        </Space>
+                    </div>
+                </div>
+            );
+        }
     },
     {
         key: 'contact',
@@ -106,7 +138,10 @@ const columns: DataGridColumn<EmployeeModel>[] = [
         title: 'Pay Rate',
         dataIndex: 'payRate',
         width: 100,
-        hidden: false
+        hidden: false,
+        render: (value, record) => {
+            return <>{record.payRate}</>;
+        }
     },
     {
         key: 'calendarColor',
@@ -131,14 +166,19 @@ const EmployeesTable: React.FC = () => {
     const allCenterName = useGetAllCenterNameQuery().currentData;
     const data: IEmployee[] | undefined = useGetAllEmployeesQuery().currentData;
 
+    console.log(data);
+
     const newData: EmployeeModel[] | undefined = data?.map((item, key) => ({
         key,
-        name: item.lastName,
+        name: `${item.firstName} ${item.lastName}`,
         contact: item.phoneNumber,
         email: item.email,
         address: item.address,
-        payRate: item.employeeInfo?.payroll && `${item.employeeInfo?.payroll?.payRate} ${item.employeeInfo?.payroll?.payrollType}`
+        payRate: item.employeeInfo?.payroll && (item.employeeInfo?.payroll.payRate ? `${item.employeeInfo?.payroll.payRate}${item.employeeInfo?.payroll.payrollType === 'percentage' ? '%' : '/hour'}` : '-'),
+        roles: item.roles
     }));
+
+    console.log(newData);
 
     const items: MenuProps['items'] = [
         {
@@ -146,7 +186,7 @@ const EmployeesTable: React.FC = () => {
             icon: <PlusOutlined />,
             label: 'New Teacher',
             onClick: (e) => {
-                nav('/employees/add');
+                nav('/employees/add/teacher');
             }
         },
         {
@@ -154,7 +194,7 @@ const EmployeesTable: React.FC = () => {
             icon: <PlusOutlined />,
             label: 'New Staff Member',
             onClick: (e) => {
-                nav('/employees/add');
+                nav('/employees/add/staff');
             }
         }
     ];

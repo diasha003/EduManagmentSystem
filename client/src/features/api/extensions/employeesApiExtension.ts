@@ -41,7 +41,8 @@ export const employeesApi = baseApi.injectEndpoints({
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            },
+            providesTags: ['Employee']
         })
     })
 });

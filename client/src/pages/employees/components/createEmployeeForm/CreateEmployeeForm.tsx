@@ -9,11 +9,14 @@ import { IEmployeeRequest } from '../../../../models/api/employee/employee';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import { useAppSelector } from '../../../../hooks/redux';
+import { stat } from 'fs';
 
 const CreateEmployeeForm: React.FC = () => {
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
     const [payrollType, setPayrollType] = useState<string>('');
     const [stepForm] = Form.useForm();
+
+    const state = window.location.href.split(/\/+/).pop();
 
     const navigate = useNavigate();
 
@@ -40,7 +43,7 @@ const CreateEmployeeForm: React.FC = () => {
             email: data.email,
             firstName: data.firstName,
             lastName: data.lastName,
-            payrollType: data.payrollType,
+            payrollType: data.payrollType ? data.payrollType : null,
             access: data.access,
             address: data.address,
             admin: data.admin,
@@ -49,7 +52,8 @@ const CreateEmployeeForm: React.FC = () => {
             centerName: user ? user.centerName : '',
             permissions: [...(data.manageOtherTeachers || []), ...(data.manageSelf || []), ...(data.manageStudentsParents || []), ...(data.otherPrivileges || [])],
             password: data.password,
-            phoneNumber: data.phoneNumber
+            phoneNumber: data.phoneNumber,
+            roles: state === 'teacher' ? ['TEACHER'] : ['STAFF']
         });
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
@@ -75,7 +79,7 @@ const CreateEmployeeForm: React.FC = () => {
             <Form layout="vertical" className="formStyle" form={stepForm} validateMessages={validateMessages}>
                 <Row gutter={10}>
                     <Col span={11}>
-                        <h2 style={{ margin: '15px 0px' }}>Teacher Details</h2>
+                        <h2 style={{ margin: '15px 0px' }}>{state === 'teacher' ? 'Teacher Details' : 'Staff Member Details'}</h2>
                     </Col>
                     <Col span={11}></Col>
                 </Row>
@@ -135,89 +139,92 @@ const CreateEmployeeForm: React.FC = () => {
                     <Divider />
                 </Row>
 
-                <Row>
-                    <Col span={22}>
-                        <Form.Item
-                            name="payrollType"
-                            label="Payroll"
-                            rules={[
-                                {
-                                    required: true
-                                }
-                            ]}
-                        >
-                            <Radio.Group
-                                onChange={(e) => {
-                                    setPayrollType(e.target.value);
-                                }}
-                            >
-                                <Space direction="vertical">
-                                    <Radio value={'auto'}>No automatic payroll calculation</Radio>
-                                    <Radio value={'percentage'}>Percentage of Teacher's revenue</Radio>
-                                    <Radio value={'hourlyRate'}>Flat hourly rate</Radio>
-                                </Space>
-                            </Radio.Group>
-                        </Form.Item>
-                    </Col>
-                </Row>
-
-                {payrollType === 'percentage' && (
+                {state === 'teacher' && (
                     <>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="payRate" label="Pay Rate" rules={[{ required: payrollType === 'percentage' ? true : false }]}>
-                                    <Input suffix="% of Revenue"></Input>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}></Col>
-                        </Row>
-
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="makeUpCredits" label="Make-Up Credits" rules={[{ required: payrollType === 'percentage' ? true : false }]}>
-                                    <Radio.Group>
+                        <Row>
+                            <Col span={22}>
+                                <Form.Item
+                                    name="payrollType"
+                                    label="Payroll"
+                                    rules={[
+                                        {
+                                            required: state === 'teacher' ? true : false
+                                        }
+                                    ]}
+                                >
+                                    <Radio.Group
+                                        onChange={(e) => {
+                                            setPayrollType(e.target.value);
+                                        }}
+                                    >
                                         <Space direction="vertical">
-                                            <Radio value={'issued'}>Pay when a make-up credit is issued</Radio>
-                                            <Radio value={'used'}>Percentage of Teacher's revenue</Radio>
+                                            <Radio value={'auto'}>No automatic payroll calculation</Radio>
+                                            <Radio value={'percentage'}>Percentage of Teacher's revenue</Radio>
+                                            <Radio value={'hourlyRate'}>Flat hourly rate</Radio>
                                         </Space>
                                     </Radio.Group>
                                 </Form.Item>
                             </Col>
-                            <Col span={11}></Col>
                         </Row>
+
+                        {payrollType === 'percentage' && (
+                            <>
+                                <Row gutter={10}>
+                                    <Col span={11}>
+                                        <Form.Item name="payRate" label="Pay Rate" rules={[{ required: payrollType === 'percentage' ? true : false }]}>
+                                            <Input suffix="% of Revenue"></Input>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={11}></Col>
+                                </Row>
+
+                                <Row gutter={10}>
+                                    <Col span={11}>
+                                        <Form.Item name="makeUpCredits" label="Make-Up Credits" rules={[{ required: payrollType === 'percentage' ? true : false }]}>
+                                            <Radio.Group>
+                                                <Space direction="vertical">
+                                                    <Radio value={'issued'}>Pay when a make-up credit is issued</Radio>
+                                                    <Radio value={'used'}>Percentage of Teacher's revenue</Radio>
+                                                </Space>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={11}></Col>
+                                </Row>
+                            </>
+                        )}
+
+                        {payrollType === 'hourlyRate' && (
+                            <>
+                                <Row gutter={10}>
+                                    <Col span={11}>
+                                        <Form.Item name="payRate" label="Pay Rate" rules={[{ required: payrollType === 'hourlyRate' ? true : false }]}>
+                                            <Input prefix="$" suffix="Per Hour"></Input>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={11}></Col>
+                                </Row>
+
+                                <Row gutter={10}>
+                                    <Col span={11}>
+                                        <Form.Item name="makeUpCredits" label="Make-Up Credits" rules={[{ required: payrollType === 'hourlyRate' ? true : false }]}>
+                                            <Radio.Group>
+                                                <Space direction="vertical">
+                                                    <Radio value={'issued'}>Pay when a make-up credit is issued</Radio>
+                                                    <Radio value={'used'}>Percentage of Teacher's revenue</Radio>
+                                                </Space>
+                                            </Radio.Group>
+                                        </Form.Item>
+                                    </Col>
+                                    <Col span={11}></Col>
+                                </Row>
+                                <Row className="divider">
+                                    <Divider />
+                                </Row>
+                            </>
+                        )}
                     </>
                 )}
-
-                {payrollType === 'hourlyRate' && (
-                    <>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="payRate" label="Pay Rate" rules={[{ required: payrollType === 'hourlyRate' ? true : false }]}>
-                                    <Input prefix="$" suffix="Per Hour"></Input>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}></Col>
-                        </Row>
-
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="makeUpCredits" label="Make-Up Credits" rules={[{ required: payrollType === 'hourlyRate' ? true : false }]}>
-                                    <Radio.Group>
-                                        <Space direction="vertical">
-                                            <Radio value={'issued'}>Pay when a make-up credit is issued</Radio>
-                                            <Radio value={'used'}>Percentage of Teacher's revenue</Radio>
-                                        </Space>
-                                    </Radio.Group>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}></Col>
-                        </Row>
-                    </>
-                )}
-
-                <Row className="divider">
-                    <Divider />
-                </Row>
             </Form>
         );
     };

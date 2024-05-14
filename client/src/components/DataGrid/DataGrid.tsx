@@ -122,7 +122,7 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                     handleHeaderClick(sorter as unknown as SorterResult<any>);
                 }}
                 dataSource={dataSource}
-                scroll={{ x: 1500, y: 300 }}
+                scroll={{ x: 1500, y: 1200 }}
             />
         </div>
     );

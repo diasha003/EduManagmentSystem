@@ -38,8 +38,7 @@ export const baseQueryWithErrorHandling: BaseQueryFn<string | FetchArgs, unknown
 export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithErrorHandling,
-
     refetchOnMountOrArgChange: true,
-    //tagTypes: ['Advert', 'Orders', 'Reviews', 'Categories', 'Chat'],
+    tagTypes: ['Employee'],
     endpoints: () => ({})
 });

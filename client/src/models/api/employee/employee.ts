@@ -2,7 +2,7 @@ import { IRegisterRequest } from '../auth/auth.user';
 
 export interface IEmployeeRequest extends IRegisterRequest {
 
-    payrollType: string;
+    payrollType: string | null;
     payRate: number | null;
     makeUpCredits: boolean | null;
     access?: boolean;
@@ -11,7 +11,8 @@ export interface IEmployeeRequest extends IRegisterRequest {
     manageSelf?: string[];
     manageStudentsParents?: string[];
     otherPrivileges?: string[];
-    permissions?: string[] 
+    permissions?: string[];
+    roles?: string[]
 }
 
 

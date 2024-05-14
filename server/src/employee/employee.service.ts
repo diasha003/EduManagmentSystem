@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database/database.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
-import { EmloyeeInfo, PayrollType, Role, User } from '@prisma/client';
+import { EmployeeInfo, PayrollType, Role, User } from '@prisma/client';
 import { UserService } from 'src/user/user.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -13,57 +13,97 @@ export class EmployeeService {
         private readonly jwtService: JwtService
     ) {}
 
-    getEmployee(emloyeeId: number) {
-        //return this.prisma.emloyeeInfo;
+    getEmployee(employeeId: number) {
+        //return this.prisma.employeeInfo;
     }
 
     async createEmployee(dto: CreateEmployeeDto) {
-        console.log(dto);
+        //console.log(Boolean(dto.roles.includes(Role.TEACHER)));
 
         const candidate = await this.userService.getUserByEmail(dto.email);
         if (candidate) {
             throw new BadRequestException('Such user is already exists');
         }
 
-        const payroll = await this.prisma.payroll.create({
-            data: {
-                payrollType: PayrollType[dto.payrollType],
-                makeUpCredits: dto.makeUpCredits,
-                payRate: Number(dto.payRate)
-            }
+        if (dto.roles.includes(Role.TEACHER)) {
+            return this.createTeacher(dto);
+        } else {
+            return this.createStaffMember(dto);
+        }
+    }
+
+    async createTeacher(dto: CreateEmployeeDto) {
+        await this.prisma.$transaction(async (prisma) => {
+            const payroll = await prisma.payroll.create({
+                data: {
+                    payrollType: PayrollType[dto.payrollType],
+                    makeUpCredits: dto.makeUpCredits,
+                    payRate: Number(dto.payRate)
+                }
+            });
+
+            const userId = await this.userService.createUser({
+                email: dto.email,
+                firstName: dto.firstName,
+                lastName: dto.lastName,
+                centerName: dto.centerName,
+                phoneNumber: dto.phoneNumber,
+                address: dto.address,
+                roles: [Role.TEACHER],
+                password: dto.password
+            });
+
+            await prisma.employeeInfo.create({
+                data: {
+                    payrollId: payroll.id,
+                    userId: userId.id
+                }
+            });
+
+            const permissions = await prisma.permission.findMany({
+                where: {
+                    displayName: { in: dto.permissions }
+                }
+            });
+
+            const permissionsUserData = permissions.map((permission) => ({
+                userId: userId.id,
+                permissionId: permission.id
+            }));
+
+            await prisma.permissionsUser.createMany({
+                data: permissionsUserData
+            });
         });
+    }
 
-        const userId = await this.userService.createUser({
-            email: dto.email,
-            firstName: dto.firstName,
-            lastName: dto.lastName,
-            centerName: dto.centerName,
-            phoneNumber: dto.phoneNumber,
-            address: dto.address,
-            roles: [Role.TEACHER],
-            password: dto.password
-        });
+    async createStaffMember(dto: CreateEmployeeDto) {
+        await this.prisma.$transaction(async (prisma) => {
+            const userId = await this.userService.createUser({
+                email: dto.email,
+                firstName: dto.firstName,
+                lastName: dto.lastName,
+                centerName: dto.centerName,
+                phoneNumber: dto.phoneNumber,
+                address: dto.address,
+                roles: [Role.STAFF],
+                password: dto.password
+            });
 
-        await this.prisma.emloyeeInfo.create({
-            data: {
-                payrollId: payroll.id,
-                userId: userId.id
-            }
-        });
+            const permissions = await prisma.permission.findMany({
+                where: {
+                    displayName: { in: dto.permissions }
+                }
+            });
 
-        const permissions = await this.prisma.permission.findMany({
-            where: {
-                displayName: { in: dto.permissions }
-            }
-        });
+            const permissionsUserData = permissions.map((permission) => ({
+                userId: userId.id,
+                permissionId: permission.id
+            }));
 
-        const permissionsUserData = permissions.map((permission) => ({
-            userId: userId.id,
-            permissionId: permission.id
-        }));
-
-        await this.prisma.permissionsUser.createMany({
-            data: permissionsUserData
+            await prisma.permissionsUser.createMany({
+                data: permissionsUserData
+            });
         });
     }
 
@@ -88,16 +128,16 @@ export class EmployeeService {
 
         let allEmployees = await this.prisma.user.findMany({
             include: {
-                emloyeeInfo: {
+                employeeInfo: {
                     include: {
                         payroll: true
                     }
                 }
             },
             where: {
-                NOT: {
-                    emloyeeInfo: { none: {} }
-                },
+                // NOT: {
+                //     employeeInfo: { none: {} }
+                // },
 
                 centerName: {
                     equals: decoded.centerName
@@ -109,8 +149,6 @@ export class EmployeeService {
             delete item['password'];
             return item;
         });
-
-        console.log(data)
 
         return data;
     }
