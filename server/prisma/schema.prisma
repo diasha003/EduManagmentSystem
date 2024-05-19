@@ -27,11 +27,13 @@ model User {
   centerName String
   isActive   Boolean @default(true) @map("is_active")
 
-  roles         Role[]            @default([USER])
-  employeeInfo  EmployeeInfo?
-  permissions   PermissionsUser[]
-  teacherEvents CalendarEvent[]   @relation(name: "calendar_event_teacher")
-  studentEvents CalendarEvent[]   @relation(name: "calendar_event_student")
+  roles          Role[]            @default([USER])
+  employeeInfo   EmployeeInfo?
+  permissions    PermissionsUser[]
+  teacherEvents  CalendarEvent[]   @relation(name: "calendar_event_teacher")
+  studentEvents  CalendarEvent[]   @relation(name: "calendar_event_student")
+  studentInfo    StudentInfo[]
+  familyStudents FamilyStudents[]
 }
 
 enum Role {
@@ -40,6 +42,7 @@ enum Role {
   TEACHER
   STUDENT
   STAFF
+  FAMILY
 }
 
 enum DayOfWeek {
@@ -76,9 +79,53 @@ model EmployeeInfo {
   @@map("EmployeeInfo")
 }
 
-enum TypeEmployee {
-  teacher
-  staff
+model StudentInfo {
+  id             Int              @id @default(autoincrement())
+  birthdayDate   DateTime?        @map("birthday_date")
+  dataRegister   DateTime?        @map("data_since_student")
+  avatarUrl      String?          @map("avatar_url")
+  gender         Gender?
+  institution    String?
+  type           Type
+  skills         String?
+  user           User             @relation(fields: [userId], references: [id])
+  userId         Int
+  groupStudents  GroupStudents[]
+  familyStudents FamilyStudents[]
+}
+
+model Group {
+  id            Int             @id @default(autoincrement())
+  name          String          @unique
+  groupStudents GroupStudents[]
+}
+
+model GroupStudents {
+  group         Group       @relation(fields: [groupId], references: [id])
+  groupId       Int         @map("group_id")
+  studentInfo   StudentInfo @relation(fields: [studentInfoId], references: [id])
+  studentInfoId Int         @map("student_info_id")
+
+  @@id(fields: [groupId, studentInfoId])
+}
+
+model FamilyStudents {
+  user          User        @relation(fields: [userId], references: [id])
+  userId        Int         @map("user_id")
+  studentInfo   StudentInfo @relation(fields: [studentInfoId], references: [id])
+  studentInfoId Int
+
+  @@id(fields: [userId, studentInfoId])
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum Type {
+  adult
+  child
 }
 
 model Payroll {
@@ -110,19 +157,19 @@ model PermissionsUser {
 }
 
 model CalendarEvent {
-  id                Int           @id @default(autoincrement())
-  teacher           User          @relation(name: "calendar_event_teacher", fields: [teacherId], references: [id])
-  teacherId         Int           @map("teacher_id")
-  student           User?         @relation(name: "calendar_event_student", fields: [studentId], references: [id])
-  studentId         Int?          @map("student_id")
+  id                Int            @id @default(autoincrement())
+  teacher           User           @relation(name: "calendar_event_teacher", fields: [teacherId], references: [id])
+  teacherId         Int            @map("teacher_id")
+  student           User?          @relation(name: "calendar_event_student", fields: [studentId], references: [id])
+  studentId         Int?           @map("student_id")
   date              DateTime
-  isPublic          Boolean?      @map("is_public")
-  stateMakeUpCredit Boolean?      @map("state_make_up_credit")
+  isPublic          Boolean?       @map("is_public")
+  stateMakeUpCredit Boolean?       @map("state_make_up_credit")
   frequency         Frequency?
-  repeatOnDaily     DayOfWeek[]   @map("repeat_on_daily")
+  repeatOnDaily     DayOfWeek[]    @map("repeat_on_daily")
   repeatOnMonthly   RepeatMonthly? @map("repeat_on_monthly")
-  repeatUntil       DateTime?     @map("repeat_until")
-  everyWeek         Int?          @map("every_week")
-  everyMonth        Int?          @map("every_month")
-  everyYear         Int?          @map("every_year")
+  repeatUntil       DateTime?      @map("repeat_until")
+  everyWeek         Int?           @map("every_week")
+  everyMonth        Int?           @map("every_month")
+  everyYear         Int?           @map("every_year")
 }
