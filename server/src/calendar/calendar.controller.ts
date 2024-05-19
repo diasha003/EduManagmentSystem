@@ -9,15 +9,12 @@ export class CalendarController {
 
     @Post('/event')
     async createEvent(@Body() dto: EventDto) {
-        console.log(dto);
         return await this.service.createEvent(dto);
     }
 
     @Post('/search')
     async getEvents(@Body() dto: EventsFilter) {
-        console.log(dto)
         const res = await this.service.getEvents(dto);
-        console.log(res)
         return res;
     }
 }

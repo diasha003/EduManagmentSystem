@@ -19,9 +19,3 @@ export function dayOfWeek(day: number): string {
 export function monthOfYear(month: number): string {
     return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][month];
 }
-
-export function getNumberOfWeek(date: Date) {
-    const adjustedDate = date.getDate();
-    const prefixes = ['0', '1', '2', '3', '4', '5'];
-    return parseInt(prefixes[0 | (adjustedDate / 7)]) + 1;
-}

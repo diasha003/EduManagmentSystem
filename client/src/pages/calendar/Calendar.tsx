@@ -80,10 +80,6 @@ const CalendarTest: React.FC = () => {
     });
     const { data: events } = useGetEventsQuery({ ...eventsFilter! });
 
-    useEffect(() => {
-        console.log(events);
-    }, [events]);
-
     const onSelectDate = (date: dayjs.Dayjs) => {
         const jsDate = new Date(date.format());
         setSelectedDate(jsDate);
@@ -138,8 +134,12 @@ const CalendarTest: React.FC = () => {
             );
         };
 
-        const date = new Date(current.format());
+        const date = new Date(current.format('YYYY-MM-DD'));
         const cellEvents = events?.filter((x) => DateTimeService.isSameDate(x.date, date)) ?? [];
+
+        if (cellEvents.length > 0) {
+            console.log(cellEvents);
+        }
 
         return (
             <Dropdown open={!!actionMenuDate && current.isSame(actionMenuDate)} menu={{ items }} dropdownRender={dropdownRender}>

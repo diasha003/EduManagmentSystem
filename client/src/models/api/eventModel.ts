@@ -5,7 +5,8 @@ export interface EventModel {
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
     frequency?: string;
-    repeatOn?: string[];
+    repeatOnDaily?: string[];
+    repeatOnMonthly?: string;
     repeatUntil?: Date;
     repeatIdentity?: boolean;
     everyWeek?: number;

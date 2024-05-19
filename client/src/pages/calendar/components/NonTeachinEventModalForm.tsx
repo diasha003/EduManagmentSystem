@@ -4,8 +4,9 @@ import { useState } from 'react';
 
 import { RedoOutlined } from '@ant-design/icons';
 import dayjs, { Dayjs } from 'dayjs';
-import { dayOfWeek, getNumberOfWeek, nthNumber } from '../../../helpers/NumberHelper';
+import { dayOfWeek, nthNumber } from '../../../helpers/NumberHelper';
 import TextArea from 'antd/es/input/TextArea';
+import DateTimeService from '../../../features/DateTimeService';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -164,8 +165,8 @@ const NonTeachingEventModalForm: React.FC<NonTeachingEventModalFormProps> = (pro
                                                 {nthNumber(props.selectedDate.getDate())} of the month
                                             </Radio>
                                             <Radio value={2}>
-                                                Every {getNumberOfWeek(props.selectedDate)}
-                                                {nthNumber(getNumberOfWeek(props.selectedDate))} {dayOfWeek(props.selectedDate.getDay())}
+                                                Every {DateTimeService.numberOfWeek(props.selectedDate)}
+                                                {nthNumber(DateTimeService.numberOfWeek(props.selectedDate))} {dayOfWeek(props.selectedDate.getDay())}
                                             </Radio>
                                         </Radio.Group>
                                     </div>

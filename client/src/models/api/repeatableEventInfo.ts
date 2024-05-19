@@ -2,7 +2,8 @@ import { FrequencyType } from "../enums/frequency.type";
 
 export interface RepeatableEventInfo {
     frequency: FrequencyType;
-    repeatOn: string | string[];
+    repeatOnDaily: string[];
+    repeatOnMonthly: string;
     repeatUntil?: Date;
     repeatIdentity?: boolean;
     everyWeek?: number;
