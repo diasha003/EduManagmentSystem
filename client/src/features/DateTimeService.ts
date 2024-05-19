@@ -41,4 +41,17 @@ export default class DateTimeService {
     static toLastDayOfMonth(date: Date): Date {
         return this.date(date.getUTCFullYear(), date.getUTCMonth() + 1, 0);
     }
+
+    static numberOfWeek(date: Date) {
+        let result = 0;
+        let day = this.toFirstDayOfMonth(date);
+
+        do {
+            if (day.getDay() === date.getDay()) result++;
+
+            day = this.addDays(day, 1);
+        } while (day < date && !this.isSameDate(day, date));
+
+        return result;
+    }
 }

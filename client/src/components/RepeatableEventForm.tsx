@@ -1,10 +1,11 @@
 import { RedoOutlined } from '@ant-design/icons';
 import { Checkbox, Col, DatePicker, Form, Input, Radio, Row } from 'antd';
 import { useState } from 'react';
-import { dayOfWeek, getNumberOfWeek, nthNumber } from '../helpers/NumberHelper';
+import { dayOfWeek, nthNumber } from '../helpers/NumberHelper';
 import { useForm, useWatch } from 'antd/es/form/Form';
 import { FrequencyType } from '../models/enums/frequency.type';
 import { RepeatableEventInfo } from '../models/api/repeatableEventInfo';
+import DateTimeService from '../features/DateTimeService';
 
 const CheckboxGroup = Checkbox.Group;
 
@@ -86,22 +87,22 @@ const RepeatableEventForm: React.FC<RepeatableEventFormProps> = (props: Repeatab
 
             {frequencyType === FrequencyType.Monthly && (
                 <>
-                    <Form.Item name="repeatOn" label="Repeat On" style={{ marginBottom: '10px' }}>
+                    <Form.Item name="repeatOnMonthly" label="Repeat On" style={{ marginBottom: '10px' }}>
                         <Radio.Group>
-                            <Radio value="selectedDate">
+                            <Radio value="EVERY_NTH_DATE">
                                 The {props.selectedDate.getDate()}
                                 {nthNumber(props.selectedDate.getDate())} of the month
                             </Radio>
-                            <Radio value="selectedDay">
-                                Every {getNumberOfWeek(props.selectedDate)}
-                                {nthNumber(getNumberOfWeek(props.selectedDate))} {dayOfWeek(props.selectedDate.getDay())}
+                            <Radio value="EVERY_NTH_DAY">
+                                Every {DateTimeService.numberOfWeek(props.selectedDate)}
+                                {nthNumber(DateTimeService.numberOfWeek(props.selectedDate))} {dayOfWeek(props.selectedDate.getDay())}
                             </Radio>
                         </Radio.Group>
                     </Form.Item>
                     <Row gutter={14}>
                         <Col span={12}>
                             <Form.Item name="everyMonth" label="Every">
-                                <Input defaultValue="1" suffix="Month(s)" />
+                                <Input suffix="Month(s)" />
                             </Form.Item>
                         </Col>
                         <Col span={12}>
@@ -123,7 +124,7 @@ const RepeatableEventForm: React.FC<RepeatableEventFormProps> = (props: Repeatab
                     <Row gutter={14}>
                         <Col span={12}>
                             <Form.Item name="everyYear" label="Every">
-                                <Input defaultValue="1" suffix="Year(s)"></Input>
+                                <Input suffix="Year(s)"></Input>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
