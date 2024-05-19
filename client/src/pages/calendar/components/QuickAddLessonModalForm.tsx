@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import dayjs from 'dayjs';
 import { Checkbox, Col, DatePicker, Form, Modal, Radio, Row, Select, Space } from 'antd';
 import { useForm } from 'antd/es/form/Form';
 import { Option } from 'antd/es/mentions';
@@ -6,6 +7,7 @@ import { QuickLessonModel } from 'shared/models';
 
 import RepeatableEventForm from '../../../components/RepeatableEventForm';
 import { useCreateEventMutation } from '../../../features/api/extensions/calendarApiExtension';
+import { DateTimeService } from 'shared/services';
 
 export type QuickAddLessonModalFormProps = {
     selectedDate: Date;
@@ -18,6 +20,10 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
     const [form] = useForm<QuickLessonModel>();
     const [eventRepeats, setEventRepeats] = useState(false);
     const [create] = useCreateEventMutation();
+
+    useEffect(() => {
+        form.setFieldValue('date', dayjs(DateTimeService.withTime(props.selectedDate, 0, 0).toLocaleString(undefined, { timeZone: 'UTC' })));
+    }, [form, props.selectedDate]);
 
     const handleOk = async () => {
         const formData = form.getFieldsValue();
@@ -41,7 +47,7 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
 
     return (
         <Modal title="Quick-Add Lesson" open={props.isOpen} onOk={handleOk} onCancel={props.onCancel} width="720px">
-            <Form layout="vertical" form={form} onChange={() => console.log(form.getFieldsValue())}>
+            <Form layout="vertical" form={form}>
                 <Row gutter={14}>
                     <Col span={12}>
                         <Form.Item name="teacher" label="Teacher">
