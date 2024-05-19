@@ -1,10 +1,11 @@
-import { IAuthState, ILoginRequest, IRegisterRequest } from '../../../models/api/auth/auth.user';
+import { LoginRequest, CreateUserDto} from 'shared/models'
+import { IAuthState } from '../../../models/api/auth/auth.user';
 import { authActions } from '../../store/slices/authSlice';
 import { baseApi } from '../api';
 
 export const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        login: builder.mutation<IAuthState, ILoginRequest>({
+        login: builder.mutation<IAuthState, LoginRequest>({
             query: (userData) => ({
                 url: '/auth/login',
                 method: 'POST',
@@ -21,7 +22,7 @@ export const authApi = baseApi.injectEndpoints({
             }
         }),
 
-        register: builder.mutation<IAuthState, IRegisterRequest>({
+        register: builder.mutation<IAuthState, CreateUserDto>({
             query: (userData) => ({
                 url: '/auth/register',
                 method: 'POST',

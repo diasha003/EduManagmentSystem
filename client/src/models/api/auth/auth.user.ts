@@ -1,21 +1,6 @@
-import { IUser } from '../../../types/user';
-
-export interface IRegisterRequest {
-    email: string;
-    password: string | null;
-    firstName: string;
-    lastName: string;
-    centerName: string | null;
-    address?: string;
-    phoneNumber?: string;
-}
-
-export interface ILoginRequest {
-    email: string;
-    password: string;
-}
+import { User } from "shared/models";
 
 export interface IAuthState {
     token?: string | null;
-    user?: IUser | null;
+    user?: User | null;
 }

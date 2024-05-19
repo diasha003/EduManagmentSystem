@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CalendarEvent, DayOfWeek, Frequency, PrismaClient, RepeatMonthly } from '@prisma/client';
+import { CalendarEvent, DayOfWeek, Frequency, RepeatMonthly } from '@prisma/client';
+import { DateTimeService } from 'shared/services';
+import { EventsFilter, EventDto } from 'shared/models';
+
 import { DatabaseService } from 'src/database/database.service';
-import { EventDto } from './dto/event.dto';
-import { EventsFilter } from './dto/events-filter.dto';
-import DateTimeService from 'src/common/DateTimeService';
 
 @Injectable()
 export class CalendarService {
@@ -15,7 +15,7 @@ export class CalendarService {
                 ...dto,
                 frequency: dto.frequency as Frequency,
                 repeatOnDaily: dto.repeatOnDaily as DayOfWeek[],
-                repeatOnMonthly: dto.repeatOnMonthly as RepeatMonthly,
+                repeatOnMonthly: dto.repeatOnMonthly as RepeatMonthly
             }
         });
 
@@ -154,18 +154,16 @@ export class CalendarService {
 
         for (let event of freshEvents) {
             const monthDiff = DateTimeService.diffMonths(day, event.date);
-            
+
             let shouldApply = monthDiff % event.everyMonth === 0 && !DateTimeService.isSameDate(event.date, day);
             if (event.repeatOnMonthly === RepeatMonthly.EVERY_NTH_DATE) {
                 shouldApply = shouldApply && day.getDate() === event.date.getDate();
-            }
-            else if (event.repeatOnMonthly === RepeatMonthly.EVERY_NTH_DAY) {
+            } else if (event.repeatOnMonthly === RepeatMonthly.EVERY_NTH_DAY) {
                 const eventDateWeek = DateTimeService.numberOfWeek(event.date);
                 const dayWeek = DateTimeService.numberOfWeek(day);
 
-                shouldApply = shouldApply && eventDateWeek === dayWeek  && event.date.getDay() === day.getDay();
-            }
-            else {
+                shouldApply = shouldApply && eventDateWeek === dayWeek && event.date.getDay() === day.getDay();
+            } else {
                 throw new Error(`Unknown RepeatMonthly value: ${event.repeatOnMonthly}`);
             }
 

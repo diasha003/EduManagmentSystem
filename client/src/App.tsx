@@ -1,17 +1,17 @@
 import React from 'react';
-import './App.css';
-import { Footer } from 'antd/es/layout/layout';
-import NavBar from './components/NavBar/NavBar';
+import { Layout } from 'antd';
 import { Route, Routes } from 'react-router-dom';
-import InfoStudents from './pages/students/InfoStudents';
 
+import InfoStudents from './pages/students/InfoStudents';
 import AddStudent from './pages/students/AddStudent';
 import InfoEmployees from './pages/employees/InfoEmployess';
 import CalendarTest from './pages/calendar/Calendar';
-import { Layout } from 'antd';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
+import NavBar from './components/NavBar/NavBar';
 import CreateEmployeeForm from './pages/employees/components/createEmployeeForm/CreateEmployeeForm';
+
+import './App.css';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;

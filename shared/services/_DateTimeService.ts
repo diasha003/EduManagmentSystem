@@ -1,6 +1,4 @@
-import { DayOfWeek } from '@prisma/client';
-
-export default class DateTimeService {
+export class DateTimeService {
     static daysMap = new Map<number, string>([[1, '']]);
 
     static addTime(date: Date, hours: number, minutes?: number): Date {
@@ -46,7 +44,7 @@ export default class DateTimeService {
     }
 
     static dayOfWeek(day: number): string {
-        return DayOfWeek[day];
+        return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][day];
     }
 
     static toFirstDayOfMonth(date: Date): Date {

@@ -1,12 +1,12 @@
-import { Button, Checkbox, Col, Collapse, DatePicker, Form, GetProp, Input, Modal, Radio, Row, Select, Space, TimePicker } from 'antd';
-import { Option } from 'antd/es/mentions';
 import { useState } from 'react';
-
+import { Checkbox, Col, DatePicker, Form, GetProp, Input, Modal, Radio, Row, Select, Space, TimePicker } from 'antd';
 import { RedoOutlined } from '@ant-design/icons';
-import dayjs, { Dayjs } from 'dayjs';
-import { dayOfWeek, nthNumber } from '../../../helpers/NumberHelper';
+import { Option } from 'antd/es/mentions';
 import TextArea from 'antd/es/input/TextArea';
-import DateTimeService from '../../../features/DateTimeService';
+import dayjs from 'dayjs';
+import { DateTimeService } from 'shared/services';
+
+import { dayOfWeek, nthNumber } from '../../../helpers/NumberHelper';
 
 const CheckboxGroup = Checkbox.Group;
 

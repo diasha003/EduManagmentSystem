@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from '@nestjs/common';
+import { EventsFilter, EventDto } from 'shared/models';
+
 import { CalendarService } from './calendar.service';
-import { EventDto } from './dto/event.dto';
-import { EventsFilter } from './dto/events-filter.dto';
 
 @Controller('calendar')
 export class CalendarController {

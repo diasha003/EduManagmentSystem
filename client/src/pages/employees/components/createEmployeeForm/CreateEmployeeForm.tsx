@@ -1,15 +1,15 @@
-import React, { useRef, useState } from 'react';
-import { Button, Checkbox, Col, Divider, Form, Input, Radio, Row, Space, Steps } from 'antd';
-
-import TextArea from 'antd/es/input/TextArea';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import './CreateEmployeeForm.style.css';
-import { useCreateMutation } from '../../../../features/api/extensions/employeesApiExtension';
-import { IEmployeeRequest } from '../../../../models/api/employee/employee';
+import { Button, Checkbox, Col, Divider, Form, Input, Radio, Row, Space, Steps } from 'antd';
+import TextArea from 'antd/es/input/TextArea';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import { CreateEmployeeDto } from 'shared/models';
+
+import { useCreateMutation } from '../../../../features/api/extensions/employeesApiExtension';
 import { useAppSelector } from '../../../../hooks/redux';
-import { stat } from 'fs';
+
+import './CreateEmployeeForm.style.css';
 
 const CreateEmployeeForm: React.FC = () => {
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
@@ -37,7 +37,7 @@ const CreateEmployeeForm: React.FC = () => {
     };
 
     const onDoneFinish = async () => {
-        const data = { ...formData, ...stepForm.getFieldsValue() } as IEmployeeRequest;
+        const data = { ...formData, ...stepForm.getFieldsValue() } as CreateEmployeeDto;
 
         const result = await createEmployee({
             email: data.email,
@@ -46,14 +46,12 @@ const CreateEmployeeForm: React.FC = () => {
             payrollType: data.payrollType ? data.payrollType : null,
             access: data.access,
             address: data.address,
-            admin: data.admin,
             makeUpCredits: data.makeUpCredits,
             payRate: data.payRate,
             centerName: user ? user.centerName : '',
             permissions: [...(data.manageOtherTeachers || []), ...(data.manageSelf || []), ...(data.manageStudentsParents || []), ...(data.otherPrivileges || [])],
             password: data.password,
             phoneNumber: data.phoneNumber,
-            roles: state === 'teacher' ? ['TEACHER'] : ['STAFF']
         });
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;

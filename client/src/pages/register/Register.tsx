@@ -1,11 +1,13 @@
 import React from 'react';
-import { Button, Checkbox, Flex, Form, Input, InputNumber, Select } from 'antd';
-import './Register.style.css';
-import { useRegisterMutation } from '../../features/api/extensions/authApiExtension';
-import { IRegisterRequest } from '../../models/api/auth/auth.user';
 import { Link, useNavigate } from 'react-router-dom';
+import { Button, Checkbox, Form, Input, Select } from 'antd';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+
+import { useRegisterMutation } from '../../features/api/extensions/authApiExtension';
+
+import './Register.style.css';
+import { CreateEmployeeDto } from 'shared/models';
 
 const layout = {
     labelCol: { span: 8 },
@@ -28,18 +30,18 @@ const { Option } = Select;
 
 const Register: React.FC = () => {
     const [registerUser] = useRegisterMutation();
-    const [form] = Form.useForm<IRegisterRequest>();
+    const [form] = Form.useForm<CreateEmployeeDto>();
 
     const navigate = useNavigate();
 
-    const onFinish = async (formModel: IRegisterRequest) => {
+    const onFinish = async (formModel: CreateEmployeeDto) => {
         const result = await registerUser({
             email: formModel.email,
             firstName: formModel.firstName,
             lastName: formModel.lastName,
             password: formModel.password,
             centerName: formModel.centerName
-        } as IRegisterRequest);
+        } as CreateEmployeeDto);
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
         if (error) {

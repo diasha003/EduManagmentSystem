@@ -1,7 +1,8 @@
-import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
-import { EmployeeService } from './employee.service';
-import { CreateEmployeeDto } from './dto/create-employee.dto';
+import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { User } from '@prisma/client';
+import { CreateEmployeeDto } from 'shared/models';
+
+import { EmployeeService } from './employee.service';
 
 @Controller('employee')
 export class EmployeeController {

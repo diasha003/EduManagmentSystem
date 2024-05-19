@@ -1,11 +1,13 @@
 import React from 'react';
-import { Button, Checkbox, Form, Input, InputNumber, Select } from 'antd';
-import './Login.style.css';
+import { Button, Form, Input } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
-import { useLoginMutation } from '../../features/api/extensions/authApiExtension';
-import { ILoginRequest } from '../../models/api/auth/auth.user';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+
+import { useLoginMutation } from '../../features/api/extensions/authApiExtension';
+
+import './Login.style.css';
+import { LoginRequest } from 'shared/models';
 
 const layout = {
     labelCol: { span: 8 },
@@ -21,15 +23,15 @@ const validateMessages = {
 
 const Login: React.FC = () => {
     const [loginUser] = useLoginMutation();
-    const [form] = Form.useForm<ILoginRequest>();
+    const [form] = Form.useForm<LoginRequest>();
 
     const navigate = useNavigate();
 
-    const onFinish = async (formModel: ILoginRequest) => {
+    const onFinish = async (formModel: LoginRequest) => {
         let result = await loginUser({
             email: formModel.email,
             password: formModel.password
-        } as ILoginRequest);
+        } as LoginRequest);
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
         if (error) {

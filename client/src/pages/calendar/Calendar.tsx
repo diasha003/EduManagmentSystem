@@ -1,16 +1,15 @@
+import React, { useState } from 'react';
+import dayjs, { Dayjs } from 'dayjs';
 import { CalendarOutlined, CaretDownOutlined, CarryOutOutlined, CloudUploadOutlined, PlusOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card, Badge } from 'antd';
-import React, { useEffect, useState } from 'react';
-import dayjs, { Dayjs } from 'dayjs';
+import Meta from 'antd/es/card/Meta';
+import { EventsFilter } from 'shared/models';
+import { DateTimeService } from 'shared/services';
+
 import QuickAddLessonModalForm from './components/QuickAddLessonModalForm';
 import { dayOfWeek, monthOfYear } from '../../helpers/NumberHelper';
-import Icon from '@ant-design/icons/lib/components/Icon';
-import Meta from 'antd/es/card/Meta';
 import NonTeachingEventModalForm from './components/NonTeachinEventModalForm';
 import { useGetEventsQuery } from '../../features/api/extensions/calendarApiExtension';
-import { EventsFilter } from '../../models/api/eventsFilter';
-import { EventModel } from '../../models/api/eventModel';
-import DateTimeService from '../../features/DateTimeService';
 
 import './Calendar.style.css';
 

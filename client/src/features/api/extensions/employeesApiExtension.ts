@@ -1,10 +1,10 @@
-import { IEmployeeRequest } from '../../../models/api/employee/employee';
-import { IEmployee } from '../../../types/employee';
+
+import { Employee, CreateEmployeeDto } from 'shared/models';
 import { baseApi } from '../api';
 
 export const employeesApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        create: builder.mutation<void, IEmployeeRequest>({
+        create: builder.mutation<void, CreateEmployeeDto>({
             query: (userData) => ({
                 url: '/employee',
                 method: 'POST',
@@ -31,7 +31,7 @@ export const employeesApi = baseApi.injectEndpoints({
             }
         }),
 
-        getAllEmployees: builder.query<IEmployee[] | undefined, void>({
+        getAllEmployees: builder.query<Employee[] | undefined, void>({
             query: () => ({
                 url: '/employee',
                 method: 'GET'

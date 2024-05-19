@@ -1,10 +1,10 @@
-import { Checkbox, Col, DatePicker, Form, Modal, Radio, Row, Select, Space } from 'antd';
-import { Option } from 'antd/es/mentions';
 import { useState } from 'react';
+import { Checkbox, Col, DatePicker, Form, Modal, Radio, Row, Select, Space } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import { Option } from 'antd/es/mentions';
+import { QuickLessonModel } from 'shared/models';
 
 import RepeatableEventForm from '../../../components/RepeatableEventForm';
-import { useForm } from 'antd/es/form/Form';
-import { QuickLessonModel } from '../../../models/api/quickLessonModel';
 import { useCreateEventMutation } from '../../../features/api/extensions/calendarApiExtension';
 
 export type QuickAddLessonModalFormProps = {

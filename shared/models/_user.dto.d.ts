@@ -1,5 +1,5 @@
-export interface IUser {
-    id: number;
+export interface User {
+    id?: number;
     centerName: string;
     email: string;
     password: string;
@@ -12,4 +12,14 @@ export interface IUser {
     isActive: boolean;
     createdAt?: string;
     updatedAt?: string;
+}
+export declare class CreateUserDto {
+    email: string;
+    password: string | null;
+    firstName: string;
+    lastName: string;
+    centerName: string;
+    phoneNumber?: string;
+    address?: string;
+    access?: boolean;
 }

@@ -1,15 +1,15 @@
-import { Avatar, Badge, Button, Col, Dropdown, MenuProps, Row, Space } from 'antd';
-import { CaretDownOutlined, DeleteOutlined, DownOutlined, HomeOutlined, MailOutlined, MoreOutlined, PhoneOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
+import { Avatar, Badge, Button, Dropdown, MenuProps, Space } from 'antd';
+import { CaretDownOutlined, DeleteOutlined, HomeOutlined, MailOutlined, MoreOutlined, PhoneOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
+import { Employee } from 'shared/models';
 
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
 import { useAppSelector } from '../../../hooks/redux';
 import { useDeleteEmployeeMutation, useGetAllCenterNameQuery, useGetAllEmployeesQuery } from '../../../features/api/extensions/employeesApiExtension';
 
-import { IEmployee } from '../../../types/employee';
 import stc from 'string-to-color';
 
-export interface EmployeeModel {
+export interface EmployeeTableModel {
     key: number;
     name: string;
     contact?: string;
@@ -33,16 +33,16 @@ const EmployeesTable: React.FC = () => {
 
     const allCenterName = useGetAllCenterNameQuery().currentData;
     const [deleteEmployee] = useDeleteEmployeeMutation();
-    const data: IEmployee[] | undefined = useGetAllEmployeesQuery().currentData;
+    const data: Employee[] | undefined = useGetAllEmployeesQuery().currentData;
 
-    const columns: DataGridColumn<EmployeeModel>[] = [
+    const columns: DataGridColumn<EmployeeTableModel>[] = [
         {
             key: 'name',
             title: 'Name',
             dataIndex: 'name',
             width: 150,
             hidden: false,
-            sorter: (a: EmployeeModel, b: EmployeeModel) => a.name.length - b.name.length,
+            sorter: (a: EmployeeTableModel, b: EmployeeTableModel) => a.name.length - b.name.length,
             render: (value, record) => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -83,7 +83,7 @@ const EmployeesTable: React.FC = () => {
             dataIndex: 'contact',
             width: 100,
             hidden: false,
-            sorter: (a: EmployeeModel, b: EmployeeModel) => (a.contact?.length ?? 0) - (b.contact?.length ?? 0),
+            sorter: (a: EmployeeTableModel, b: EmployeeTableModel) => (a.contact?.length ?? 0) - (b.contact?.length ?? 0),
             render: (value, record) => {
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -248,7 +248,7 @@ const EmployeesTable: React.FC = () => {
         return '';
     };
 
-    const newData: EmployeeModel[] | undefined = data?.map((item, key) => ({
+    const newData: EmployeeTableModel[] | undefined = data?.map((item, key) => ({
         key: item.id,
         name: `${item.firstName} ${item.lastName}`,
         contact: item.phoneNumber,
