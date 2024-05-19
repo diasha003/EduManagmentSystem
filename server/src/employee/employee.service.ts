@@ -18,8 +18,6 @@ export class EmployeeService {
     }
 
     async createEmployee(dto: CreateEmployeeDto) {
-        //console.log(Boolean(dto.roles.includes(Role.TEACHER)));
-
         const candidate = await this.userService.getUserByEmail(dto.email);
         if (candidate) {
             throw new BadRequestException('Such user is already exists');
@@ -151,5 +149,9 @@ export class EmployeeService {
         });
 
         return data;
+    }
+
+    async deleteEmployee(id: number): Promise<User> {
+        return await this.userService.deleteById(id);
     }
 }

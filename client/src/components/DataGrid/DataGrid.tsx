@@ -112,7 +112,7 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                     {showColumnsSelector && <ColumnSelector columns={cols} onSwitchColumn={onSwitchShowColumn} />}
                     {showSort && <ColumnSorter columns={cols} onSwitchSortOrder={onSwitchSortOrder} />}
                     <Button>Search</Button>
-                    {showSelectCenterName && <SelectCenterName allCenterName={allCenterName}/>}
+                    {showSelectCenterName && <SelectCenterName allCenterName={allCenterName} />}
                 </Space>
             </div>
 
@@ -123,6 +123,14 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                 }}
                 dataSource={dataSource}
                 scroll={{ x: 1500, y: 1200 }}
+                onRow={(record, rowIndex) => {
+                    return {
+                        onClickCapture: (event) => {
+                            // console.log(record);
+                            // console.log(1)
+                        }
+                    };
+                }}
             />
         </div>
     );

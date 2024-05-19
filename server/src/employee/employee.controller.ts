@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Param, Patch, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Patch, Post, Query } from '@nestjs/common';
 import { EmployeeService } from './employee.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
 import { User } from '@prisma/client';
@@ -30,9 +30,12 @@ export class EmployeeController {
         return this.employeeService.createEmployee(dto);
     }
 
-    @Patch(':id')
-    async updateInfoEmployee() {}
-
+    //auth
     @Delete(':id')
-    async deleteEmployee() {}
+    async deleteEmployee(@Param('id', new ParseIntPipe()) id: number) {
+        return this.employeeService.deleteEmployee(id);
+    }
+
+    // @Patch(':id')
+    // async updateInfoEmployee() {}
 }

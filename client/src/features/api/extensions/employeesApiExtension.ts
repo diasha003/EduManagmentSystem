@@ -43,11 +43,19 @@ export const employeesApi = baseApi.injectEndpoints({
                 }
             },
             providesTags: ['Employee']
+        }),
+        deleteEmployee: builder.mutation<void, number>({
+            query: (id) => ({
+                url: `/employee/${id}`,
+                method: 'DELETE',
+               
+            })
+            //invalidatesTags: (result, error, arg) => [],
         })
     })
 });
 
-export const { useGetAllEmployeesQuery, useCreateMutation, useGetAllCenterNameQuery } = employeesApi;
+export const { useGetAllEmployeesQuery, useCreateMutation, useGetAllCenterNameQuery, useDeleteEmployeeMutation } = employeesApi;
 export const {
     endpoints: { getAllEmployees, create }
 } = employeesApi;
