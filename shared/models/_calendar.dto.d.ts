@@ -1,13 +1,12 @@
-import { FrequencyType } from "../enums";
-export interface EventsFilter {
+import { FrequencyType } from '../enums';
+export declare class EventsFilter {
     userId: number;
     dateFrom: Date;
     dateTo: Date;
 }
-export interface EventDto {
+export declare class EventDto {
     teacherId: number;
     studentId?: number;
-    date: Date;
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
     frequency?: string;
@@ -18,22 +17,23 @@ export interface EventDto {
     everyWeek?: number;
     everyMonth?: number;
     everyYear?: number;
+    date: Date;
 }
-export interface RepeatableEventInfo {
+export declare class RepeatableEventInfo {
     frequency: FrequencyType;
     repeatOnDaily: string[];
     repeatOnMonthly: string;
-    repeatUntil?: Date;
     repeatIdentity?: boolean;
     everyWeek?: number;
     everyMonth?: number;
     everyYear?: number;
+    repeatUntil?: Date;
 }
-export interface QuickLessonModel {
+export declare class QuickLessonModel {
     teacher: number;
     student: number;
-    date: Date;
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
     repeatableEventInfo?: RepeatableEventInfo;
+    date: Date;
 }

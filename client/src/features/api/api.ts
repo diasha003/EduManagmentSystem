@@ -35,9 +35,31 @@ export const baseQueryWithErrorHandling: BaseQueryFn<string | FetchArgs, unknown
     return result;
 };
 
+export const baseQueryWithDateParsing: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (args, api, extraOptions) => {
+    const result = await baseQueryWithErrorHandling(args, api, extraOptions);
+    const data = result.data as any;
+
+    const parseDates = (entity: any) => Object.keys(entity ?? {}).forEach((key) => {
+        if (!entity) return;
+        const lowerKey = key.toLowerCase();
+        if (lowerKey.indexOf('date') !== -1 || lowerKey.indexOf('utc') !== -1 || lowerKey.indexOf('time') !== -1 || lowerKey.indexOf('lt') !== -1) {
+            entity[key] = new Date(entity[key])
+        }
+    });
+
+    if (!Array.isArray(data)) {
+        parseDates(data);
+    }
+    else {
+        (data as any[]).forEach(x => parseDates(x))
+    }
+
+    return result;
+};
+
 export const baseApi = createApi({
     reducerPath: 'baseApi',
-    baseQuery: baseQueryWithErrorHandling,
+    baseQuery: baseQueryWithDateParsing,
     refetchOnMountOrArgChange: true,
     tagTypes: ['Employee'],
     endpoints: () => ({})

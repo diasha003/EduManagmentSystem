@@ -1,15 +1,23 @@
-import { FrequencyType } from "../enums";
+import { IsDateString, IsNumber } from 'class-validator';
+import { FrequencyType } from '../enums';
+import { Type } from 'class-transformer';
 
-export interface EventsFilter {
+export class EventsFilter {
+    @IsNumber()
     userId: number;
+
+    @IsDateString()
+    @Type(() => Date)
     dateFrom: Date;
+
+    @IsDateString()
+    @Type(() => Date)
     dateTo: Date;
 }
 
-export interface EventDto {
+export class EventDto {
     teacherId: number;
     studentId?: number;
-    date: Date;
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
     frequency?: string;
@@ -20,25 +28,34 @@ export interface EventDto {
     everyWeek?: number;
     everyMonth?: number;
     everyYear?: number;
+
+    @IsDateString()
+    @Type(() => Date)
+    date: Date;
 }
 
-export interface RepeatableEventInfo {
+export class RepeatableEventInfo {
     frequency: FrequencyType;
     repeatOnDaily: string[];
     repeatOnMonthly: string;
-    repeatUntil?: Date;
     repeatIdentity?: boolean;
     everyWeek?: number;
     everyMonth?: number;
     everyYear?: number;
+
+    @IsDateString()
+    @Type(() => Date)
+    repeatUntil?: Date;
 }
 
-export interface QuickLessonModel {
+export class QuickLessonModel {
     teacher: number;
     student: number;
-    date: Date;
     isPublic?: boolean;
     stateMakeUpCredit?: boolean;
-
     repeatableEventInfo?: RepeatableEventInfo;
+
+    @IsDateString()
+    @Type(() => Date)
+    date: Date;
 }
