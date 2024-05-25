@@ -10,6 +10,7 @@ import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import NavBar from './components/NavBar/NavBar';
 import CreateEmployeeForm from './pages/employees/components/createEmployeeForm/CreateEmployeeForm';
+import NewCalendarEvent from './pages/calendar/NewCalendarEvent';
 
 import './App.css';
 
@@ -29,6 +30,7 @@ const App: React.FC = () => {
     routes.push({ path: '/students', element: <InfoStudents /> });
     routes.push({ path: '/students/add', element: <AddStudent /> });
     routes.push({ path: '/calendar', element: <CalendarTest /> });
+    routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} />})
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
 
