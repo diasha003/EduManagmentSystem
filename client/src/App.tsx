@@ -3,7 +3,6 @@ import { Layout } from 'antd';
 import { Route, Routes } from 'react-router-dom';
 
 import InfoStudents from './pages/students/InfoStudents';
-import AddStudent from './pages/students/AddStudent';
 import InfoEmployees from './pages/employees/InfoEmployess';
 import CalendarTest from './pages/calendar/Calendar';
 import Login from './pages/login/Login';
@@ -12,6 +11,7 @@ import NavBar from './components/NavBar/NavBar';
 import CreateEmployeeForm from './pages/employees/components/createEmployeeForm/CreateEmployeeForm';
 
 import './App.css';
+import AddStudentForm from './pages/students/components/addStudentForm/AddStudentForm';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -27,7 +27,7 @@ const App: React.FC = () => {
     routes.push({ path: '/employees', element: <InfoEmployees /> });
     routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm /> });
     routes.push({ path: '/students', element: <InfoStudents /> });
-    routes.push({ path: '/students/add', element: <AddStudent /> });
+    routes.push({ path: '/students/add', element: <AddStudentForm /> });
     routes.push({ path: '/calendar', element: <CalendarTest /> });
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });

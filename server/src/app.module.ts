@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuthModule } from './auth/auth.module';
 import { EmployeeModule } from './employee/employee.module';
 import { CalendarModule } from './calendar/calendar.module';
+import { StudentModule } from './student/student.module';
 
 @Module({
     imports: [
@@ -15,7 +16,8 @@ import { CalendarModule } from './calendar/calendar.module';
         ConfigModule.forRoot({ isGlobal: true }),
         AuthModule,
         EmployeeModule,
-        CalendarModule
+        CalendarModule,
+        StudentModule
     ],
     controllers: [],
     providers: [],
