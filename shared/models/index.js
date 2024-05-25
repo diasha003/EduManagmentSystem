@@ -18,3 +18,4 @@ __exportStar(require("./_calendar.dto"), exports);
 __exportStar(require("./_user.dto"), exports);
 __exportStar(require("./_employee.dto"), exports);
 __exportStar(require("./_auth.dto"), exports);
+__exportStar(require("./_student.dto"), exports);

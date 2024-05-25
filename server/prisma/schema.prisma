@@ -82,12 +82,12 @@ model EmployeeInfo {
 model StudentInfo {
   id             Int              @id @default(autoincrement())
   birthdayDate   DateTime?        @map("birthday_date")
-  dataRegister   DateTime?        @map("data_since_student")
+  dateRegister   DateTime?        @map("date_register")
   avatarUrl      String?          @map("avatar_url")
   gender         Gender?
   institution    String?
   type           Type
-  skills         String?
+  skills         String[]
   user           User             @relation(fields: [userId], references: [id])
   userId         Int
   groupStudents  GroupStudents[]
