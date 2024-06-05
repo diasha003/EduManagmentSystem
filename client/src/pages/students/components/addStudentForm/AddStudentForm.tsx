@@ -25,7 +25,7 @@ const AddStudentForm: React.FC = () => {
     const [createStudent] = useCreateStudentMutation();
     const user = useAppSelector((state) => state.auth.user);
 
-    const onNextFinish = () => {
+    const onNextFinish = async () => {
         stepForm
             .validateFields({ validateOnly: false })
             .then(() => {
@@ -35,11 +35,16 @@ const AddStudentForm: React.FC = () => {
                 });
                 next();
             })
-            .catch(() => {});
+            .catch(() => {
+                console.log('catch');
+            });
+        //console.log(await stepForm.validateFields());
     };
 
     const onDoneFinish = async () => {
         const data = { ...formData, ...stepForm.getFieldsValue() } as CreateStudentDto;
+
+        console.log(data);
 
         // const result = await createEmployee({
         //     email: data.email,
@@ -85,9 +90,18 @@ const AddStudentForm: React.FC = () => {
         console.log('Received values of form: ', values);
     };
 
+    const validateMessages = {
+        required: 'required',
+        types: {
+            email: 'not a valid email!',
+            number: 'not a valid number!',
+            string: 'not a valid string!'
+        }
+    };
+
     const Step1Form = () => {
         return (
-            <Form layout="vertical" className="formStyle" onFinish={onFinish} form={stepForm}>
+            <Form layout="vertical" className="formStyle" onFinish={onFinish} form={stepForm} validateMessages={validateMessages}>
                 <Row gutter={10}>
                     <Col span={11}>
                         <h2 style={{ margin: '15px 0px' }}>Student Details</h2>
@@ -98,12 +112,12 @@ const AddStudentForm: React.FC = () => {
                 <Row gutter={10}>
                     <Col span={11}>
                         <Form.Item
-                            name="first_name"
+                            name="firstName"
                             label="First Name"
                             rules={[
                                 {
                                     required: true,
-                                    message: 'Please input  '
+                                    message: 'Please input first name'
                                 }
                             ]}
                         >
@@ -111,19 +125,19 @@ const AddStudentForm: React.FC = () => {
                         </Form.Item>
                     </Col>
                     <Col span={11}>
-                        <Form.Item label="Last Name" name="last_name" rules={[{ required: true, message: 'Please input ' }]}>
+                        <Form.Item label="Last Name" name="lastName" rules={[{ required: true, message: 'Please input last name' }]}>
                             <Input />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={10}>
                     <Col span={11}>
-                        <Form.Item name="email" label="Email">
+                        <Form.Item name="email" label="Email" rules={[{ required: true }]}>
                             <Input />
                         </Form.Item>
                     </Col>
                     <Col span={11}>
-                        <Form.Item label="Phone Number" name="phone_number">
+                        <Form.Item label="Phone Number" name="phoneNumber">
                             <Input />
                         </Form.Item>
                     </Col>
@@ -131,6 +145,7 @@ const AddStudentForm: React.FC = () => {
 
                 <Collapse
                     expandIcon={({ isActive }) => <PlusOutlined rotate={isActive ? 90 : 0} />}
+                    defaultActiveKey="1"
                     ghost
                     items={[
                         {
@@ -141,7 +156,7 @@ const AddStudentForm: React.FC = () => {
                                     <Row gutter={10}>
                                         <Col span={11}>
                                             <Form.Item name="gender" label="Gender  ">
-                                                <Select placeholder="select your gender">
+                                                <Select placeholder="Select your gender" style={{ width: '100%', height: 'auto' }}>
                                                     <Option value="male">Male</Option>
                                                     <Option value="female">Female</Option>
                                                 </Select>
@@ -149,13 +164,13 @@ const AddStudentForm: React.FC = () => {
                                         </Col>
                                         <Col span={11}>
                                             <Form.Item name="birthday" label="Birthday">
-                                                <DatePicker style={{ width: '100%' }} />
+                                                <DatePicker style={{ width: '100%' }} placeholder='Select birthday'/>
                                             </Form.Item>
                                         </Col>
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={11}>
-                                            <Form.Item name="school_university" label="School/University">
+                                            <Form.Item name="education" label="School/University">
                                                 <Input />
                                             </Form.Item>
                                         </Col>
@@ -163,7 +178,7 @@ const AddStudentForm: React.FC = () => {
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={11}>
-                                            <Form.Item name="student_since" label="Student Since">
+                                            <Form.Item name="studentSince" label="Student Since">
                                                 <DatePicker style={{ width: '100%' }} />
                                             </Form.Item>
                                         </Col>
@@ -171,7 +186,7 @@ const AddStudentForm: React.FC = () => {
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={22}>
-                                            <Form.Item name="skills_hobbys" label="Skills/Hobbys" extra="Use press the Enter key to separate entries">
+                                            <Form.Item name="hobbies" label="Skills/Hobbies" extra="Use press the Enter key to separate entries">
                                                 <Select
                                                     mode="tags"
                                                     style={{
@@ -220,8 +235,8 @@ const AddStudentForm: React.FC = () => {
                 <Row>
                     <Col span={22}>
                         <Form.Item
-                            name="type"
-                            label="Sdutent Type"
+                            name="studentType"
+                            label="Student Type"
                             rules={[
                                 {
                                     required: true
@@ -264,7 +279,7 @@ const AddStudentForm: React.FC = () => {
                             <Row gutter={10}>
                                 <Col span={11}>
                                     <Form.Item
-                                        name="parent_first_name"
+                                        name="parentFirstName"
                                         label="Parent First Name"
                                         rules={[
                                             {
@@ -277,26 +292,26 @@ const AddStudentForm: React.FC = () => {
                                     </Form.Item>
                                 </Col>
                                 <Col span={11}>
-                                    <Form.Item label="Parent Last Name" name="parent_last_name" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
+                                    <Form.Item label="Parent Last Name" name="parentLastName" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
                                         <Input />
                                     </Form.Item>
                                 </Col>
                             </Row>
                             <Row gutter={10}>
                                 <Col span={11}>
-                                    <Form.Item name="parent_email" label="Email">
+                                    <Form.Item name="parentEmail" label="Email">
                                         <Input />
                                     </Form.Item>
                                 </Col>
                                 <Col span={11}>
-                                    <Form.Item label="Phone Number" name="parent_phone_number">
+                                    <Form.Item label="Phone Number" name="parentPhoneNumber">
                                         <Input />
                                     </Form.Item>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col span={22}>
-                                    <Form.Item name="parent_address" label="Address" style={{ padding: 0 }}>
+                                    <Form.Item name="parentAddress" label="Address" style={{ padding: 0 }}>
                                         <TextArea rows={3} />
                                     </Form.Item>
                                 </Col>
@@ -306,7 +321,7 @@ const AddStudentForm: React.FC = () => {
                         <Row gutter={10}>
                             <Col span={11}>
                                 <Form.Item
-                                    name="family_list"
+                                    name="familyList"
                                     label="Family"
                                     rules={[
                                         {
@@ -485,8 +500,7 @@ const AddStudentForm: React.FC = () => {
                         type="primary"
                         htmlType="submit"
                         onClick={() => {
-                            next();
-                            //onNextFinish();
+                            onNextFinish();
                         }}
                     >
                         Next
@@ -496,7 +510,7 @@ const AddStudentForm: React.FC = () => {
                     <Button
                         type="primary"
                         onClick={() => {
-                            //onDoneFinish();
+                            onDoneFinish();
                         }}
                     >
                         Done

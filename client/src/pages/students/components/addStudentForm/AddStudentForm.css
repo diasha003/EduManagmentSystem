@@ -2,7 +2,6 @@
     background: #ffffff;
     margin-bottom: 20px;
     width: 65%;
-
 }
 
 /* 
@@ -29,4 +28,8 @@
 
 .ant-input-suffix {
     color: gray;
+}
+
+.ant-select-single .ant-select-selector {
+    font-size: 14px;
 }
