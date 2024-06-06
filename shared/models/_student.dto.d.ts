@@ -8,4 +8,10 @@ export declare class CreateStudentDto extends CreateUserDto {
     institution?: string;
     type: Type;
     skills?: string[];
+    familyExist?: number;
+    parentLastName?: string;
+    parentFirstName?: string;
+    parentEmail?: string;
+    parentPhoneNumber?: string;
+    parentAddress?: string;
 }

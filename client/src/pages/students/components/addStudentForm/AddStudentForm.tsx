@@ -4,10 +4,12 @@ import { DeleteOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
 import TextArea from 'antd/es/input/TextArea';
 
 import './AddStudentForm.css';
-import { Link } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useCreateStudentMutation } from '../../../../features/api/extensions/studentApiExtension';
 import { useAppSelector } from '../../../../hooks/redux';
 import { CreateStudentDto } from 'shared/models';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const AddStudentForm: React.FC = () => {
     const { Option } = Select;
@@ -25,6 +27,8 @@ const AddStudentForm: React.FC = () => {
     const [createStudent] = useCreateStudentMutation();
     const user = useAppSelector((state) => state.auth.user);
 
+    const navigate = useNavigate();
+
     const onNextFinish = async () => {
         stepForm
             .validateFields({ validateOnly: false })
@@ -36,9 +40,8 @@ const AddStudentForm: React.FC = () => {
                 next();
             })
             .catch(() => {
-                console.log('catch');
+                //console.log('catch');
             });
-        //console.log(await stepForm.validateFields());
     };
 
     const onDoneFinish = async () => {
@@ -46,28 +49,19 @@ const AddStudentForm: React.FC = () => {
 
         console.log(data);
 
-        // const result = await createEmployee({
-        //     email: data.email,
-        //     firstName: data.firstName,
-        //     lastName: data.lastName,
-        //     payrollType: data.payrollType ? data.payrollType : null,
-        //     access: data.access,
-        //     address: data.address,
-        //     makeUpCredits: data.makeUpCredits,
-        //     payRate: data.payRate,
-        //     centerName: user ? user.centerName : '',
-        //     permissions: [...(data.manageOtherTeachers || []), ...(data.manageSelf || []), ...(data.manageStudentsParents || []), ...(data.otherPrivileges || [])],
-        //     password: data.password,
-        //     phoneNumber: data.phoneNumber
-        // });
+        const result = await createStudent({
+            ...data,
+            centerName: user ? user.centerName : '',
+            familyExist: Number(data.familyExist)
+        });
 
-        // const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
-        // if (error) {
-        //     alert(JSON.stringify(error));
-        //     console.log(error);
-        // } else {
-        //     navigate('/employees');
-        // }
+        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        if (error) {
+            alert(JSON.stringify(error));
+            console.log(error);
+        } else {
+            navigate('/students');
+        }
     };
 
     const onChangeRadioGroupStatus = (e: RadioChangeEvent) => {
@@ -164,7 +158,7 @@ const AddStudentForm: React.FC = () => {
                                         </Col>
                                         <Col span={11}>
                                             <Form.Item name="birthday" label="Birthday">
-                                                <DatePicker style={{ width: '100%' }} placeholder='Select birthday'/>
+                                                <DatePicker style={{ width: '100%' }} placeholder="Select birthday" />
                                             </Form.Item>
                                         </Col>
                                     </Row>
@@ -220,9 +214,9 @@ const AddStudentForm: React.FC = () => {
                             ]}
                         >
                             <Radio.Group onChange={onChangeRadioGroupStatus} value={status}>
-                                <Radio value={1}>Active</Radio>
-                                <Radio value={2}>Trial</Radio>
-                                <Radio value={3}>Inactive</Radio>
+                                <Radio value="Active">Active</Radio>
+                                <Radio value="Trial">Trial</Radio>
+                                <Radio value="Inactive">Inactive</Radio>
                             </Radio.Group>
                         </Form.Item>
                     </Col>
@@ -244,8 +238,8 @@ const AddStudentForm: React.FC = () => {
                             ]}
                         >
                             <Radio.Group onChange={onChangeRadioGroupType} value={studentType}>
-                                <Radio value={1}>Adult</Radio>
-                                <Radio value={2}>Child</Radio>
+                                <Radio value="Adult">Adult</Radio>
+                                <Radio value="Child">Child</Radio>
                             </Radio.Group>
                         </Form.Item>
                     </Col>
@@ -299,7 +293,7 @@ const AddStudentForm: React.FC = () => {
                             </Row>
                             <Row gutter={10}>
                                 <Col span={11}>
-                                    <Form.Item name="parentEmail" label="Email">
+                                    <Form.Item name="parentEmail" label="Email" rules={[{ required: !hasFamily }]}>
                                         <Input />
                                     </Form.Item>
                                 </Col>
@@ -321,7 +315,7 @@ const AddStudentForm: React.FC = () => {
                         <Row gutter={10}>
                             <Col span={11}>
                                 <Form.Item
-                                    name="familyList"
+                                    name="familyExist"
                                     label="Family"
                                     rules={[
                                         {

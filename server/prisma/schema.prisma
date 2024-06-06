@@ -110,12 +110,14 @@ model GroupStudents {
 }
 
 model FamilyStudents {
-  user          User        @relation(fields: [userId], references: [id])
-  userId        Int         @map("user_id")
-  studentInfo   StudentInfo @relation(fields: [studentInfoId], references: [id])
-  studentInfoId Int
+  parent        User         @relation(fields: [parentId], references: [id])
+  parentId      Int          @map("user_id")
+  student       User         @relation(fields: [studentId], references: [id])
+  studentId     Int
+  StudentInfo   StudentInfo? @relation(fields: [studentInfoId], references: [id])
+  studentInfoId Int?
 
-  @@id(fields: [userId, studentInfoId])
+  @@id(fields: [parentId, studentId])
 }
 
 enum Gender {

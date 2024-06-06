@@ -4,12 +4,11 @@ import { CreateStudentDto } from 'shared/models';
 
 @Controller('student')
 export class StudentController {
-  constructor(private readonly studentService: StudentService) {}
+    constructor(private readonly studentService: StudentService) {}
 
-   //auth
-   @Post('/')
-   async createStudent(@Body() dto: CreateStudentDto) {
-       //return this.employeeService();
-       return 
-   }
+    //auth
+    @Post('/')
+    async createStudent(@Body() dto: CreateStudentDto) {
+        return this.studentService.createStudent(dto);
+    }
 }
