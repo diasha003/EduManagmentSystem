@@ -145,6 +145,9 @@ export class EmployeeService {
 
                 centerName: {
                     equals: decoded.centerName
+                },
+                roles: {
+                    hasSome: [Role.STAFF, Role.TEACHER, Role.ADMIN]
                 }
             }
         });

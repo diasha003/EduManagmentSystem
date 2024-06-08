@@ -27,13 +27,14 @@ model User {
   centerName String
   isActive   Boolean @default(true) @map("is_active")
 
-  roles          Role[]            @default([USER])
-  employeeInfo   EmployeeInfo?
-  permissions    PermissionsUser[]
-  teacherEvents  CalendarEvent[]   @relation(name: "calendar_event_teacher")
-  studentEvents  CalendarEvent[]   @relation(name: "calendar_event_student")
-  studentInfo    StudentInfo[]
-  familyStudents FamilyStudents[]
+  roles                   Role[]            @default([USER])
+  employeeInfo            EmployeeInfo?
+  permissions             PermissionsUser[]
+  teacherEvents           CalendarEvent[]   @relation(name: "calendar_event_teacher")
+  studentEvents           CalendarEvent[]   @relation(name: "calendar_event_student")
+  familyStudentsAsParent  FamilyStudents[]  @relation("ParentRelation")
+  familyStudentsAsStudent FamilyStudents[]  @relation("StudentRelation")
+  studentInfo             StudentInfo?
 }
 
 enum Role {
@@ -80,18 +81,19 @@ model EmployeeInfo {
 }
 
 model StudentInfo {
-  id             Int              @id @default(autoincrement())
-  birthdayDate   DateTime?        @map("birthday_date")
-  dateRegister   DateTime?        @map("date_register")
-  avatarUrl      String?          @map("avatar_url")
-  gender         Gender?
-  institution    String?
-  type           Type
-  skills         String[]
-  user           User             @relation(fields: [userId], references: [id])
-  userId         Int
-  groupStudents  GroupStudents[]
-  familyStudents FamilyStudents[]
+  id           Int       @id @default(autoincrement())
+  birthdayDate DateTime? @map("birthday_date")
+  dateRegister DateTime? @map("date_register")
+  avatarUrl    String?   @map("avatar_url")
+  gender       Gender?
+  status       Status
+  institution  String?
+  type         Type
+  skills       String[]
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int       @unique @map("user_id")
+  note          String?
+  groupStudents GroupStudents[]
 }
 
 model Group {
@@ -110,12 +112,10 @@ model GroupStudents {
 }
 
 model FamilyStudents {
-  parent        User         @relation(fields: [parentId], references: [id])
-  parentId      Int          @map("user_id")
-  student       User         @relation(fields: [studentId], references: [id])
-  studentId     Int
-  StudentInfo   StudentInfo? @relation(fields: [studentInfoId], references: [id])
-  studentInfoId Int?
+  parent    User @relation(name: "ParentRelation", fields: [parentId], references: [id])
+  parentId  Int  @map("parent_id")
+  student   User @relation(name: "StudentRelation", fields: [studentId], references: [id])
+  studentId Int  @map("student_id")
 
   @@id(fields: [parentId, studentId])
 }
@@ -128,6 +128,12 @@ enum Gender {
 enum Type {
   adult
   child
+}
+
+enum Status {
+  active
+  trial
+  inactive
 }
 
 model Payroll {

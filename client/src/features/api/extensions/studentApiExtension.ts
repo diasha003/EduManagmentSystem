@@ -1,4 +1,4 @@
-import { CreateStudentDto } from 'shared/models';
+import { CreateStudentDto, Student } from 'shared/models';
 import { baseApi } from '../api';
 
 export const studentApiExtensions = baseApi.injectEndpoints({
@@ -9,8 +9,22 @@ export const studentApiExtensions = baseApi.injectEndpoints({
                 method: 'POST',
                 body: data
             })
+        }),
+        getAllStudents: builder.query<Student[] | undefined, void>({
+            query: () => ({
+                url: '/student',
+                method: 'GET'
+            }),
+            async onQueryStarted(arg, api) {
+                try {
+                    //console.log(arg)
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            providesTags: ['Students']
         })
     })
 });
 
-export const {useCreateStudentMutation} = studentApiExtensions;
+export const { useCreateStudentMutation, useGetAllStudentsQuery } = studentApiExtensions;

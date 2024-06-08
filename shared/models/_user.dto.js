@@ -14,24 +14,6 @@ var CreateUserDto = /** @class */ (function () {
     __decorate([
         (0, class_validator_1.IsEmail)()
     ], CreateUserDto.prototype, "email");
-    __decorate([
-        (0, class_validator_1.IsString)(),
-        (0, class_validator_1.IsOptional)()
-    ], CreateUserDto.prototype, "firstName");
-    __decorate([
-        (0, class_validator_1.IsString)(),
-        (0, class_validator_1.IsOptional)()
-    ], CreateUserDto.prototype, "lastName");
-    __decorate([
-        (0, class_validator_1.IsString)(),
-        (0, class_validator_1.IsOptional)()
-    ], CreateUserDto.prototype, "centerName");
-    __decorate([
-        (0, class_validator_1.IsOptional)()
-    ], CreateUserDto.prototype, "phoneNumber");
-    __decorate([
-        (0, class_validator_1.IsOptional)()
-    ], CreateUserDto.prototype, "address");
     return CreateUserDto;
 }());
 exports.CreateUserDto = CreateUserDto;

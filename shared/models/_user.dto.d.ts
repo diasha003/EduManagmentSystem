@@ -10,8 +10,8 @@ export interface User {
     size?: string;
     roles: string[];
     isActive: boolean;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 export declare class CreateUserDto {
     email: string;

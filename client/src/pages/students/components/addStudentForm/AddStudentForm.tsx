@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button, Col, Collapse, DatePicker, Divider, Form, Input, Radio, RadioChangeEvent, Row, Select, Space, Steps, Typography } from 'antd';
 import { DeleteOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
-import TextArea from 'antd/es/input/TextArea';
+//import TextArea from 'antd/es/input/TextArea';
 
 import './AddStudentForm.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
@@ -11,14 +11,17 @@ import { CreateStudentDto } from 'shared/models';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
+const { TextArea } = Input;
+
 const AddStudentForm: React.FC = () => {
     const { Option } = Select;
 
     const { Text } = Typography;
 
     const [status, setStatus] = useState();
-    const [studentType, setStudentType] = useState<Number>();
+    const [studentType, setStudentType] = useState<string>('');
     const [hasFamily, setHasFamily] = useState<Boolean | null>(null);
+    const [note, setNote] = useState<string>('');
     const [isAssignTeacherClicked, setIsAssignTeacherClicked] = useState<boolean>(false);
     const [billingType, setBillingType] = useState<string>('auto');
 
@@ -47,12 +50,14 @@ const AddStudentForm: React.FC = () => {
     const onDoneFinish = async () => {
         const data = { ...formData, ...stepForm.getFieldsValue() } as CreateStudentDto;
 
-        console.log(data);
+        console.log(data, note);
 
         const result = await createStudent({
             ...data,
             centerName: user ? user.centerName : '',
-            familyExist: Number(data.familyExist)
+            familyExist: Number(data.familyExist),
+            note: data.note
+
         });
 
         const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
@@ -157,14 +162,14 @@ const AddStudentForm: React.FC = () => {
                                             </Form.Item>
                                         </Col>
                                         <Col span={11}>
-                                            <Form.Item name="birthday" label="Birthday">
+                                            <Form.Item name="birthdayDate" label="Birthday">
                                                 <DatePicker style={{ width: '100%' }} placeholder="Select birthday" />
                                             </Form.Item>
                                         </Col>
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={11}>
-                                            <Form.Item name="education" label="School/University">
+                                            <Form.Item name="institution" label="School/University">
                                                 <Input />
                                             </Form.Item>
                                         </Col>
@@ -172,7 +177,7 @@ const AddStudentForm: React.FC = () => {
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={11}>
-                                            <Form.Item name="studentSince" label="Student Since">
+                                            <Form.Item name="dateRegister" label="Student Since">
                                                 <DatePicker style={{ width: '100%' }} />
                                             </Form.Item>
                                         </Col>
@@ -180,7 +185,7 @@ const AddStudentForm: React.FC = () => {
                                     </Row>
                                     <Row gutter={10}>
                                         <Col span={22}>
-                                            <Form.Item name="hobbies" label="Skills/Hobbies" extra="Use press the Enter key to separate entries">
+                                            <Form.Item name="skills" label="Skills/Hobbies" extra="Use press the Enter key to separate entries">
                                                 <Select
                                                     mode="tags"
                                                     style={{
@@ -214,9 +219,9 @@ const AddStudentForm: React.FC = () => {
                             ]}
                         >
                             <Radio.Group onChange={onChangeRadioGroupStatus} value={status}>
-                                <Radio value="Active">Active</Radio>
-                                <Radio value="Trial">Trial</Radio>
-                                <Radio value="Inactive">Inactive</Radio>
+                                <Radio value="active">Active</Radio>
+                                <Radio value="trial">Trial</Radio>
+                                <Radio value="inactive">Inactive</Radio>
                             </Radio.Group>
                         </Form.Item>
                     </Col>
@@ -229,7 +234,7 @@ const AddStudentForm: React.FC = () => {
                 <Row>
                     <Col span={22}>
                         <Form.Item
-                            name="studentType"
+                            name="type"
                             label="Student Type"
                             rules={[
                                 {
@@ -238,8 +243,8 @@ const AddStudentForm: React.FC = () => {
                             ]}
                         >
                             <Radio.Group onChange={onChangeRadioGroupType} value={studentType}>
-                                <Radio value="Adult">Adult</Radio>
-                                <Radio value="Child">Child</Radio>
+                                <Radio value="adult">Adult</Radio>
+                                <Radio value="child">Child</Radio>
                             </Radio.Group>
                         </Form.Item>
                     </Col>
@@ -364,7 +369,7 @@ const AddStudentForm: React.FC = () => {
                             <Col span={11}>
                                 <Form.Item name="teacher_list" label="Teacher">
                                     <Select placeholder="Please select a teacher">
-                                        <Option value="1">test-teacher-1</Option>
+                                        <Option value="8">test-teacher-1</Option>
                                         <Option value="2">test-teqcher-2</Option>
                                     </Select>
                                 </Form.Item>
@@ -425,7 +430,15 @@ const AddStudentForm: React.FC = () => {
                     <Col span={22}>
                         <Form.Item name="note" label="Note" style={{ padding: 0 }}>
                             <span style={{ color: 'rgba(0, 0, 0, 0.45)', fontSize: '14px' }}>Use this area for any private notes you wish to keep.</span>
-                            <TextArea rows={4} />
+                            <TextArea
+                                maxLength={100}
+                                rows={4}
+                                value={note}
+                                onChange={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+                                    setNote(e.target.value);
+                                }}
+                                autoSize={{ minRows: 3, maxRows: 5 }}
+                            />
                         </Form.Item>
                     </Col>
                 </Row>

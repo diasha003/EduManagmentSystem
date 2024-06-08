@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.Type = exports.Gender = exports.FrequencyType = void 0;
+exports.Status = exports.Type = exports.Gender = exports.FrequencyType = void 0;
 var FrequencyType;
 (function (FrequencyType) {
     FrequencyType["Daily"] = "Daily";
@@ -18,3 +18,9 @@ var Type;
     Type[Type["adult"] = 0] = "adult";
     Type[Type["child"] = 1] = "child";
 })(Type = exports.Type || (exports.Type = {}));
+var Status;
+(function (Status) {
+    Status[Status["active"] = 0] = "active";
+    Status[Status["trial"] = 1] = "trial";
+    Status[Status["inactive"] = 2] = "inactive";
+})(Status = exports.Status || (exports.Status = {}));

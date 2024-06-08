@@ -31,10 +31,10 @@ export class AuthService {
         const salt = 10;
         const hashPassword = await bcrypt.hash(createUserDto.password, salt);
 
-        const newUser = await this.userService.createUser({
+        const newUser = await this.userService.createWithRoles({
             ...createUserDto,
             password: hashPassword
-        });
+        }, [Role.ADMIN]);
 
         return {
             ...newUser,

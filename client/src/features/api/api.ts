@@ -61,6 +61,6 @@ export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQueryWithDateParsing,
     refetchOnMountOrArgChange: true,
-    tagTypes: ['Employee'],
+    tagTypes: ['Employees', 'Students'],
     endpoints: () => ({})
 });

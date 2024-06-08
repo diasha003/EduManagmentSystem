@@ -14,3 +14,10 @@ export enum Type {
     adult,
     child
 }
+
+
+export enum Status{
+    active,
+    trial,
+    inactive
+}

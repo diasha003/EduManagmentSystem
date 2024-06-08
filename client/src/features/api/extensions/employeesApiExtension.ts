@@ -42,7 +42,7 @@ export const employeesApi = baseApi.injectEndpoints({
                     console.log(error);
                 }
             },
-            providesTags: ['Employee']
+            providesTags: ['Employees']
         }),
         deleteEmployee: builder.mutation<void, number>({
             query: (id) => ({

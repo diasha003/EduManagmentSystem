@@ -12,3 +12,8 @@ export declare enum Type {
     adult = 0,
     child = 1
 }
+export declare enum Status {
+    active = 0,
+    trial = 1,
+    inactive = 2
+}

@@ -12,8 +12,8 @@ export interface User {
     size?: string;
     roles: string[];
     isActive: boolean;
-    createdAt?: string;
-    updatedAt?: string;
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
 export class CreateUserDto {
@@ -21,24 +21,10 @@ export class CreateUserDto {
     email: string;
 
     password: string | null;
-
-    @IsString()
-    @IsOptional()
     firstName: string;
-
-    @IsString()
-    @IsOptional()
     lastName: string;
-
-    @IsString()
-    @IsOptional()
     centerName: string;
-
-    @IsOptional()
     phoneNumber?: string;
-
-    @IsOptional()
     address?: string;
-
     access?: boolean;
 }
