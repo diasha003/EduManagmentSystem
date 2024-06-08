@@ -13,6 +13,7 @@ import NewCalendarEvent from './pages/calendar/NewCalendarEvent';
 
 import './App.css';
 import AddStudentForm from './pages/students/components/addStudentForm/AddStudentForm';
+import FamiliesInvoicesInfo from './pages/families-invoices/FamiliesInvoicesInfo';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -30,9 +31,10 @@ const App: React.FC = () => {
     routes.push({ path: '/students', element: <InfoStudents /> });
     routes.push({ path: '/students/add', element: <AddStudentForm /> });
     routes.push({ path: '/calendar', element: <CalendarTest /> });
-    routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} />})
+    routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} /> });
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
+    routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo /> });
 
     return (
         <Routes>

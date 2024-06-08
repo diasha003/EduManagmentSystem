@@ -1,4 +1,4 @@
-import { CalendarOutlined, HomeOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
+import { CalendarOutlined, CreditCardOutlined, HomeOutlined, TeamOutlined, UserOutlined } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 
 const items: MenuItemType[] = [
@@ -21,6 +21,11 @@ const items: MenuItemType[] = [
         key: '/calendar',
         icon: <CalendarOutlined />,
         label: 'Calendar'
+    },
+    {
+        key: '/families-invoices',
+        icon: <CreditCardOutlined />,
+        label: 'Families & Invoices'
     }
 ];
 
