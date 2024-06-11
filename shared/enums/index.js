@@ -1,6 +1,6 @@
 "use strict";
 exports.__esModule = true;
-exports.Status = exports.Type = exports.Gender = exports.FrequencyType = void 0;
+exports.Billing = exports.Status = exports.Type = exports.Gender = exports.FrequencyType = void 0;
 var FrequencyType;
 (function (FrequencyType) {
     FrequencyType["Daily"] = "Daily";
@@ -24,3 +24,10 @@ var Status;
     Status[Status["trial"] = 1] = "trial";
     Status[Status["inactive"] = 2] = "inactive";
 })(Status = exports.Status || (exports.Status = {}));
+var Billing;
+(function (Billing) {
+    Billing[Billing["auto"] = 0] = "auto";
+    Billing[Billing["perLesson"] = 1] = "perLesson";
+    Billing[Billing["perMonth"] = 2] = "perMonth";
+    Billing[Billing["perHour"] = 3] = "perHour";
+})(Billing = exports.Billing || (exports.Billing = {}));

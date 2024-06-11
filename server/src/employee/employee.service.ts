@@ -160,6 +160,37 @@ export class EmployeeService {
         return data;
     }
 
+    async getAllTeachers(headers: any): Promise<User[]> {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        let allEmployees = await this.prisma.user.findMany({
+            include: {
+                employeeInfo: {
+                    include: {
+                        payroll: true
+                    }
+                }
+            },
+            where: {
+                centerName: {
+                    equals: decoded.centerName
+                },
+                roles: {
+                    hasSome: [Role.TEACHER]
+                }
+            }
+        });
+
+        const data = allEmployees.map((item) => {
+            delete item['password'];
+            return item;
+        });
+
+        console.log(data)
+
+        return data;
+    }
+
     async deleteEmployee(id: number): Promise<User> {
         return await this.userService.deleteById(id);
     }

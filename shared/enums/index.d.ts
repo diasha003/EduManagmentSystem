@@ -17,3 +17,9 @@ export declare enum Status {
     trial = 1,
     inactive = 2
 }
+export declare enum Billing {
+    auto = 0,
+    perLesson = 1,
+    perMonth = 2,
+    perHour = 3
+}

@@ -1,5 +1,4 @@
-
-import { Employee, CreateEmployeeDto } from 'shared/models';
+import { Employee, CreateEmployeeDto, User } from 'shared/models';
 import { baseApi } from '../api';
 
 export const employeesApi = baseApi.injectEndpoints({
@@ -44,18 +43,33 @@ export const employeesApi = baseApi.injectEndpoints({
             },
             providesTags: ['Employees']
         }),
+
+        getAllTeachers: builder.query<User[] | undefined, void>({
+            query: () => ({
+                url: '/employee/teachers',
+                method: 'GET'
+            }),
+            async onQueryStarted(arg, api) {
+                try {
+                    console.log(arg);
+                } catch (error) {
+                    console.log(error);
+                }
+            },
+            providesTags: ['Teachers']
+        }),
+
         deleteEmployee: builder.mutation<void, number>({
             query: (id) => ({
                 url: `/employee/${id}`,
-                method: 'DELETE',
-               
+                method: 'DELETE'
             })
             //invalidatesTags: (result, error, arg) => [],
         })
     })
 });
 
-export const { useGetAllEmployeesQuery, useCreateMutation, useGetAllCenterNameQuery, useDeleteEmployeeMutation } = employeesApi;
+export const { useGetAllEmployeesQuery, useCreateMutation, useGetAllCenterNameQuery, useDeleteEmployeeMutation, useGetAllTeachersQuery } = employeesApi;
 export const {
-    endpoints: { getAllEmployees, create }
+    endpoints: { getAllEmployees, create, getAllTeachers }
 } = employeesApi;

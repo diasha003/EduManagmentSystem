@@ -101,12 +101,12 @@ const Register: React.FC = () => {
                     <Input placeholder="Educational Center Name (optional)" className="item" />
                 </Form.Item>
 
-                <Form.Item name="size" rules={[{ required: true }]}>
+                {/* <Form.Item name="size" rules={[{ required: true }]}>
                     <Select placeholder="Select a option and change input text above" defaultValue={{ value: 'size', label: 'Center Size' }}>
                         <Option value="one">It's just me!</Option>
                         <Option value="multiple">With multiple teachers</Option>
                     </Select>
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item
                     name="agreement"

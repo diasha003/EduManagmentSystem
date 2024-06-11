@@ -1,4 +1,4 @@
-import { Gender, Status, Type } from '../enums';
+import { Billing, Gender, Status, Type } from '../enums';
 import { CreateUserDto, User } from './_user.dto';
 
 export interface Student extends User {
@@ -40,4 +40,12 @@ export class CreateStudentDto extends CreateUserDto {
     parentEmail?: string;
     parentPhoneNumber?: string;
     parentAddress?: string;
+}
+
+export class AssignTeacherInfo {
+    assignTeacherId?: number;
+    defaultLessonCategory?: string;
+    defaultLessonLength?: number;
+    defaultBilling?: Billing;
+    defaultPrice?: number;
 }

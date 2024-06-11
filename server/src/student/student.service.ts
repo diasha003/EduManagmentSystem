@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Gender, Role, Status, Type } from '@prisma/client';
+import { Billing, Gender, Role, Status, Type } from '@prisma/client';
 import { CreateStudentDto, Student } from 'shared/models';
 import { DatabaseService } from 'src/database/database.service';
 import { UserService } from 'src/user/user.service';
@@ -22,7 +22,7 @@ export class StudentService {
         await this.prisma.$transaction(async (prisma) => {
             const user = await this.userService.createWithRoles({ email: dto.email, firstName: dto.firstName, lastName: dto.lastName, centerName: dto.centerName, phoneNumber: dto.phoneNumber, address: dto.address, password: dto.password }, [Role.STUDENT]);
 
-            console.log(dto)
+            console.log(dto);
             await prisma.studentInfo.create({
                 data: {
                     userId: user.id,
@@ -66,6 +66,30 @@ export class StudentService {
                     }
                 });
             }
+
+            //!!!12
+
+            // const permissionsUserData = permissions.map((permission) => ({
+            //     userId: userId.id,
+            //     permissionId: permission.id
+            // }));
+
+            // await prisma.permissionsUser.createMany({
+            //     data: permissionsUserData
+            // });
+
+            // if (dto.assignTeacherId) {
+            //     await prisma.teacherStudent.createMany({
+            //         data: {
+            //             teacherId: dto.assignTeacherId,
+            //             studentId: user.id,
+            //             defaultLessonCategory: dto.defaultLessonCategory,
+            //             defaultLessonLength: dto.defaultLessonLength,
+            //             defaultBilling: Billing[dto.defaultBilling],
+            //             defaultPrice: dto.defaultPrice
+            //         }
+            //     });
+            // }
         });
     }
 
@@ -90,9 +114,8 @@ export class StudentService {
             return item;
         });
 
-        console.log(data)
-        
-    
+        //console.log(data)
+
         return data;
     }
 }

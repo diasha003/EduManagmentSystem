@@ -35,6 +35,10 @@ model User {
   familyStudentsAsParent  FamilyStudents[]  @relation("ParentRelation")
   familyStudentsAsStudent FamilyStudents[]  @relation("StudentRelation")
   studentInfo             StudentInfo?
+  familyAccount           familyAccount?
+
+  teacherStudentAsTeacher TeacherStudent[] @relation("StudentRelation")
+  teacherStudentAsStudent TeacherStudent[] @relation("TeacherRelation")
 }
 
 enum Role {
@@ -81,17 +85,17 @@ model EmployeeInfo {
 }
 
 model StudentInfo {
-  id           Int       @id @default(autoincrement())
-  birthdayDate DateTime? @map("birthday_date")
-  dateRegister DateTime? @map("date_register")
-  avatarUrl    String?   @map("avatar_url")
-  gender       Gender?
-  status       Status
-  institution  String?
-  type         Type
-  skills       String[]
-  user         User      @relation(fields: [userId], references: [id])
-  userId       Int       @unique @map("user_id")
+  id            Int             @id @default(autoincrement())
+  birthdayDate  DateTime?       @map("birthday_date")
+  dateRegister  DateTime?       @map("date_register")
+  avatarUrl     String?         @map("avatar_url")
+  gender        Gender?
+  status        Status
+  institution   String?
+  type          Type
+  skills        String[]
+  user          User            @relation(fields: [userId], references: [id])
+  userId        Int             @unique @map("user_id")
   note          String?
   groupStudents GroupStudents[]
 }
@@ -109,6 +113,27 @@ model GroupStudents {
   studentInfoId Int         @map("student_info_id")
 
   @@id(fields: [groupId, studentInfoId])
+}
+
+model TeacherStudent {
+  teacher   User @relation(name: "TeacherRelation", fields: [teacherId], references: [id])
+  teacherId Int
+  student   User @relation(name: "StudentRelation", fields: [studentId], references: [id])
+  studentId Int
+
+  defaultLessonCategory String  @map("default_lesson_category")
+  defaultLessonLength   Int     @map("default_lesson_length")
+  defaultBilling        Billing @map("default_billing")
+  defaultPrice          Int?    @map("default_price")
+
+  @@id(fields: [teacherId, studentId])
+}
+
+enum Billing {
+  auto
+  perLesson
+  perMonth
+  perHour
 }
 
 model FamilyStudents {
@@ -181,3 +206,31 @@ model CalendarEvent {
   everyMonth        Int?           @map("every_month")
   everyYear         Int?           @map("every_year")
 }
+
+model familyAccount {
+  id      Int @id @default(autoincrement())
+  balance Int
+  //autoInvoice Boolean? @map("auto_invoice")
+
+  //lastInvoiceDate DateTime? @map("last_invoice_date")
+  //lastPaymentDate DateTime? @map("last_payment_date")
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int  @unique @map("user_id")
+}
+
+// model InvoiceEvent {
+//   id Int @id @default(autoincrement())
+
+//   nextBillingCycleStartDate DateTime? @map("next_billing_cycle_start_date")
+//   invoiceCreationDate       DateTime  @map("invoice_creation_date")
+//   invoiceDueDate            DateTime  @map("invoice_due_date")
+
+//   frequency       Frequency?
+//   repeatOnDaily   DayOfWeek[]    @map("repeat_on_daily")
+//   repeatOnMonthly RepeatMonthly? @map("repeat_on_monthly")
+//   repeatUntil     DateTime?      @map("repeat_until")
+//   everyWeek       Int?           @map("every_week")
+//   everyMonth      Int?           @map("every_month")
+//   everyYear       Int?           @map("every_year")
+// }

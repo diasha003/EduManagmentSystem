@@ -15,9 +15,15 @@ export enum Type {
     child
 }
 
-
-export enum Status{
+export enum Status {
     active,
     trial,
     inactive
+}
+
+export enum Billing {
+    auto,
+    perLesson,
+    perMonth,
+    perHour
 }

@@ -14,6 +14,11 @@ export class EmployeeController {
         return await this.employeeService.getAllEmployees(headers);
     }
 
+    @Get('teachers')
+    async getAllTeachers(@Headers() headers: any): Promise<User[]> {
+        return await this.employeeService.getAllTeachers(headers);
+    }
+
     //auth
     @Get('/allCenterName')
     async getAllCenterName(@Headers() headers: any): Promise<string[]> {

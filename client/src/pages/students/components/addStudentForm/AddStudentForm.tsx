@@ -7,9 +7,13 @@ import './AddStudentForm.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useCreateStudentMutation } from '../../../../features/api/extensions/studentApiExtension';
 import { useAppSelector } from '../../../../hooks/redux';
-import { CreateStudentDto } from 'shared/models';
+import { CreateStudentDto, User } from 'shared/models';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import { useGetAllTeachersQuery } from '../../../../features/api/extensions/employeesApiExtension';
+
+import { useForm, SubmitHandler, Controller } from 'react-hook-form';
+import AssignTeacher from '../../../../components/AssignTeacher';
 
 const { TextArea } = Input;
 
@@ -22,13 +26,16 @@ const AddStudentForm: React.FC = () => {
     const [studentType, setStudentType] = useState<string>('');
     const [hasFamily, setHasFamily] = useState<Boolean | null>(null);
     const [note, setNote] = useState<string>('');
-    const [isAssignTeacherClicked, setIsAssignTeacherClicked] = useState<boolean>(false);
+
     const [billingType, setBillingType] = useState<string>('auto');
 
     const [stepForm] = Form.useForm();
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
     const [createStudent] = useCreateStudentMutation();
     const user = useAppSelector((state) => state.auth.user);
+
+    const teachers: User[] | undefined = useGetAllTeachersQuery().currentData;
+    const [isAssignTeacherClicked, setIsAssignTeacherClicked] = useState<number>(0);
 
     const navigate = useNavigate();
 
@@ -37,6 +44,7 @@ const AddStudentForm: React.FC = () => {
             .validateFields({ validateOnly: false })
             .then(() => {
                 const formData = stepForm.getFieldsValue();
+                console.log(stepForm.getFieldsValue());
                 setFormData((prev) => {
                     return { ...prev, ...formData };
                 });
@@ -50,23 +58,20 @@ const AddStudentForm: React.FC = () => {
     const onDoneFinish = async () => {
         const data = { ...formData, ...stepForm.getFieldsValue() } as CreateStudentDto;
 
-        console.log(data, note);
+        // const result = await createStudent({
+        //     ...data,
+        //     centerName: user ? user.centerName : '',
+        //     familyExist: Number(data.familyExist),
+        //     note: data.note
+        // });
 
-        const result = await createStudent({
-            ...data,
-            centerName: user ? user.centerName : '',
-            familyExist: Number(data.familyExist),
-            note: data.note
-
-        });
-
-        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
-        if (error) {
-            alert(JSON.stringify(error));
-            console.log(error);
-        } else {
-            navigate('/students');
-        }
+        // const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        // if (error) {
+        //     alert(JSON.stringify(error));
+        //     console.log(error);
+        // } else {
+        //     navigate('/students');
+        // }
     };
 
     const onChangeRadioGroupStatus = (e: RadioChangeEvent) => {
@@ -86,7 +91,7 @@ const AddStudentForm: React.FC = () => {
     };
 
     const onFinish = (values: any) => {
-        console.log('Received values of form: ', values);
+        //console.log('Received values of form: ', values);
     };
 
     const validateMessages = {
@@ -340,6 +345,23 @@ const AddStudentForm: React.FC = () => {
 
                 <Divider />
 
+                {isAssignTeacherClicked > 0 && (
+                    <>
+                        {teachers?.slice(0, isAssignTeacherClicked + 1).map((teacher) => (
+                            <AssignTeacher
+                                key={teacher.id}
+                                teachers={teachers}
+                                onChange={(val) => {
+                                    console.log('!!!!!!!!!!!!', val);
+                                    stepForm.setFieldValue(`assignTeachers${teacher.id}`, '11111');
+                                }}
+                            />
+                        ))}
+                    </>
+                )}
+
+                {/*  */}
+
                 <Row style={{ alignItems: 'center' }} gutter={10}>
                     <Col span={11}>
                         <Text>Assign Teachers</Text>
@@ -349,80 +371,14 @@ const AddStudentForm: React.FC = () => {
                             size="middle"
                             icon={<PlusOutlined />}
                             style={{ marginRight: 0 }}
-                            onClick={() => {
-                                //получить teachers
-                                // teachers.push("test-1", "test_2");
-                                // console.log(teachers.length !== 0);
-
-                                setIsAssignTeacherClicked(true);
+                            onClick={(e) => {
+                                setIsAssignTeacherClicked((prevCount) => prevCount + 1);
                             }}
                         >
                             Assign Teachers
                         </Button>
                     </Col>
                 </Row>
-
-                {/* нужно будет получать список учителей и проходится по им */}
-                {isAssignTeacherClicked && (
-                    <>
-                        <Row style={{ alignItems: 'center' }} gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="teacher_list" label="Teacher">
-                                    <Select placeholder="Please select a teacher">
-                                        <Option value="8">test-teacher-1</Option>
-                                        <Option value="2">test-teqcher-2</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11} style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                                <Button size="middle" icon={<DeleteOutlined />} style={{ marginRight: 0 }} />
-                            </Col>
-                        </Row>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="lesson_category" label="Default Lesson Category">
-                                    <Select placeholder="Please select a lesson category" defaultValue={'lesson'}>
-                                        <Option value="group_lesson">Group Lesson</Option>
-                                        <Option value="lesson">Lesson</Option>
-                                    </Select>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}>
-                                <Form.Item name="lesson_length" label="Default Lesson Length">
-                                    <Input suffix="minutes" defaultValue={30} />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="type_billing" label="Default Billing" extra="Charges will automatically adjust to lesson length">
-                                    <Radio.Group onChange={onChangeRadioGroupBillingType} value={billingType} defaultValue={'auto'}>
-                                        <Space direction="vertical">
-                                            <Radio value="auto">Don't automatically create any calendar-generated charges</Radio>
-                                            <Radio value="Per Lesson">Student pays based on the number of lessons taken</Radio>
-                                            <Radio value="Per Month">Student pays the same amount each month regardless of number of lessons</Radio>
-                                            <Radio value="Per Hour">Student pays an hourly rate</Radio>
-                                        </Space>
-                                    </Radio.Group>
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}></Col>
-                        </Row>
-
-                        {billingType !== 'auto' ? (
-                            <Row gutter={10}>
-                                <Col span={11}>
-                                    <Form.Item name="price" label="Price" rules={[{ required: billingType !== 'auto' }]}>
-                                        <Input prefix="$" suffix={billingType} defaultValue={30} />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={11}></Col>
-                            </Row>
-                        ) : (
-                            <></>
-                        )}
-                    </>
-                )}
 
                 <Divider />
 
