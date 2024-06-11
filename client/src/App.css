@@ -36,10 +36,17 @@
 
 .header {
     background: #fafafa;
+    height: 60px;
+    padding: 30px;
     box-shadow:
         0 2px 4px #033c561a,
         0 0 1px #033c5680 !important;
     z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+   
+
 }
 
 .itemMenu {

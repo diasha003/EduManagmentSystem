@@ -1,0 +1,30 @@
+.circleStyle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 5px 0px;
+    width: 60px;
+    height: 60px;
+    border-radius: 60%;
+    background-color: #caebfa;
+    color: #0895d6;
+    font-size: 24px;
+}
+
+.cardContent {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+:where(.css-dev-only-do-not-override-zl9ks2).ant-card .ant-card-head-title{
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    justify-content: center;
+    align-items: center;
+}

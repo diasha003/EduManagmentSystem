@@ -1,6 +1,6 @@
 import React from 'react';
-import { Layout } from 'antd';
-import { Route, Routes } from 'react-router-dom';
+import { Avatar, Layout } from 'antd';
+import { Link, Route, Routes } from 'react-router-dom';
 
 import InfoStudents from './pages/students/InfoStudents';
 import InfoEmployees from './pages/employees/InfoEmployess';
@@ -14,6 +14,8 @@ import NewCalendarEvent from './pages/calendar/NewCalendarEvent';
 import './App.css';
 import AddStudentForm from './pages/students/components/addStudentForm/AddStudentForm';
 import FamiliesInvoicesInfo from './pages/families-invoices/FamiliesInvoicesInfo';
+import { useAppSelector } from './hooks/redux';
+import Home from './pages/home/Home';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -21,20 +23,23 @@ const { Header, Content } = Layout;
 const App: React.FC = () => {
     const routes: {
         element: JSX.Element;
+        name?: string;
         path: string;
         hideWrapper?: boolean;
     }[] = [];
 
-    routes.push({ path: '/home', element: <></> });
-    routes.push({ path: '/employees', element: <InfoEmployees /> });
-    routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm /> });
-    routes.push({ path: '/students', element: <InfoStudents /> });
-    routes.push({ path: '/students/add', element: <AddStudentForm /> });
-    routes.push({ path: '/calendar', element: <CalendarTest /> });
-    routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} /> });
+    routes.push({ path: '/home', element: <Home></Home>, name: 'Home' });
+    routes.push({ path: '/employees', element: <InfoEmployees />, name: 'Teachers & Staff' });
+    routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm />, name: 'Teachers & Staff' });
+    routes.push({ path: '/students', element: <InfoStudents />, name: 'Students' });
+    routes.push({ path: '/students/add', element: <AddStudentForm />, name: 'Students' });
+    routes.push({ path: '/calendar', element: <CalendarTest />, name: 'Calendar' });
+    routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} />, name: 'Calendar' });
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
-    routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo /> });
+    routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: 'Families & Invoices' });
+
+    const user = useAppSelector((state) => state.auth.user);
 
     return (
         <Routes>
@@ -49,7 +54,26 @@ const App: React.FC = () => {
                                 <Layout hasSider>
                                     <NavBar></NavBar>
                                     <Layout className="layout">
-                                        <Header className="header">Header</Header>
+                                        <div className="header">
+                                            <div style={{ fontSize: '20px', fontWeight: '600' }}>{x.name}</div>
+                                            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                    <Avatar style={{ backgroundColor: '#fde3cf', color: '#f56a00' }}>
+                                                        {user?.firstName
+                                                            .concat(' ')
+                                                            .concat(user.lastName)
+                                                            .split(' ')
+                                                            .map((part) => part[0])
+                                                            .join('')}
+                                                    </Avatar>
+                                                </div>
+                                                <div style={{ marginLeft: '5px' }}>
+                                                    <p style={{ fontWeight: 500, color: 'blue', cursor: 'pointer', margin: 0 }}>
+                                                        {user?.firstName} {user?.lastName}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <Content className="content">{x.element}</Content>
                                     </Layout>
                                 </Layout>
