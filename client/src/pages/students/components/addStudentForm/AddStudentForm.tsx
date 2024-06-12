@@ -7,37 +7,28 @@ import './AddStudentForm.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useCreateStudentMutation } from '../../../../features/api/extensions/studentApiExtension';
 import { useAppSelector } from '../../../../hooks/redux';
-import { CreateStudentDto, User } from 'shared/models';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { SerializedError } from '@reduxjs/toolkit';
+import { AssignTeacherInfo, CreateStudentDto, User } from 'shared/models';
 import { useGetAllTeachersQuery } from '../../../../features/api/extensions/employeesApiExtension';
 
-import { useForm, SubmitHandler, Controller } from 'react-hook-form';
 import AssignTeacher from '../../../../components/AssignTeacher';
+import { useWatch } from 'antd/es/form/Form';
 
 const { TextArea } = Input;
+const { Option } = Select;
+const { Text } = Typography;
 
 const AddStudentForm: React.FC = () => {
-    const { Option } = Select;
-
-    const { Text } = Typography;
-
-    const [status, setStatus] = useState();
-    const [studentType, setStudentType] = useState<string>('');
-    const [hasFamily, setHasFamily] = useState<Boolean | null>(null);
-    const [note, setNote] = useState<string>('');
-
-    const [billingType, setBillingType] = useState<string>('auto');
+    const user = useAppSelector((state) => state.auth.user);
+    const teachers: User[] | undefined = useGetAllTeachersQuery().currentData;
 
     const [stepForm] = Form.useForm();
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
+
+    const [note, setNote] = useState<string>('');
+    const [assignedTeachersMap, setAssignedTeachersMap] = useState<Map<number, AssignTeacherInfo>>(new Map<number, AssignTeacherInfo>());
     const [createStudent] = useCreateStudentMutation();
-    const user = useAppSelector((state) => state.auth.user);
 
-    const teachers: User[] | undefined = useGetAllTeachersQuery().currentData;
-    const [isAssignTeacherClicked, setIsAssignTeacherClicked] = useState<number>(0);
-
-    const navigate = useNavigate();
+    const hasFamily = useWatch('hasFamily', stepForm);
 
     const onNextFinish = async () => {
         stepForm
@@ -56,8 +47,9 @@ const AddStudentForm: React.FC = () => {
     };
 
     const onDoneFinish = async () => {
-        const data = { ...formData, ...stepForm.getFieldsValue() } as CreateStudentDto;
-
+        const data = { ...formData, ...stepForm.getFieldsValue(), assignedTeachers: Array.from(assignedTeachersMap.values()) } as CreateStudentDto;
+        console.log(Array.from(assignedTeachersMap.values()));
+        console.log(data);
         // const result = await createStudent({
         //     ...data,
         //     centerName: user ? user.centerName : '',
@@ -72,22 +64,6 @@ const AddStudentForm: React.FC = () => {
         // } else {
         //     navigate('/students');
         // }
-    };
-
-    const onChangeRadioGroupStatus = (e: RadioChangeEvent) => {
-        setStatus(e.target.value);
-    };
-
-    const onChangeRadioGroupType = (e: RadioChangeEvent) => {
-        setStudentType(e.target.value);
-    };
-
-    const onChangeRadioGroupHasFamily = (e: RadioChangeEvent) => {
-        setHasFamily(e.target.value);
-    };
-
-    const onChangeRadioGroupBillingType = (e: RadioChangeEvent) => {
-        setBillingType(e.target.value);
     };
 
     const onFinish = (values: any) => {
@@ -223,7 +199,7 @@ const AddStudentForm: React.FC = () => {
                                 }
                             ]}
                         >
-                            <Radio.Group onChange={onChangeRadioGroupStatus} value={status}>
+                            <Radio.Group>
                                 <Radio value="active">Active</Radio>
                                 <Radio value="trial">Trial</Radio>
                                 <Radio value="inactive">Inactive</Radio>
@@ -247,7 +223,7 @@ const AddStudentForm: React.FC = () => {
                                 }
                             ]}
                         >
-                            <Radio.Group onChange={onChangeRadioGroupType} value={studentType}>
+                            <Radio.Group>
                                 <Radio value="adult">Adult</Radio>
                                 <Radio value="child">Child</Radio>
                             </Radio.Group>
@@ -267,7 +243,7 @@ const AddStudentForm: React.FC = () => {
                             ]}
                             extra="Creates a new account in Families & Invoices"
                         >
-                            <Radio.Group onChange={onChangeRadioGroupHasFamily}>
+                            <Radio.Group>
                                 <Radio value={false} style={{ marginRight: '190px' }}>
                                     New Family
                                 </Radio>
@@ -277,90 +253,85 @@ const AddStudentForm: React.FC = () => {
                     </Col>
                 </Row>
 
-                {typeof hasFamily === 'boolean' &&
-                    (!hasFamily ? (
-                        <>
-                            <Row gutter={10}>
-                                <Col span={11}>
-                                    <Form.Item
-                                        name="parentFirstName"
-                                        label="Parent First Name"
-                                        rules={[
-                                            {
-                                                required: !hasFamily,
-                                                message: 'Please input  '
-                                            }
-                                        ]}
-                                    >
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={11}>
-                                    <Form.Item label="Parent Last Name" name="parentLastName" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Row gutter={10}>
-                                <Col span={11}>
-                                    <Form.Item name="parentEmail" label="Email" rules={[{ required: !hasFamily }]}>
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                                <Col span={11}>
-                                    <Form.Item label="Phone Number" name="parentPhoneNumber">
-                                        <Input />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col span={22}>
-                                    <Form.Item name="parentAddress" label="Address" style={{ padding: 0 }}>
-                                        <TextArea rows={3} />
-                                    </Form.Item>
-                                </Col>
-                            </Row>
-                        </>
-                    ) : (
+                {!hasFamily ? (
+                    <>
                         <Row gutter={10}>
                             <Col span={11}>
                                 <Form.Item
-                                    name="familyExist"
-                                    label="Family"
+                                    name="parentFirstName"
+                                    label="Parent First Name"
                                     rules={[
                                         {
-                                            required: hasFamily
+                                            required: !hasFamily,
+                                            message: 'Please input  '
                                         }
                                     ]}
                                 >
-                                    <Select placeholder="Please select a family">
-                                        <Option value="1">test-1</Option>
-                                        <Option value="2">test-2</Option>
-                                    </Select>
+                                    <Input />
                                 </Form.Item>
                             </Col>
-                            <Col span={11}></Col>
+                            <Col span={11}>
+                                <Form.Item label="Parent Last Name" name="parentLastName" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
+                                    <Input />
+                                </Form.Item>
+                            </Col>
                         </Row>
-                    ))}
+                        <Row gutter={10}>
+                            <Col span={11}>
+                                <Form.Item name="parentEmail" label="Email" rules={[{ required: !hasFamily }]}>
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                            <Col span={11}>
+                                <Form.Item label="Phone Number" name="parentPhoneNumber">
+                                    <Input />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col span={22}>
+                                <Form.Item name="parentAddress" label="Address" style={{ padding: 0 }}>
+                                    <TextArea rows={3} />
+                                </Form.Item>
+                            </Col>
+                        </Row>
+                    </>
+                ) : (
+                    <Row gutter={10}>
+                        <Col span={11}>
+                            <Form.Item
+                                name="familyExist"
+                                label="Family"
+                                rules={[
+                                    {
+                                        required: hasFamily
+                                    }
+                                ]}
+                            >
+                                <Select placeholder="Please select a family">
+                                    <Option value="1">test-1</Option>
+                                    <Option value="2">test-2</Option>
+                                </Select>
+                            </Form.Item>
+                        </Col>
+                        <Col span={11}></Col>
+                    </Row>
+                )}
 
                 <Divider />
 
-                {isAssignTeacherClicked > 0 && (
-                    <>
-                        {teachers?.slice(0, isAssignTeacherClicked + 1).map((teacher) => (
-                            <AssignTeacher
-                                key={teacher.id}
-                                teachers={teachers}
-                                onChange={(val) => {
-                                    console.log('!!!!!!!!!!!!', val);
-                                    stepForm.setFieldValue(`assignTeachers${teacher.id}`, '11111');
-                                }}
-                            />
-                        ))}
-                    </>
-                )}
-
-                {/*  */}
+                {Array.from(assignedTeachersMap).map(([key, value]) => {
+                    return (
+                        <AssignTeacher
+                            key={key}
+                            teachers={teachers?.filter(t => t.id === Number(value.assignTeacherId) || !Array.from(assignedTeachersMap.values()).find(v => Number(v.assignTeacherId) === t.id))}
+                            initialValues={value}
+                            onChange={(val) => {
+                                setAssignedTeachersMap(new Map(assignedTeachersMap.set(key, val)));
+                            }}
+                        />
+                    );
+                })}
 
                 <Row style={{ alignItems: 'center' }} gutter={10}>
                     <Col span={11}>
@@ -372,7 +343,9 @@ const AddStudentForm: React.FC = () => {
                             icon={<PlusOutlined />}
                             style={{ marginRight: 0 }}
                             onClick={(e) => {
-                                setIsAssignTeacherClicked((prevCount) => prevCount + 1);
+                                const teacherKeys = Array.from(assignedTeachersMap.keys());
+                                const newKey = teacherKeys.length + 1;
+                                setAssignedTeachersMap(new Map(assignedTeachersMap.set(newKey, new AssignTeacherInfo())));
                             }}
                         >
                             Assign Teachers

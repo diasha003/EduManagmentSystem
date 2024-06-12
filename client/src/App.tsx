@@ -16,6 +16,7 @@ import AddStudentForm from './pages/students/components/addStudentForm/AddStuden
 import FamiliesInvoicesInfo from './pages/families-invoices/FamiliesInvoicesInfo';
 import { useAppSelector } from './hooks/redux';
 import Home from './pages/home/Home';
+import PersonDetails from './pages/personDetails/personDetails';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -38,6 +39,7 @@ const App: React.FC = () => {
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
     routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: 'Families & Invoices' });
+    routes.push({ path: '/person', element: <PersonDetails />, name: '' });
 
     const user = useAppSelector((state) => state.auth.user);
 

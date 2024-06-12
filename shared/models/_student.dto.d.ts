@@ -21,11 +21,6 @@ export declare class CreateStudentDto extends CreateUserDto {
     familyExist?: number;
     status: Status;
     note?: string;
-    assignTeacherId?: number;
-    defaultLessonCategory?: string;
-    defaultLessonLength?: number;
-    defaultBilling?: Billing;
-    defaultPrice?: number;
     parentLastName?: string;
     parentFirstName?: string;
     parentEmail?: string;

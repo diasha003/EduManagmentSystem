@@ -2,17 +2,22 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { Button, Col, Form, Input, Radio, RadioChangeEvent, Row, Select, Space } from 'antd';
 import { useForm, useWatch } from 'antd/es/form/Form';
 import { Option } from 'antd/es/mentions';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { AssignTeacherInfo, User } from 'shared/models';
 
 export type AssignTeachersEventFormProps = {
     teachers?: User[];
+    initialValues?: AssignTeacherInfo;
     onChange: (value: AssignTeacherInfo) => void;
 };
 
 const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeachersEventFormProps) => {
     const [form] = useForm<AssignTeacherInfo>();
+
+    useEffect(() => {
+        if (props.initialValues) form.setFieldsValue(props.initialValues);
+    }, [form, props.initialValues]);
 
     const [billingType, setBillingType] = useState<string>('auto');
 
@@ -24,8 +29,7 @@ const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeac
         <Form
             form={form}
             layout="vertical"
-            onChange={() => {
-                console.log(form.getFieldsValue());
+            onFieldsChange={() => {
                 props.onChange(form.getFieldsValue());
             }}
         >
@@ -34,7 +38,7 @@ const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeac
                     <Form.Item name="assignTeacherId" label="Teacher">
                         <Select placeholder="Please select a teacher">
                             {props.teachers?.map((teacher) => (
-                                <Option value={`${teacher.id}`}>
+                                <Option value={teacher.id.toString()}>
                                     {teacher.firstName} {teacher.lastName}
                                 </Option>
                             ))}

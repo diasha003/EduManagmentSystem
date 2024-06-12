@@ -1,17 +1,17 @@
 import { IsDateString, IsNumber } from 'class-validator';
 import { FrequencyType } from '../enums';
-import { Type } from 'class-transformer';
+// import { Type } from 'class-transformer';
 
 export class EventsFilter {
     @IsNumber()
     userId: number;
 
     @IsDateString()
-    @Type(() => Date)
+    // @Type(() => Date)
     dateFrom: Date;
 
     @IsDateString()
-    @Type(() => Date)
+    // @Type(() => Date)
     dateTo: Date;
 }
 
@@ -30,7 +30,7 @@ export class EventDto {
     everyYear?: number;
 
     @IsDateString()
-    @Type(() => Date)
+    // @Type(() => Date)
     date: Date;
 }
 
@@ -44,7 +44,7 @@ export class RepeatableEventInfo {
     everyYear?: number;
 
     @IsDateString()
-    @Type(() => Date)
+    // @Type(() => Date)
     repeatUntil?: Date;
 }
 
@@ -56,6 +56,6 @@ export class QuickLessonModel {
     repeatableEventInfo?: RepeatableEventInfo;
 
     @IsDateString()
-    @Type(() => Date)
+    // @Type(() => Date)
     date: Date;
 }

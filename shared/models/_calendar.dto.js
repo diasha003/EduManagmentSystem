@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 exports.__esModule = true;
 exports.QuickLessonModel = exports.RepeatableEventInfo = exports.EventDto = exports.EventsFilter = void 0;
 var class_validator_1 = require("class-validator");
-var class_transformer_1 = require("class-transformer");
+// import { Type } from 'class-transformer';
 var EventsFilter = /** @class */ (function () {
     function EventsFilter() {
     }
@@ -16,12 +16,12 @@ var EventsFilter = /** @class */ (function () {
         (0, class_validator_1.IsNumber)()
     ], EventsFilter.prototype, "userId");
     __decorate([
-        (0, class_validator_1.IsDateString)(),
-        (0, class_transformer_1.Type)(function () { return Date; })
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
     ], EventsFilter.prototype, "dateFrom");
     __decorate([
-        (0, class_validator_1.IsDateString)(),
-        (0, class_transformer_1.Type)(function () { return Date; })
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
     ], EventsFilter.prototype, "dateTo");
     return EventsFilter;
 }());
@@ -30,8 +30,8 @@ var EventDto = /** @class */ (function () {
     function EventDto() {
     }
     __decorate([
-        (0, class_validator_1.IsDateString)(),
-        (0, class_transformer_1.Type)(function () { return Date; })
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
     ], EventDto.prototype, "date");
     return EventDto;
 }());
@@ -40,8 +40,8 @@ var RepeatableEventInfo = /** @class */ (function () {
     function RepeatableEventInfo() {
     }
     __decorate([
-        (0, class_validator_1.IsDateString)(),
-        (0, class_transformer_1.Type)(function () { return Date; })
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
     ], RepeatableEventInfo.prototype, "repeatUntil");
     return RepeatableEventInfo;
 }());
@@ -50,8 +50,8 @@ var QuickLessonModel = /** @class */ (function () {
     function QuickLessonModel() {
     }
     __decorate([
-        (0, class_validator_1.IsDateString)(),
-        (0, class_transformer_1.Type)(function () { return Date; })
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
     ], QuickLessonModel.prototype, "date");
     return QuickLessonModel;
 }());
