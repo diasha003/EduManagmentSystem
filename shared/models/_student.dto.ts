@@ -35,6 +35,8 @@ export class CreateStudentDto extends CreateUserDto {
     status: Status;
     note?: string;
 
+    assignedTeachers?: AssignTeacherInfo[];
+
     parentLastName?: string;
     parentFirstName?: string;
     parentEmail?: string;

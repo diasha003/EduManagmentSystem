@@ -5,13 +5,15 @@ import { DeleteOutlined, PlusOutlined, RightOutlined } from '@ant-design/icons';
 
 import './AddStudentForm.css';
 import { Link, Navigate, useNavigate } from 'react-router-dom';
-import { useCreateStudentMutation } from '../../../../features/api/extensions/studentApiExtension';
+import { useCreateStudentMutation, useGetAllFamilyQuery } from '../../../../features/api/extensions/studentApiExtension';
 import { useAppSelector } from '../../../../hooks/redux';
 import { AssignTeacherInfo, CreateStudentDto, User } from 'shared/models';
 import { useGetAllTeachersQuery } from '../../../../features/api/extensions/employeesApiExtension';
 
 import AssignTeacher from '../../../../components/AssignTeacher';
-import { useWatch } from 'antd/es/form/Form';
+import { useForm, useWatch } from 'antd/es/form/Form';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+import { SerializedError } from '@reduxjs/toolkit';
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -20,14 +22,18 @@ const { Text } = Typography;
 const AddStudentForm: React.FC = () => {
     const user = useAppSelector((state) => state.auth.user);
     const teachers: User[] | undefined = useGetAllTeachersQuery().currentData;
+    const family: User[] | undefined = useGetAllFamilyQuery().currentData;
 
     const [stepForm] = Form.useForm();
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
+
+    //const [formAssignedTeacher] = useForm<AssignTeacherInfo>();
 
     const [note, setNote] = useState<string>('');
     const [assignedTeachersMap, setAssignedTeachersMap] = useState<Map<number, AssignTeacherInfo>>(new Map<number, AssignTeacherInfo>());
     const [createStudent] = useCreateStudentMutation();
 
+    const navigate = useNavigate();
     const hasFamily = useWatch('hasFamily', stepForm);
 
     const onNextFinish = async () => {
@@ -35,7 +41,6 @@ const AddStudentForm: React.FC = () => {
             .validateFields({ validateOnly: false })
             .then(() => {
                 const formData = stepForm.getFieldsValue();
-                console.log(stepForm.getFieldsValue());
                 setFormData((prev) => {
                     return { ...prev, ...formData };
                 });
@@ -48,22 +53,24 @@ const AddStudentForm: React.FC = () => {
 
     const onDoneFinish = async () => {
         const data = { ...formData, ...stepForm.getFieldsValue(), assignedTeachers: Array.from(assignedTeachersMap.values()) } as CreateStudentDto;
-        console.log(Array.from(assignedTeachersMap.values()));
-        console.log(data);
-        // const result = await createStudent({
-        //     ...data,
-        //     centerName: user ? user.centerName : '',
-        //     familyExist: Number(data.familyExist),
-        //     note: data.note
-        // });
 
-        // const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
-        // if (error) {
-        //     alert(JSON.stringify(error));
-        //     console.log(error);
-        // } else {
-        //     navigate('/students');
-        // }
+        //console.log(Array.from(assignedTeachersMap.values()));
+        //console.log(data);
+
+        const result = await createStudent({
+            ...data,
+            centerName: user ? user.centerName : '',
+            familyExist: Number(data.familyExist),
+            note: data.note
+        });
+
+        const error = (result as { error: FetchBaseQueryError | SerializedError }).error;
+        if (error) {
+            alert(JSON.stringify(error));
+            console.log(error);
+        } else {
+            navigate('/students');
+        }
     };
 
     const onFinish = (values: any) => {
@@ -309,8 +316,13 @@ const AddStudentForm: React.FC = () => {
                                 ]}
                             >
                                 <Select placeholder="Please select a family">
-                                    <Option value="1">test-1</Option>
-                                    <Option value="2">test-2</Option>
+                                    {family?.map((value) => {
+                                        return (
+                                            <Option value={value.id}>
+                                                {value.firstName} {value.lastName}
+                                            </Option>
+                                        );
+                                    })}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -321,13 +333,20 @@ const AddStudentForm: React.FC = () => {
                 <Divider />
 
                 {Array.from(assignedTeachersMap).map(([key, value]) => {
+                    //console.log(value);
                     return (
                         <AssignTeacher
                             key={key}
-                            teachers={teachers?.filter(t => t.id === Number(value.assignTeacherId) || !Array.from(assignedTeachersMap.values()).find(v => Number(v.assignTeacherId) === t.id))}
+                            teachers={teachers?.filter((t) => t.id === Number(value.assignTeacherId) || !Array.from(assignedTeachersMap.values()).find((v) => Number(v.assignTeacherId) === t.id))}
                             initialValues={value}
                             onChange={(val) => {
                                 setAssignedTeachersMap(new Map(assignedTeachersMap.set(key, val)));
+                            }}
+                            onDelete={() => {
+                                setAssignedTeachersMap((val) => {
+                                    val.delete(key);
+                                    return new Map(val);
+                                });
                             }}
                         />
                     );

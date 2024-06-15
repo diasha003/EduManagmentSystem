@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto, Student } from 'shared/models';
+import { User } from '@prisma/client';
 
 @Controller('student')
 export class StudentController {
@@ -12,9 +13,9 @@ export class StudentController {
         return this.studentService.createStudent(dto);
     }
 
-     //auth
-     @Get('/')
-     async getEmployees(@Headers() headers: any): Promise<Student[]> {
-         return await this.studentService.getAllStudents(headers);
-     }
+    //auth
+    @Get('/')
+    async getAllStudents(@Headers() headers: any): Promise<Student[]> {
+        return await this.studentService.getAllStudents(headers);
+    }
 }

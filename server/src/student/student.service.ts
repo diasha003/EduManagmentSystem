@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Billing, Gender, Role, Status, Type } from '@prisma/client';
+import { Billing, Gender, Role, Status, Type, User } from '@prisma/client';
 import { CreateStudentDto, Student } from 'shared/models';
 import { DatabaseService } from 'src/database/database.service';
 import { UserService } from 'src/user/user.service';
@@ -67,29 +67,20 @@ export class StudentService {
                 });
             }
 
-            //!!!12
+            if (dto.assignedTeachers) {
+                const assignedTeacherStudent = dto.assignedTeachers.map((value) => ({
+                    teacherId: Number(value.assignTeacherId),
+                    studentId: user.id,
+                    defaultLessonCategory: value.defaultLessonCategory,
+                    defaultLessonLength: Number(value.defaultLessonLength),
+                    defaultBilling: Billing[value.defaultBilling],
+                    defaultPrice: Number(value.defaultPrice)
+                }));
 
-            // const permissionsUserData = permissions.map((permission) => ({
-            //     userId: userId.id,
-            //     permissionId: permission.id
-            // }));
-
-            // await prisma.permissionsUser.createMany({
-            //     data: permissionsUserData
-            // });
-
-            // if (dto.assignTeacherId) {
-            //     await prisma.teacherStudent.createMany({
-            //         data: {
-            //             teacherId: dto.assignTeacherId,
-            //             studentId: user.id,
-            //             defaultLessonCategory: dto.defaultLessonCategory,
-            //             defaultLessonLength: dto.defaultLessonLength,
-            //             defaultBilling: Billing[dto.defaultBilling],
-            //             defaultPrice: dto.defaultPrice
-            //         }
-            //     });
-            // }
+                await prisma.teacherStudent.createMany({
+                    data: assignedTeacherStudent
+                });
+            }
         });
     }
 

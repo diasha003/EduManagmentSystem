@@ -186,8 +186,6 @@ export class EmployeeService {
             return item;
         });
 
-        console.log(data)
-
         return data;
     }
 
