@@ -1,37 +1,31 @@
 import { DeleteOutlined } from '@ant-design/icons';
-import { Button, Col, Form, Input, Radio, RadioChangeEvent, Row, Select, Space } from 'antd';
+import { Button, Col, Form, Input, Radio, Row, Select, Space } from 'antd';
 import { FormInstance, useForm, useWatch } from 'antd/es/form/Form';
 import { Option } from 'antd/es/mentions';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { AssignTeacherInfo, User } from 'shared/models';
 
 export type AssignTeachersEventFormProps = {
-    //form: FormInstance<AssignTeacherInfo>;
+    formRef: React.RefObject<FormInstance<AssignTeacherInfo>>;
     teachers?: User[];
     initialValues?: AssignTeacherInfo;
-    onChange: (value: AssignTeacherInfo) => void;
     onDelete: () => void;
 };
 
 const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeachersEventFormProps) => {
-    const [form] = useForm<AssignTeacherInfo>();
-
+    const [billingType, setBillingType] = useState<string>('');
     useEffect(() => {
-        if (props.initialValues) {
-            form.setFieldsValue(props.initialValues);
-        }
-    }, [form, props.initialValues]);
+        setBillingType(props.formRef.current?.getFieldValue('defaultBilling'))
 
-    const billingTypeTest = useWatch('defaultBilling', form);
+        if (props.initialValues)
+            props.formRef.current?.setFieldsValue(props.initialValues)
+    }, [props.formRef.current])
 
     return (
         <Form
-            form={form}
             layout="vertical"
-            onFieldsChange={() => {
-                props.onChange(form.getFieldsValue());
-            }}
+            ref={props.formRef}
         >
             <Row style={{ alignItems: 'center' }} gutter={10}>
                 <Col span={11}>
@@ -103,10 +97,10 @@ const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeac
                     >
                         <Radio.Group>
                             <Space direction="vertical">
-                                <Radio value="auto">Don't automatically create any calendar-generated charges</Radio>
-                                <Radio value="perLesson">Student pays based on the number of lessons taken</Radio>
-                                <Radio value="perMonth">Student pays the same amount each month regardless of number of lessons</Radio>
-                                <Radio value="perHour">Student pays an hourly rate</Radio>
+                                <Radio value="auto" onClick={() => setBillingType('auto')}>Don't automatically create any calendar-generated charges</Radio>
+                                <Radio value="perLesson"  onClick={() => setBillingType('perLesson')}>Student pays based on the number of lessons taken</Radio>
+                                <Radio value="perMonth" onClick={() => setBillingType('perMonth')}>Student pays the same amount each month regardless of number of lessons</Radio>
+                                <Radio value="perHour" onClick={() => setBillingType('perHour')}>Student pays an hourly rate</Radio>
                             </Space>
                         </Radio.Group>
                     </Form.Item>
@@ -114,11 +108,11 @@ const AssignTeacher: React.FC<AssignTeachersEventFormProps> = (props: AssignTeac
                 <Col span={11}></Col>
             </Row>
 
-            {billingTypeTest && billingTypeTest.toString() !== 'auto' ? (
+            {billingType && billingType.toString() !== 'auto' ? (
                 <Row gutter={10}>
                     <Col span={11}>
-                        <Form.Item name="defaultPrice" label="Price" rules={[{ required: billingTypeTest.toString() !== 'auto' }]}>
-                            <Input prefix="$" suffix={billingTypeTest.toString()} defaultValue={30} />
+                        <Form.Item name="defaultPrice" label="Price" rules={[{ required: billingType.toString() !== 'auto' }]}>
+                            <Input prefix="$" suffix={billingType.toString()} defaultValue={30} />
                         </Form.Item>
                     </Col>
                     <Col span={11}></Col>
