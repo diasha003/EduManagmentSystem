@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 
-import { Button, Space, Dropdown, Form } from 'antd';
-import { CaretDownOutlined, DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
+import { Button, Space, Dropdown, Form, Input } from 'antd';
+import { CaretDownOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
 import { DataGrid, DataGridColumn } from '../../../../components/DataGrid/DataGrid';
 import { Group } from 'shared/models';
 import AddGroupModal from '../addGroupForm/AddGroupForm';
 import { useCreateGroupMutation, useDeleteGroupMutation, useGetAllGroupsQuery, useUpdateGroupMutation } from '../../../../features/api/extensions/studentApiExtension';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
+import Icon from '@ant-design/icons/lib/components/Icon';
+import { get, map } from 'lodash';
+
+//import _ from 'lodash';
+
+const Search = Input.Search;
 
 export interface GroupsTableModel {
     key: number;
@@ -176,27 +182,56 @@ const GroupsTable: React.FC = () => {
         };
     });
 
+    let [searchText, setSearchText] = useState<string>('');
+    const [filteredData, setFilteredData] = useState<GroupsTableModel[]>([]);
+
+    const onSearch = (e: any) => {
+        setSearchText(e.target.value);
+        const reg = new RegExp(e.target.value, 'gi');
+        const filteredData = map(newData, (record) => {
+            const nameField = get(record, 'name') as string | undefined;
+            const nameMatch = nameField?.match(reg);
+
+            const studentsNameField = get(record, 'studentsName') as string | undefined;
+            const studentsNameMatch = studentsNameField?.match(reg);
+
+            const numberStudentsField = (get(record, 'numberStudents') ?? '').toString();
+            const numberStudentsMatch = numberStudentsField.match(reg);
+
+            if (!nameMatch && !studentsNameMatch && !numberStudentsMatch) {
+                return null;
+            }
+
+            return record;
+        }).filter((record): record is GroupsTableModel => record !== null);
+
+        setFilteredData(filteredData);
+    };
+
     return (
         <>
             <DataGrid
                 columns={columns}
-                dataSource={newData ? newData : []}
+                dataSource={newData ? (searchText ? filteredData : newData) : []}
                 showSort
                 toolbar={
-                    <Button
-                        icon={<PlusOutlined />}
-                        type="primary"
-                        className="button"
-                        onClick={() => {
-                            setIsCreateModal(true);
-                            showModal();
-                        }}
-                    >
-                        <Space>
-                            Add Group
-                            <CaretDownOutlined />
-                        </Space>
-                    </Button>
+                    <>
+                        <Button
+                            icon={<PlusOutlined />}
+                            type="primary"
+                            className="button"
+                            onClick={() => {
+                                setIsCreateModal(true);
+                                showModal();
+                            }}
+                        >
+                            <Space>
+                                Add Group
+                                <CaretDownOutlined />
+                            </Space>
+                        </Button>
+                        <Search size="middle" placeholder="Search Records" suffix={<CloseCircleOutlined onClick={() => setSearchText('')} />} onPressEnter={onSearch} onChange={onSearch} style={{ width: '50%' }} value={searchText} />
+                    </>
                 }
             />
             <AddGroupModal isModalOpen={isModalOpen} handleCancel={handleCancel} handleOk={handleOk} form={form} isCreate={isCreateModal}></AddGroupModal>
