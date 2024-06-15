@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Billing, Gender, Role, Status, Type, User } from '@prisma/client';
-import { CreateStudentDto, Student } from 'shared/models';
+import { CreateGroups, CreateStudentDto, Group, Student } from 'shared/models';
 import { DatabaseService } from 'src/database/database.service';
 import { UserService } from 'src/user/user.service';
 
@@ -22,7 +22,7 @@ export class StudentService {
         await this.prisma.$transaction(async (prisma) => {
             const user = await this.userService.createWithRoles({ email: dto.email, firstName: dto.firstName, lastName: dto.lastName, centerName: dto.centerName, phoneNumber: dto.phoneNumber, address: dto.address, password: dto.password }, [Role.STUDENT]);
 
-            console.log(dto);
+            //console.log(dto);
             await prisma.studentInfo.create({
                 data: {
                     userId: user.id,
@@ -105,8 +105,77 @@ export class StudentService {
             return item;
         });
 
-        //console.log(data)
-
         return data;
+    }
+
+    async createGroup(dto: CreateGroups) {
+        const currentGroup = await this.prisma.group.findFirst({
+            where: {
+                name: dto.name
+            }
+        });
+
+        if (currentGroup) {
+            throw new BadRequestException('Such group name is already exists');
+        }
+
+        await this.prisma.$transaction(async (prisma) => {
+            const newGroup = await prisma.group.create({
+                data: {
+                    name: dto.name
+                }
+            });
+
+            const groupStudents = dto.groupStudents.map((id) => ({
+                groupId: newGroup.id,
+                studentId: id
+            }));
+
+            await prisma.groupStudents.createMany({
+                data: groupStudents
+            });
+        });
+    }
+
+    async getAllGroups(headers: any): Promise<Group[]> {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        const allGroups = await this.prisma.group.findMany({
+            include: {
+                groupStudents: {
+                    include: {
+                        student: true
+                    }
+                }
+            }
+        });
+
+        return allGroups;
+    }
+
+    async deleteGroup(id: number) {
+        return await this.prisma.group.delete({
+            where: {
+                id: id
+            }
+        });
+    }
+
+    async updateGroup(id: number, dto: any) {
+        console.log(dto);
+        // const groupStudents = dto.groupStudents.map((item) => ({
+        //     groupId: dto.id,
+        //     studentId: item
+        // }));
+
+        // await this.prisma.group.update({
+        //     where: {
+        //         id: dto.id
+        //     },
+        //     data: {
+        //         name: dto.name,
+        //         groupStudents: groupStudents
+        //     }
+        // });
     }
 }

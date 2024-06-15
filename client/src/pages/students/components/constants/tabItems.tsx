@@ -1,4 +1,5 @@
 import StudentsTable from '../StudentsTable';
+import GroupsTable from '../groupsTable/GroupsTable';
 
 interface TabItem {
     label: string;
@@ -15,6 +16,6 @@ export const items: TabItem[] = [
     {
         label: 'Groups',
         key: '2',
-        children: <>element 2</>
+        children: <GroupsTable />
     }
 ];

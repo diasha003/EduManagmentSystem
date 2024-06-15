@@ -39,8 +39,6 @@ const StudentsTable: React.FC = () => {
     const user = useAppSelector((state) => state.auth.user);
     const data: Student[] | undefined = useGetAllStudentsQuery().currentData;
 
-    console.log(data);
-
     const columns: DataGridColumn<StudentTableModel>[] = [
         {
             title: 'Student',
@@ -297,8 +295,6 @@ const StudentsTable: React.FC = () => {
             // operation: React.ReactElement;
         };
     });
-
-    console.log(newData);
 
     return (
         <DataGrid

@@ -39,6 +39,7 @@ model User {
 
   teacherStudentAsTeacher TeacherStudent[] @relation("StudentRelation")
   teacherStudentAsStudent TeacherStudent[] @relation("TeacherRelation")
+  groupStudents           GroupStudents[]
 }
 
 enum Role {
@@ -85,19 +86,18 @@ model EmployeeInfo {
 }
 
 model StudentInfo {
-  id            Int             @id @default(autoincrement())
-  birthdayDate  DateTime?       @map("birthday_date")
-  dateRegister  DateTime?       @map("date_register")
-  avatarUrl     String?         @map("avatar_url")
-  gender        Gender?
-  status        Status
-  institution   String?
-  type          Type
-  skills        String[]
-  user          User            @relation(fields: [userId], references: [id])
-  userId        Int             @unique @map("user_id")
-  note          String?
-  groupStudents GroupStudents[]
+  id           Int       @id @default(autoincrement())
+  birthdayDate DateTime? @map("birthday_date")
+  dateRegister DateTime? @map("date_register")
+  avatarUrl    String?   @map("avatar_url")
+  gender       Gender?
+  status       Status
+  institution  String?
+  type         Type
+  skills       String[]
+  user         User      @relation(fields: [userId], references: [id])
+  userId       Int       @unique @map("user_id")
+  note         String?
 }
 
 model Group {
@@ -107,12 +107,12 @@ model Group {
 }
 
 model GroupStudents {
-  group         Group       @relation(fields: [groupId], references: [id])
-  groupId       Int         @map("group_id")
-  studentInfo   StudentInfo @relation(fields: [studentInfoId], references: [id])
-  studentInfoId Int         @map("student_info_id")
+  group     Group @relation(fields: [groupId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  groupId   Int   @map("group_id")
+  student   User  @relation(fields: [studentId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  studentId Int   @map("student_id")
 
-  @@id(fields: [groupId, studentInfoId])
+  @@id(fields: [groupId, studentId])
 }
 
 model TeacherStudent {

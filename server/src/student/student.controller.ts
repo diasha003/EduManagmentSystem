@@ -1,7 +1,6 @@
-import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { CreateStudentDto, Student } from 'shared/models';
-import { User } from '@prisma/client';
+import { CreateGroups, CreateStudentDto, Student, Group, UpdateGroup } from 'shared/models';
 
 @Controller('student')
 export class StudentController {
@@ -14,8 +13,35 @@ export class StudentController {
     }
 
     //auth
+    @Post('/group')
+    async createGroup(@Body() dto: CreateGroups) {
+        return this.studentService.createGroup(dto);
+    }
+
+    //auth
     @Get('/')
     async getAllStudents(@Headers() headers: any): Promise<Student[]> {
         return await this.studentService.getAllStudents(headers);
+    }
+
+    /////groups and students
+
+    //auth
+    @Get('/groups')
+    async getAllGroups(@Headers() headers: any): Promise<Group[]> {
+        return await this.studentService.getAllGroups(headers);
+    }
+
+    //@Auth()
+    @Patch('/updateGroup')
+    async updatePost(@Body() dto: UpdateGroup) {
+        console.log('da');
+        //return this.studentService.updateGroup(id, dto);
+    }
+
+    //@Auth()
+    @Delete('/group/:id')
+    async deleteComment(@Param('id', ParseIntPipe) id: number) {
+        return this.studentService.deleteGroup(id);
     }
 }

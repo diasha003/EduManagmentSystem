@@ -7,13 +7,9 @@ export interface Student extends User {
         note: string;
 
         //groups
-
         //teachers
-
         //lastLesson
-
         //nextLesson
-
         //Attendance Average
 
         gender?: string;
@@ -34,9 +30,7 @@ export class CreateStudentDto extends CreateUserDto {
     familyExist?: number;
     status: Status;
     note?: string;
-
     assignedTeachers?: AssignTeacherInfo[];
-
     parentLastName?: string;
     parentFirstName?: string;
     parentEmail?: string;
@@ -50,4 +44,26 @@ export class AssignTeacherInfo {
     defaultLessonLength?: number;
     defaultBilling?: Billing;
     defaultPrice?: number;
+}
+
+export class CreateGroups {
+    name: string;
+    groupStudents?: number[];
+}
+
+export class Group {
+    id: number;
+    name: string;
+    groupStudents?: {
+        groupId: number;
+        student: User;
+    }[];
+}
+export class UpdateGroup {
+    id: number;
+    name: string;
+    groupStudents?: {
+        label: string;
+        value: number;
+    }[];
 }

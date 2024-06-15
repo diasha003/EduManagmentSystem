@@ -11,7 +11,7 @@ import { AssignTeacherInfo, CreateStudentDto, User } from 'shared/models';
 import { useGetAllTeachersQuery } from '../../../../features/api/extensions/employeesApiExtension';
 
 import AssignTeacher from '../../../../components/AssignTeacher';
-import { useForm, useWatch } from 'antd/es/form/Form';
+import { FormInstance, useForm, useWatch } from 'antd/es/form/Form';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 
@@ -27,16 +27,30 @@ const AddStudentForm: React.FC = () => {
     const [stepForm] = Form.useForm();
     const [formData, setFormData] = useState<{ [key: string]: any }>({});
 
-    //const [formAssignedTeacher] = useForm<AssignTeacherInfo>();
-
     const [note, setNote] = useState<string>('');
-    const [assignedTeachersMap, setAssignedTeachersMap] = useState<Map<number, AssignTeacherInfo>>(new Map<number, AssignTeacherInfo>());
+    const [assignedTeachersMap, setAssignedTeachersMap] = useState(new Map<number, React.RefObject<FormInstance<AssignTeacherInfo>>>());
     const [createStudent] = useCreateStudentMutation();
 
     const navigate = useNavigate();
     const hasFamily = useWatch('hasFamily', stepForm);
 
-    const onNextFinish = async () => {
+    const useCustomForm = () => {
+        return useForm<AssignTeacherInfo>();
+    };
+
+    const onNextFinish = () => {
+        assignedTeachersMap.forEach((value) => {
+            value.current
+                ?.validateFields({ validateOnly: false })
+                .then((data) => {
+                    console.log(data);
+                    console.log(value.current!.getFieldsValue());
+                })
+                .catch(() => {
+                    console.log(2);
+                });
+        });
+
         stepForm
             .validateFields({ validateOnly: false })
             .then(() => {
@@ -333,15 +347,14 @@ const AddStudentForm: React.FC = () => {
                 <Divider />
 
                 {Array.from(assignedTeachersMap).map(([key, value]) => {
-                    //console.log(value);
+                    const model = value.current?.getFieldsValue();
+
                     return (
                         <AssignTeacher
                             key={key}
-                            teachers={teachers?.filter((t) => t.id === Number(value.assignTeacherId) || !Array.from(assignedTeachersMap.values()).find((v) => Number(v.assignTeacherId) === t.id))}
-                            initialValues={value}
-                            onChange={(val) => {
-                                setAssignedTeachersMap(new Map(assignedTeachersMap.set(key, val)));
-                            }}
+                            formRef={value}
+                            teachers={teachers?.filter((t) => !model || t.id === Number(model.assignTeacherId) || Array.from(assignedTeachersMap.values()).findIndex((v) => v.current && Number(v.current.getFieldValue('assignTeacherId')) === t.id) === -1)}
+                            initialValues={model}
                             onDelete={() => {
                                 setAssignedTeachersMap((val) => {
                                     val.delete(key);
@@ -364,7 +377,7 @@ const AddStudentForm: React.FC = () => {
                             onClick={(e) => {
                                 const teacherKeys = Array.from(assignedTeachersMap.keys());
                                 const newKey = teacherKeys.length + 1;
-                                setAssignedTeachersMap(new Map(assignedTeachersMap.set(newKey, new AssignTeacherInfo())));
+                                setAssignedTeachersMap(new Map(assignedTeachersMap.set(newKey, React.createRef<FormInstance<AssignTeacherInfo>>())));
                             }}
                         >
                             Assign Teachers

@@ -21,6 +21,7 @@ export declare class CreateStudentDto extends CreateUserDto {
     familyExist?: number;
     status: Status;
     note?: string;
+    assignedTeachers?: AssignTeacherInfo[];
     parentLastName?: string;
     parentFirstName?: string;
     parentEmail?: string;
@@ -33,4 +34,17 @@ export declare class AssignTeacherInfo {
     defaultLessonLength?: number;
     defaultBilling?: Billing;
     defaultPrice?: number;
+}
+export declare class CreateGroups {
+    name: string;
+    groupStudents?: number[];
+}
+export declare class Group {
+    id: number;
+    name: string;
+    groupStudents?: {
+        groupId: number;
+        studentId: number;
+        student: User;
+    }[];
 }

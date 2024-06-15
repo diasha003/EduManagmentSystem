@@ -15,7 +15,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 exports.__esModule = true;
-exports.AssignTeacherInfo = exports.CreateStudentDto = void 0;
+exports.Group = exports.CreateGroups = exports.AssignTeacherInfo = exports.CreateStudentDto = void 0;
 var _user_dto_1 = require("./_user.dto");
 var CreateStudentDto = /** @class */ (function (_super) {
     __extends(CreateStudentDto, _super);
@@ -31,3 +31,15 @@ var AssignTeacherInfo = /** @class */ (function () {
     return AssignTeacherInfo;
 }());
 exports.AssignTeacherInfo = AssignTeacherInfo;
+var CreateGroups = /** @class */ (function () {
+    function CreateGroups() {
+    }
+    return CreateGroups;
+}());
+exports.CreateGroups = CreateGroups;
+var Group = /** @class */ (function () {
+    function Group() {
+    }
+    return Group;
+}());
+exports.Group = Group;
