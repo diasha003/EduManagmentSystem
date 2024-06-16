@@ -190,21 +190,24 @@ model PermissionsUser {
 }
 
 model CalendarEvent {
-  id                Int            @id @default(autoincrement())
-  teacher           User           @relation(name: "calendar_event_teacher", fields: [teacherId], references: [id])
-  teacherId         Int            @map("teacher_id")
-  student           User?          @relation(name: "calendar_event_student", fields: [studentId], references: [id])
-  studentId         Int?           @map("student_id")
-  date              DateTime
-  isPublic          Boolean?       @map("is_public")
-  stateMakeUpCredit Boolean?       @map("state_make_up_credit")
-  frequency         Frequency?
-  repeatOnDaily     DayOfWeek[]    @map("repeat_on_daily")
-  repeatOnMonthly   RepeatMonthly? @map("repeat_on_monthly")
-  repeatUntil       DateTime?      @map("repeat_until")
-  everyWeek         Int?           @map("every_week")
-  everyMonth        Int?           @map("every_month")
-  everyYear         Int?           @map("every_year")
+  id                 Int            @id @default(autoincrement())
+  teacher            User           @relation(name: "calendar_event_teacher", fields: [teacherId], references: [id])
+  teacherId          Int            @map("teacher_id")
+  student            User?          @relation(name: "calendar_event_student", fields: [studentId], references: [id])
+  studentId          Int?           @map("student_id")
+  date               DateTime
+  duration           Int
+  isPublic           Boolean?       @map("is_public")
+  stateMakeUpCredit  Boolean?       @map("state_make_up_credit")
+  frequency          Frequency?
+  repeatOnDaily      DayOfWeek[]    @map("repeat_on_daily")
+  repeatOnMonthly    RepeatMonthly? @map("repeat_on_monthly")
+  repeatUntil        DateTime?      @map("repeat_until")
+  everyWeek          Int?           @map("every_week")
+  everyMonth         Int?           @map("every_month")
+  everyYear          Int?           @map("every_year")
+  publicDescription  String?
+  privateDescription String?
 }
 
 model familyAccount {

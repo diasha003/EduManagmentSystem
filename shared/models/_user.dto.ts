@@ -28,3 +28,10 @@ export class CreateUserDto {
     address?: string;
     access?: boolean;
 }
+
+export class ShortUserDto {
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber?: string;
+}

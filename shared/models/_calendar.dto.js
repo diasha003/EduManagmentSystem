@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.QuickLessonModel = exports.RepeatableEventInfo = exports.EventDto = exports.EventsFilter = void 0;
+exports.QuickLessonModel = exports.RepeatableEventInfo = exports.EventDetailsDto = exports.EventDto = exports.CreateEventDto = exports.EventsFilter = void 0;
 var class_validator_1 = require("class-validator");
 // import { Type } from 'class-transformer';
 var EventsFilter = /** @class */ (function () {
@@ -26,6 +26,16 @@ var EventsFilter = /** @class */ (function () {
     return EventsFilter;
 }());
 exports.EventsFilter = EventsFilter;
+var CreateEventDto = /** @class */ (function () {
+    function CreateEventDto() {
+    }
+    __decorate([
+        (0, class_validator_1.IsDateString)()
+        // @Type(() => Date)
+    ], CreateEventDto.prototype, "date");
+    return CreateEventDto;
+}());
+exports.CreateEventDto = CreateEventDto;
 var EventDto = /** @class */ (function () {
     function EventDto() {
     }
@@ -36,6 +46,12 @@ var EventDto = /** @class */ (function () {
     return EventDto;
 }());
 exports.EventDto = EventDto;
+var EventDetailsDto = /** @class */ (function () {
+    function EventDetailsDto() {
+    }
+    return EventDetailsDto;
+}());
+exports.EventDetailsDto = EventDetailsDto;
 var RepeatableEventInfo = /** @class */ (function () {
     function RepeatableEventInfo() {
     }

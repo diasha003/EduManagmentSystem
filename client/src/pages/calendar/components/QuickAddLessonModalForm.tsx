@@ -8,6 +8,8 @@ import { QuickLessonModel } from 'shared/models';
 import RepeatableEventForm from '../../../components/RepeatableEventForm';
 import { useCreateEventMutation } from '../../../features/api/extensions/calendarApiExtension';
 import { DateTimeService } from 'shared/services';
+import { useGetAllEmployeesQuery } from '../../../features/api/extensions/employeesApiExtension';
+import { useGetAllStudentsQuery } from '../../../features/api/extensions/studentApiExtension';
 
 export type QuickAddLessonModalFormProps = {
     selectedDate: Date;
@@ -21,6 +23,9 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
     const [eventRepeats, setEventRepeats] = useState(false);
     const [create] = useCreateEventMutation();
 
+    const { data: teachers } = useGetAllEmployeesQuery();
+    const { data: students } = useGetAllStudentsQuery();
+
     useEffect(() => {
         form.setFieldValue('date', dayjs(DateTimeService.withTime(props.selectedDate, 0, 0).toLocaleString(undefined, { timeZone: 'UTC' })));
     }, [form, props.selectedDate]);
@@ -28,8 +33,9 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
     const handleOk = async () => {
         const formData = form.getFieldsValue();
         const repeatableEventInfo = form.getFieldValue('repeatableEventInfo');
+
         await create({
-            date: formData.date,
+            date: formData.date?.toISOString() as any,
             isPublic: formData.isPublic,
             stateMakeUpCredit: formData.stateMakeUpCredit,
             repeatUntil: repeatableEventInfo?.repeatUntil,
@@ -41,8 +47,10 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
             everyYear: repeatableEventInfo?.everyYear ? +repeatableEventInfo.everyYear : undefined,
             teacherId: +formData.teacher,
             studentId: +formData.student,
-            repeatIdentity: formData.repeatableEventInfo?.repeatIdentity
+            repeatIdentity: formData.repeatableEventInfo?.repeatIdentity,
+            duration: 45
         });
+        props.onOk?.();
     };
 
     return (
@@ -52,16 +60,22 @@ const QuickAddLessonModalForm: React.FC<QuickAddLessonModalFormProps> = (props: 
                     <Col span={12}>
                         <Form.Item name="teacher" label="Teacher">
                             <Select placeholder="Teacher">
-                                <Option value="1">Teacher_1</Option>
-                                <Option value="1">Teacher_2</Option>
+                                {teachers?.map((x) => (
+                                    <Option value={x.id.toString()}>
+                                        {x.lastName} {x.firstName}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>
                     <Col span={12}>
                         <Form.Item label="Student" name="student">
                             <Select placeholder="Student">
-                                <Option value="student_1">Student_1</Option>
-                                <Option value="student_2">Student_2</Option>
+                                {students?.map((x) => (
+                                    <Option value={x.id.toString()}>
+                                        {x.lastName} {x.firstName}
+                                    </Option>
+                                ))}
                             </Select>
                         </Form.Item>
                     </Col>

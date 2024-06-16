@@ -1,5 +1,6 @@
 import { IsDateString, IsNumber } from 'class-validator';
 import { FrequencyType } from '../enums';
+import { ShortUserDto } from './_user.dto';
 // import { Type } from 'class-transformer';
 
 export class EventsFilter {
@@ -15,7 +16,7 @@ export class EventsFilter {
     dateTo: Date;
 }
 
-export class EventDto {
+export class CreateEventDto {
     teacherId: number;
     studentId?: number;
     isPublic?: boolean;
@@ -32,6 +33,39 @@ export class EventDto {
     @IsDateString()
     // @Type(() => Date)
     date: Date;
+    duration: number;
+    publicDescription?: string;
+    privateDescription?: string;
+}
+
+export class EventDto {
+    teacherId: number;
+    teacherDisplayName: string;
+    studentId?: number;
+    isPublic?: boolean;
+    stateMakeUpCredit?: boolean;
+    frequency?: string;
+    repeatOnDaily?: string[];
+    repeatOnMonthly?: string;
+    repeatUntil?: Date;
+    repeatIdentity?: boolean;
+    everyWeek?: number;
+    everyMonth?: number;
+    everyYear?: number;
+
+    @IsDateString()
+    // @Type(() => Date)
+    date: Date;
+    duration: number;
+    publicDescription?: string;
+    privateDescription?: string;
+}
+
+export class EventDetailsDto {
+    teacher: ShortUserDto;
+    students: ShortUserDto[];
+    date: Date;
+    duration: number;
 }
 
 export class RepeatableEventInfo {

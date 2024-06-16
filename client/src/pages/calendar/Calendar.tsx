@@ -12,24 +12,7 @@ import NonTeachingEventModalForm from './components/NonTeachinEventModalForm';
 import { useGetEventsQuery } from '../../features/api/extensions/calendarApiExtension';
 
 import './Calendar.style.css';
-
-const calendarAddOptions: MenuProps['items'] = [
-    {
-        icon: <CarryOutOutlined />,
-        key: 0,
-        label: 'Quick-Add Lesson'
-    },
-    {
-        icon: <CalendarOutlined />,
-        key: 1,
-        label: 'Add New Event'
-    },
-    {
-        icon: <CloudUploadOutlined />,
-        key: 2,
-        label: 'Add Non-Teaching Event'
-    }
-];
+import { useNavigate } from 'react-router-dom';
 
 const calendarOptions: MenuProps['items'] = [
     {
@@ -66,11 +49,34 @@ const calendarDisplayType: MenuProps['items'] = [
     }
 ];
 
-const CalendarTest: React.FC = () => {
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-    const [actionMenuDate, setActionMenuDate] = useState<dayjs.Dayjs | undefined>(undefined);
+const AppCalendar: React.FC = () => {
+    const navigator = useNavigate();
     const [isQuickLessonFormOpen, setIsQuickLessonFormOpen] = useState(false);
     const [isNonTeachingEventFormOpen, setIsNonTeachingEventFormOpen] = useState(false);
+
+    const calendarAddOptions: MenuProps['items'] = [
+        {
+            icon: <CarryOutOutlined />,
+            key: 0,
+            label: 'Quick-Add Lesson',
+            onClick: () => setIsQuickLessonFormOpen(true)
+        },
+        {
+            icon: <CalendarOutlined />,
+            key: 1,
+            label: 'Add New Event',
+            onClick: () => navigator('/new-event')
+        },
+        {
+            icon: <CloudUploadOutlined />,
+            key: 2,
+            label: 'Add Non-Teaching Event',
+            onClick: () => setIsNonTeachingEventFormOpen(true)
+        }
+    ];
+
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [actionMenuDate, setActionMenuDate] = useState<dayjs.Dayjs | undefined>(undefined);
 
     const [eventsFilter, setEventsFilter] = useState<EventsFilter>({
         userId: 1,
@@ -124,7 +130,9 @@ const CalendarTest: React.FC = () => {
                         setActionMenuDate(undefined);
                         setIsQuickLessonFormOpen(true);
                     })}
-                    {renderAction(<CarryOutOutlined />, 'New Event', 'Create a new event with custom settings')}
+                    {renderAction(<CarryOutOutlined />, 'New Event', 'Create a new event with custom settings', () => {
+                        navigator('/new-event');
+                    })}
                     {renderAction(<CarryOutOutlined />, 'New Non-Teaching Event', "Create a new event that doesn't require students", () => {
                         setActionMenuDate(undefined);
                         setIsNonTeachingEventFormOpen(true);
@@ -136,19 +144,24 @@ const CalendarTest: React.FC = () => {
         const date = new Date(current.format('YYYY-MM-DD'));
         const cellEvents = events?.filter((x) => DateTimeService.isSameDate(x.date, date)) ?? [];
 
-        if (cellEvents.length > 0) {
-            console.log(cellEvents);
-        }
-
         return (
             <Dropdown open={!!actionMenuDate && current.isSame(actionMenuDate)} menu={{ items }} dropdownRender={dropdownRender}>
-                <div className="ant-picker-cell-inner ant-picker-calendar-date" style={{ overflowY: 'auto' }} onClick={() => setActionMenuDate(current)}>
+                <div className="ant-picker-cell-inner ant-picker-calendar-date" onClick={() => setActionMenuDate(current)}>
                     <div className="ant-picker-calendar-date-value">{current.date()}</div>
-                    <div className="ant-picker-calendar-date-content" style={{ height: 'min-content' }}>
+                    <div className="ant-picker-calendar-date-content" style={{ minHeight: '86px', height: 'min-content' }}>
                         <ul className="events">
                             {cellEvents.map((x) => (
                                 <li>
-                                    <Badge count={`Lesson with smth`} />
+                                    <div style={{ backgroundColor: '#afe9f8', paddingLeft: '4px', marginBottom: '4px' }}>
+                                        <div style={{ borderLeft: 'solid 3px #2e568e', padding: '4px', color: '#2e568e' }}>
+                                            <div>
+                                                <strong>
+                                                    {DateTimeService.toUiTime(x.date)} - {DateTimeService.toUiTime(DateTimeService.addMinutes(x.date, x.duration))}
+                                                </strong>
+                                            </div>
+                                            <div>Lesson with {x.teacherDisplayName}</div>
+                                        </div>
+                                    </div>
                                 </li>
                             ))}
                         </ul>
@@ -179,7 +192,14 @@ const CalendarTest: React.FC = () => {
                 </Dropdown>
 
                 {/* <a>Today</a> */}
-                <QuickAddLessonModalForm isOpen={isQuickLessonFormOpen} selectedDate={selectedDate} onCancel={() => setIsQuickLessonFormOpen(false)} onOk={() => {}} />
+                <QuickAddLessonModalForm
+                    isOpen={isQuickLessonFormOpen}
+                    selectedDate={selectedDate}
+                    onCancel={() => setIsQuickLessonFormOpen(false)}
+                    onOk={() => {
+                        setIsQuickLessonFormOpen(false);
+                    }}
+                />
                 <NonTeachingEventModalForm isOpen={isNonTeachingEventFormOpen} selectedDate={selectedDate} onCancel={() => setIsNonTeachingEventFormOpen(false)} onOk={() => {}} />
             </div>
 
@@ -235,6 +255,7 @@ const CalendarTest: React.FC = () => {
                 </div>
 
                 <Calendar
+                    fullscreen
                     style={{
                         borderTopStyle: 'groove'
                     }}
@@ -247,4 +268,4 @@ const CalendarTest: React.FC = () => {
     );
 };
 
-export default CalendarTest;
+export default AppCalendar;

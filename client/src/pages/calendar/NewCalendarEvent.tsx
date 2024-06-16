@@ -8,6 +8,7 @@ import { useCreateEventMutation } from '../../features/api/extensions/calendarAp
 import { Content } from 'antd/es/layout/layout';
 import RepeatableEventForm from '../../components/RepeatableEventForm';
 import TextArea from 'antd/es/input/TextArea';
+import { useGetAllEmployeesQuery } from '../../features/api/extensions/employeesApiExtension';
 
 export type NewCalendarEventProps = {
     selectedDate: Date;
@@ -22,6 +23,8 @@ const NewCalendarEvent: React.FC<NewCalendarEventProps> = (props: NewCalendarEve
     const [eventRepeats, setEventRepeats] = useState(false);
     const [addSubstituteTeacher, setAddSubstituteTeacher] = useState(false);
     const [create] = useCreateEventMutation();
+
+    const { data: teachers } = useGetAllEmployeesQuery();
 
     return (
         <Content>
@@ -42,8 +45,7 @@ const NewCalendarEvent: React.FC<NewCalendarEventProps> = (props: NewCalendarEve
                         <Col span={12}>
                             <Form.Item name="teacher" label="Teacher">
                                 <Select placeholder="Teacher">
-                                    <Option value="1">Teacher_1</Option>
-                                    <Option value="1">Teacher_2</Option>
+                                    {teachers?.map(x => <Option value={x.id.toString()}>{x.lastName} {x.firstName}</Option>)}
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -61,18 +63,14 @@ const NewCalendarEvent: React.FC<NewCalendarEventProps> = (props: NewCalendarEve
                                 <Radio value={false}>Private - Visible on the Student Portal calendar to current attendees only</Radio>
                             </Space>
                         </Radio.Group>
-
-                        <Form.Item name="stateMakeUpCredit" valuePropName="checked">
-                            <Checkbox style={{ marginTop: '25px' }}>This event requires a make-up credit</Checkbox>
-                        </Form.Item>
                     </Form.Item>
 
                     <Form.Item name="stateMakeUpCredit" valuePropName="checked">
-                        <Checkbox style={{ marginTop: '25px' }}>This event requires a make-up credit</Checkbox>
+                        <Checkbox>This event requires a make-up credit</Checkbox>
                     </Form.Item>
 
                     <Form.Item name="allowRegisterThroughStudentPortal" valuePropName="checked">
-                        <Checkbox style={{ marginTop: '25px' }}>Allow students to register through the Student Portal</Checkbox>
+                        <Checkbox>Allow students to register through the Student Portal</Checkbox>
                     </Form.Item>
 
                     <Divider type="horizontal" />

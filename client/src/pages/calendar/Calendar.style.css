@@ -3,11 +3,9 @@
 }
 
 :where(.css-dev-only-do-not-override-zl9ks2).ant-picker-calendar.ant-picker-calendar-full .ant-picker-calendar-date {
-    height: 5.5em;
+    height: 100%;
     width: 100%;
 }
-
-
 
 .blockFrequencyType {
     display: flex;
@@ -25,16 +23,20 @@
     }
 }
 
+.ant-picker-content tbody tr td {
+    height: 1px;
+}
+
 .events {
     margin: 0;
     padding: 0;
     list-style: none;
-  }
-  
+}
+
 .events .ant-badge {
-  width: 100%;
-  overflow: hidden;
-  font-size: 12px;
-  white-space: nowrap;
-  text-overflow: ellipsis;
+    width: 100%;
+    overflow: hidden;
+    font-size: 12px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }

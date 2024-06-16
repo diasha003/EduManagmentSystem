@@ -4,7 +4,7 @@ import { Link, Route, Routes } from 'react-router-dom';
 
 import InfoStudents from './pages/students/InfoStudents';
 import InfoEmployees from './pages/employees/InfoEmployess';
-import CalendarTest from './pages/calendar/Calendar';
+import AppCalendar from './pages/calendar/Calendar';
 import Login from './pages/login/Login';
 import Register from './pages/register/Register';
 import NavBar from './components/NavBar/NavBar';
@@ -17,6 +17,7 @@ import FamiliesInvoicesInfo from './pages/families-invoices/FamiliesInvoicesInfo
 import { useAppSelector } from './hooks/redux';
 import Home from './pages/home/Home';
 import PersonDetails from './pages/personDetails/personDetails';
+import Attendace from './pages/attendance/Attendace';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -34,12 +35,13 @@ const App: React.FC = () => {
     routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm />, name: 'Teachers & Staff' });
     routes.push({ path: '/students', element: <InfoStudents />, name: 'Students' });
     routes.push({ path: '/students/add', element: <AddStudentForm />, name: 'Students' });
-    routes.push({ path: '/calendar', element: <CalendarTest />, name: 'Calendar' });
+    routes.push({ path: '/calendar', element: <AppCalendar />, name: 'Calendar' });
     routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} />, name: 'Calendar' });
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
     routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: 'Families & Invoices' });
     routes.push({ path: '/person', element: <PersonDetails />, name: '' });
+    routes.push({ path: '/attendance/:eventId', element: <Attendace />, name: 'Attendace' });
 
     const user = useAppSelector((state) => state.auth.user);
 

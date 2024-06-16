@@ -6,7 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 exports.__esModule = true;
-exports.CreateUserDto = void 0;
+exports.ShortUserDto = exports.CreateUserDto = void 0;
 var class_validator_1 = require("class-validator");
 var CreateUserDto = /** @class */ (function () {
     function CreateUserDto() {
@@ -17,3 +17,9 @@ var CreateUserDto = /** @class */ (function () {
     return CreateUserDto;
 }());
 exports.CreateUserDto = CreateUserDto;
+var ShortUserDto = /** @class */ (function () {
+    function ShortUserDto() {
+    }
+    return ShortUserDto;
+}());
+exports.ShortUserDto = ShortUserDto;

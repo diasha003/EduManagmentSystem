@@ -1,6 +1,10 @@
 export class DateTimeService {
     static daysMap = new Map<number, string>([[1, '']]);
 
+    static addMinutes(date: Date, minutes: number): Date {
+        return new Date(date.getTime() + minutes * 60 * 1000);
+    }
+    
     static addTime(date: Date, hours: number, minutes?: number): Date {
         let offset = hours * 60 * 60 * 1000;
         if (minutes) {
@@ -83,5 +87,119 @@ export class DateTimeService {
         } while (day < date && !this.isSameDate(day, date));
 
         return result;
+    }
+
+    static toUiDate(value: Date): string {
+        if (!(value instanceof Date)) throw new Error(`Expected date, but found: ${typeof value}: ${value}`);
+
+        let d = value.getUTCDate().toString();
+        let m = (value.getUTCMonth() + 1).toString();
+
+        d = d.length === 1 ? '0' + d : d;
+        m = m.length === 1 ? '0' + m : m;
+
+        return d + '.' + m + '.' + value.getUTCFullYear();
+    }
+
+    static toUiTime(value: Date, useSwissTime?: boolean): string {
+        if (!(value instanceof Date)) throw new Error(`Expected date, but found: ${typeof value}: ${value}`);
+
+        if (isNaN(value.getTime())) return '~';
+        let h = value.getUTCHours().toString();
+        let mm = value.getUTCMinutes().toString();
+
+        h = h.length === 1 ? '0' + h : h;
+        mm = mm.length === 1 ? '0' + mm : mm;
+
+        return h + ':' + mm + (useSwissTime ? '.' : '');
+    }
+
+    static toUiTimeSeconds(value: Date, useSwissTime?: boolean): string {
+        if (!(value instanceof Date)) throw new Error(`Expected date, but found: ${typeof value}: ${value}`);
+
+        if (isNaN(value.getTime())) return '~';
+        let h = value.getUTCHours().toString();
+        let mm = value.getUTCMinutes().toString();
+        let ss = value.getUTCSeconds().toString();
+
+        h = h.length === 1 ? '0' + h : h;
+        mm = mm.length === 1 ? '0' + mm : mm;
+        ss = ss.length === 1 ? '0' + ss : ss;
+
+        return h + ':' + mm + ':' + ss + (useSwissTime ? '.' : '');
+    }
+
+    static toUiTimestamp(value: Date, showMS?: boolean): string {
+        if (!(value instanceof Date)) throw new Error(`Expected date, but found: ${typeof value}: ${value}`);
+
+        let d = value.getUTCDate().toString();
+        let m = (value.getUTCMonth() + 1).toString();
+        let h = value.getUTCHours().toString();
+        let mm = value.getUTCMinutes().toString();
+        let s = value.getUTCSeconds().toString();
+        let ms = showMS ? `.${value.getUTCMilliseconds()}` : '';
+
+        d = d.length === 1 ? `0${d}` : d;
+        m = m.length === 1 ? `0${m}` : m;
+        h = h.length === 1 ? `0${h}` : h;
+        mm = mm.length === 1 ? `0${mm}` : mm;
+        s = s.length === 1 ? `0${s}` : s;
+        return `${d}.${m}.${value.getUTCFullYear()} ${h}:${mm}:${s}${ms}`;
+    }
+
+    static toUiSeconds(seconds: number): string {
+        const sec = Math.trunc(seconds);
+        const isNegative = sec < 0;
+        const positiveSec = isNegative ? -sec : sec;
+        const h = Math.trunc(positiveSec / (60 * 60));
+        const m = Math.trunc(positiveSec / 60) - h * 60;
+        let mm = m.toString();
+        let hh = h.toString();
+
+        mm = mm.length === 1 ? '0' + mm : mm;
+        hh = hh.length === 1 ? '0' + hh : hh;
+
+        return (isNegative ? '-' : '') + hh + ':' + mm;
+    }
+
+    static toUiMiliseconds(miliseconds: number): string {
+        const sec = Math.trunc(miliseconds / 1000);
+        const isNegative = sec < 0;
+        const h = Math.abs(Math.trunc(sec / (60 * 60)));
+        const m = Math.abs(Math.trunc(sec / 60) - h * 60);
+        const s = Math.abs(Math.trunc(sec - h * 60 * 60 - m * 60));
+        let mm = m.toString();
+        let hh = h.toString();
+        let ss = s.toString();
+
+        mm = mm.length === 1 ? '0' + mm : mm;
+        hh = hh.length === 1 ? '0' + hh : hh;
+        ss = ss.length === 1 ? '0' + ss : ss;
+
+        return (isNegative ? '-' : '') + hh + ':' + mm + ':' + ss;
+    }
+
+    static toUiDiffTime(to: Date, from: Date) {
+        const diffMinutes = this.diffMinutes(to, from);
+        if (diffMinutes < 60) {
+            return Math.round(diffMinutes) + 'm';
+        }
+
+        const diffHours = this.diffHours(to, from);
+        if (diffHours < 24) {
+            return Math.round(diffHours) + 'h';
+        }
+
+        return Math.round(this.diffDays(to, from)) + 'd';
+    }
+
+    static diffMinutes(to: Date, from: Date): number {
+        const diff = to.getTime() - from.getTime();
+        return Math.ceil(diff / (60 * 1000));
+    }
+
+    static diffHours(to: Date, from: Date): number {
+        const diff = to.getTime() - from.getTime();
+        return diff / (60 * 60 * 1000);
     }
 }
