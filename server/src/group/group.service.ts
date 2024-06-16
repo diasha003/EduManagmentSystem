@@ -57,10 +57,6 @@ export class GroupService {
         return allGroups;
     }
 
-    async getCountGroups() {
-        return await this.prisma.group.count();
-    }
-
     async deleteGroup(id: number) {
         return await this.prisma.group.delete({
             where: {
@@ -106,6 +102,17 @@ export class GroupService {
                     data: groupsStudents
                 });
             }
+        });
+    }
+
+    async getCountGroups(): Promise<number> {
+        return await this.prisma.group.count();
+    }
+
+    async getAllRecordGroupTable(data: { skipCount: number; takeCount: number }) {
+        return await this.prisma.group.findMany({
+            skip: (data.skipCount - 1) * data.takeCount,
+            take: Number(data.takeCount)
         });
     }
 }

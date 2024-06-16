@@ -5,7 +5,7 @@ import { CaretDownOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, M
 import { DataGrid, DataGridColumn } from '../../../../components/DataGrid/DataGrid';
 import { Group } from 'shared/models';
 import AddGroupModal from '../addGroupForm/AddGroupForm';
-import { useCreateGroupMutation, useDeleteGroupMutation, useGetAllGroupsQuery, useUpdateGroupMutation } from '../../../../features/api/extensions/studentApiExtension';
+import { useCreateGroupMutation, useDeleteGroupMutation, useGetAllGroupsQuery, useGetCountRecordsGroupsQuery, useGetRecordsGroupsQuery, useUpdateGroupMutation } from '../../../../features/api/extensions/studentApiExtension';
 import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 import { SerializedError } from '@reduxjs/toolkit';
 import Icon from '@ant-design/icons/lib/components/Icon';
@@ -29,7 +29,12 @@ const GroupsTable: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCreateModal, setIsCreateModal] = useState(true);
 
-    const data: Group[] | undefined = useGetAllGroupsQuery().currentData;
+    //const data: Group[] | undefined = useGetAllGroupsQuery().currentData;
+
+    const [numberPage, setNumberPage] = useState<number>(1);
+    const countRecords = useGetCountRecordsGroupsQuery().currentData;
+
+    const { data: groupsData, error, isLoading } = useGetRecordsGroupsQuery({ skipCount: numberPage, takeCount: 10 });
 
     const [createGroup] = useCreateGroupMutation();
     const [deleteGroup] = useDeleteGroupMutation();
@@ -174,7 +179,7 @@ const GroupsTable: React.FC = () => {
         }
     ];
 
-    const newData: GroupsTableModel[] | undefined = data?.map((item) => {
+    const newData: GroupsTableModel[] | undefined = groupsData?.map((item) => {
         const students = item.groupStudents?.map((item) => {
             return item.student.firstName.concat(' ').concat(item.student.lastName);
         });
@@ -218,43 +223,16 @@ const GroupsTable: React.FC = () => {
         setFilteredData(filteredData);
     };
 
-    const [tableData, setTableData] = useState(null);
-    const [totalItems, setTotalItems] = useState(0);
-    const [loadingSpinner, setLoadingSpinner] = useState(false);
-
-    // useEffect(() => {
-    //     setLoadingSpinner(true);
-    //     const countResponse = data;
-    //     // const recordResponse = axios.get(
-    //     //     'http://localhost:3001/api/records',
-    //     //     {
-    //     //         params: {
-    //     //             offset: 0,
-    //     //             e
-    //     //         }
-    //     //     },
-    //     //     { timeout: 5000 }
-    //     // );
-
-    //     Promise.all([countResponse, recordResponse])
-    //         .then(function (results) {
-    //             setTotalItems(results[0].data.count);
-    //             setTableData(results[1].data.records);
-    //         })
-    //         .catch(function (error) {
-    //             console.error("Couldn't get requested records: ", error);
-    //         })
-    //         .then(function () {
-    //             setLoadingSpinner(false);
-    //         });
-    // }, []);
-
     return (
         <>
             <DataGrid
                 columns={columns}
                 dataSource={newData ? (searchText ? filteredData : newData) : []}
                 showSort
+                countRecords={countRecords}
+                setPage={(numberPage) => {
+                    setNumberPage(numberPage);
+                }}
                 toolbar={
                     <>
                         <Button

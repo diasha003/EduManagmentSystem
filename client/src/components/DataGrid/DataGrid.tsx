@@ -15,6 +15,8 @@ export type DataGridProps<T> = {
     columns: DataGridColumn<T>[];
     dataSource: T[];
     allCenterName?: string[];
+    setPage?: (numberPage: number) => void;
+    countRecords?: number;
 };
 
 export type DataGridColumn<T> = {
@@ -33,7 +35,7 @@ export type DataGridExtendedColumn<T> = DataGridColumn<T> & {
     defaultHidden?: boolean;
 };
 
-export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelectCenterName, columns, dataSource, allCenterName }: DataGridProps<T>) {
+export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelectCenterName, columns, dataSource, allCenterName, setPage, countRecords }: DataGridProps<T>) {
     const [cols, setCols] = useState<DataGridExtendedColumn<T>[]>(columns.map((c) => ({ ...c, defaultHidden: c.hidden })));
 
     const onSwitchShowColumn = useCallback(
@@ -129,7 +131,12 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                     defaultPageSize: 10,
                     showSizeChanger: true,
                     showQuickJumper: true,
-                    total: 100
+                    onChange: (page, pageSize) => {
+                        setPage && setPage(page);
+
+                        //fetchRecords(page, pageSize);
+                    },
+                    total: countRecords ? countRecords : 0
                 }}
                 onRow={(record, rowIndex) => {
                     return {

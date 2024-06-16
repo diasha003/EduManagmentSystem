@@ -28,14 +28,7 @@ export const studentApiExtensions = baseApi.injectEndpoints({
             query: () => ({
                 url: '/user/family',
                 method: 'GET'
-            }),
-            async onQueryStarted(arg, api) {
-                try {
-                    //console.log(arg)
-                } catch (error) {
-                    console.log(error);
-                }
-            }
+            })
         }),
 
         //groups and students
@@ -70,14 +63,21 @@ export const studentApiExtensions = baseApi.injectEndpoints({
             }),
 
             invalidatesTags: ['Group']
+        }),
+        getCountRecordsGroups: builder.query<number, void>({
+            query: () => ({
+                url: '/group/count',
+                method: 'GET'
+            })
+        }),
+        getRecordsGroups: builder.query<Group[], { skipCount: number; takeCount: number }>({
+            query: ({ skipCount, takeCount }) => ({
+                url: '/group/records',
+                method: 'GET',
+                params: { skipCount, takeCount }
+            })
         })
-        // getRecordsGroups: builder.query<Group[], { offset: number; limit: number }>({
-        //     query: ({ offset, limit }) => ({
-        //         url: '/student/groups',
-        //         params: { offset, limit }
-        //     })
-        // }),
     })
 });
 
-export const { useCreateStudentMutation, useGetAllStudentsQuery, useGetAllFamilyQuery, useCreateGroupMutation, useGetAllGroupsQuery, useDeleteGroupMutation, useUpdateGroupMutation } = studentApiExtensions;
+export const { useCreateStudentMutation, useGetAllStudentsQuery, useGetAllFamilyQuery, useCreateGroupMutation, useGetAllGroupsQuery, useDeleteGroupMutation, useUpdateGroupMutation, useGetCountRecordsGroupsQuery, useGetRecordsGroupsQuery } = studentApiExtensions;
