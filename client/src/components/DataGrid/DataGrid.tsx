@@ -1,6 +1,6 @@
-import { Button, Select, SelectProps, Space, Table } from 'antd';
+import { Button, GetProp, Select, SelectProps, Space, Table } from 'antd';
 import { ColumnSorter } from '../DataGrid/columnSorter/ColumnSorter';
-import { ColumnType } from 'antd/es/table';
+import { ColumnType, TableProps } from 'antd/es/table';
 import { ColumnSelector } from '../DataGrid/columnSelector/ColumnSelector';
 import { useCallback, useState } from 'react';
 import { SorterResult } from 'antd/es/table/interface';
@@ -111,7 +111,7 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                 <Space align="center">
                     {showColumnsSelector && <ColumnSelector columns={cols} onSwitchColumn={onSwitchShowColumn} />}
                     {showSort && <ColumnSorter columns={cols} onSwitchSortOrder={onSwitchSortOrder} />}
-                    <Button>Search</Button>
+                    {/* <Button>Search</Button> */}
                     {showSelectCenterName && <SelectCenterName allCenterName={allCenterName} />}
                 </Space>
             </div>
@@ -123,6 +123,14 @@ export function DataGrid<T>({ toolbar, showColumnsSelector, showSort, showSelect
                 }}
                 dataSource={dataSource}
                 scroll={{ x: 1500, y: 1200 }}
+                //loading={loadingSpinner}
+                pagination={{
+                    position: ['bottomCenter'],
+                    defaultPageSize: 10,
+                    showSizeChanger: true,
+                    showQuickJumper: true,
+                    total: 100
+                }}
                 onRow={(record, rowIndex) => {
                     return {
                         onClickCapture: (event) => {
