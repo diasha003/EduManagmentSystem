@@ -24,6 +24,8 @@ export const studentApiExtensions = baseApi.injectEndpoints({
             },
             providesTags: ['Students']
         }),
+
+        //family
         getAllFamily: builder.query<User[], void>({
             query: () => ({
                 url: '/user/family',
@@ -68,14 +70,16 @@ export const studentApiExtensions = baseApi.injectEndpoints({
             query: () => ({
                 url: '/group/count',
                 method: 'GET'
-            })
+            }),
+            providesTags: ['Group']
         }),
         getRecordsGroups: builder.query<Group[], { skipCount: number; takeCount: number }>({
             query: ({ skipCount, takeCount }) => ({
                 url: '/group/records',
                 method: 'GET',
                 params: { skipCount, takeCount }
-            })
+            }),
+            providesTags: ['Group']
         })
     })
 });

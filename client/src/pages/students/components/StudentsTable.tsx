@@ -6,7 +6,7 @@ import { CaretDownOutlined, DeleteOutlined, EyeOutlined, HomeOutlined, MailOutli
 import studentAddOptions from './constants/studentAddOptions';
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
 import { useAppSelector } from '../../../hooks/redux';
-import { Student } from 'shared/models';
+import { Group, Student, User } from 'shared/models';
 import { useGetAllStudentsQuery } from '../../../features/api/extensions/studentApiExtension';
 import stc from 'string-to-color';
 
@@ -18,7 +18,6 @@ export interface StudentTableModel {
     contact?: string;
     family?: string;
     note?: string;
-    groups?: string;
     teachers?: string[];
     lastLesson?: Date;
     nextLesson?: Date;
@@ -31,6 +30,8 @@ export interface StudentTableModel {
     studentSince?: string;
     operation?: React.ReactElement;
     status: string;
+    familyStudentsAsStudent?: { parent: User; parentId: number; studentId: number };
+    groupStudents?: { group: Group }[];
 }
 
 const StudentsTable: React.FC = () => {
@@ -38,6 +39,8 @@ const StudentsTable: React.FC = () => {
 
     const user = useAppSelector((state) => state.auth.user);
     const data: Student[] | undefined = useGetAllStudentsQuery().currentData;
+
+    console.log(data);
 
     const columns: DataGridColumn<StudentTableModel>[] = [
         {
@@ -74,7 +77,7 @@ const StudentsTable: React.FC = () => {
             title: 'Student Contact',
             dataIndex: 'contact',
             key: 'contact',
-            width: 200,
+            width: 180,
             hidden: true,
             render: (value, record) => {
                 return (
@@ -105,22 +108,56 @@ const StudentsTable: React.FC = () => {
             title: 'Family',
             dataIndex: 'family',
             key: 'family',
-            width: 150,
-            hidden: false
+            width: 200,
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {record.familyStudentsAsStudent?.parent.firstName} {record.familyStudentsAsStudent?.parent.lastName}
+                        {record.familyStudentsAsStudent?.parent.email && (
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <MailOutlined style={{ marginRight: '5px' }} />
+                                <>{record.email}</>
+                            </div>
+                        )}
+                        {record.familyStudentsAsStudent?.parent.address && record.familyStudentsAsStudent?.parent.address.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <HomeOutlined style={{ marginRight: '5px' }} />
+                                <>{record.address}</>
+                            </div>
+                        )}
+                        {record.familyStudentsAsStudent?.parent.phoneNumber && record.familyStudentsAsStudent?.parent.phoneNumber.length > 0 && (
+                            <div style={{ display: 'flex', flexDirection: 'row' }}>
+                                <PhoneOutlined style={{ marginRight: '5px' }} />
+                                <>{record.contact}</>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
         },
         {
             title: 'Notes',
             dataIndex: 'note',
             key: 'note',
             width: 150,
-            hidden: false
+            hidden: true
         },
         {
             title: 'Groups',
             dataIndex: 'groups',
             key: 'groups',
-            width: 150,
-            hidden: false
+            width: 80,
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {record.groupStudents?.map((item) => {
+                            return <span key={item.group.id}> {item.group.name.toString()}</span>;
+                        })}
+                    </div>
+                );
+            }
         },
         {
             title: 'Teachers',
@@ -268,31 +305,30 @@ const StudentsTable: React.FC = () => {
     ];
 
     const newData: StudentTableModel[] | undefined = data?.map((item, key) => {
-        //????
         const birthdayDate = item.studentInfo?.birthdayDate ? new Date(item.studentInfo.birthdayDate) : undefined;
         const dateRegister = item.studentInfo?.dateRegister ? new Date(item.studentInfo.dateRegister) : undefined;
         return {
-            key: item.id, // Преобразование key в строку
+            key: item.id,
             name: `${item.firstName} ${item.lastName}`,
             contact: item.phoneNumber,
             email: item.email,
             address: item.address,
             note: item.studentInfo?.note,
-            birthday: birthdayDate?.toDateString(), // Преобразование даты к строке в нужном формате
+            birthday: birthdayDate?.toDateString(),
             age: birthdayDate ? new Date().getFullYear() - birthdayDate.getFullYear() : undefined,
             gender: item.studentInfo?.gender,
             education: item.studentInfo?.institution,
             studentSince: dateRegister?.toDateString(),
-            status: item.studentInfo?.status || ''
+            status: item.studentInfo?.status || '',
+            familyStudentsAsStudent: item.familyStudentsAsStudent?.[0],
+            groupStudents: item.groupStudents
 
-            // family: string;
-            // groups: string;
             // teachers: string[];
             // lastLesson: Date;
             // nextLesson: Date;
             // avgAttendance: number;
             // lastLog: Date;
-            // operation: React.ReactElement;
+            
         };
     });
 

@@ -6,17 +6,17 @@ export interface Student extends User {
         status: string;
         note: string;
 
-        //groups
         //teachers
         //lastLesson
         //nextLesson
         //Attendance Average
-
         gender?: string;
         institution?: string;
         dateRegister?: Date;
         birthdayDate?: Date;
     };
+    familyStudentsAsStudent?: { parent: User; parentId: number; studentId: number }[];
+    groupStudents?: { group: Group }[];
 }
 
 export class CreateStudentDto extends CreateUserDto {
@@ -62,10 +62,5 @@ export class Group {
 export class UpdateGroup {
     id: number;
     name: string;
-    // groupStudents?: {
-    //     label: string;
-    //     value: number;
-    // }[];
-
     groupStudents?: number[];
 }

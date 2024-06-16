@@ -9,6 +9,14 @@ export interface Student extends User {
         dateRegister?: Date;
         birthdayDate?: Date;
     };
+    familyStudentsAsStudent?: {
+        parent: User;
+        parentId: number;
+        studentId: number;
+    }[];
+    groupStudents?: {
+        group: Group;
+    }[];
 }
 export declare class CreateStudentDto extends CreateUserDto {
     birthdayDate?: Date;
@@ -44,7 +52,11 @@ export declare class Group {
     name: string;
     groupStudents?: {
         groupId: number;
-        studentId: number;
         student: User;
     }[];
+}
+export declare class UpdateGroup {
+    id: number;
+    name: string;
+    groupStudents?: number[];
 }

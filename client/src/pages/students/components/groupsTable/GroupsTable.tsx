@@ -34,7 +34,7 @@ const GroupsTable: React.FC = () => {
     const [numberPage, setNumberPage] = useState<number>(1);
     const countRecords = useGetCountRecordsGroupsQuery().currentData;
 
-    const { data: groupsData, error, isLoading } = useGetRecordsGroupsQuery({ skipCount: numberPage, takeCount: 10 });
+    const groupsData: Group[] | undefined = useGetRecordsGroupsQuery({ skipCount: numberPage, takeCount: 10 }).currentData;
 
     const [createGroup] = useCreateGroupMutation();
     const [deleteGroup] = useDeleteGroupMutation();

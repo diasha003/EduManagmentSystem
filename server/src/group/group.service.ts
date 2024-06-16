@@ -58,6 +58,7 @@ export class GroupService {
     }
 
     async deleteGroup(id: number) {
+        //console.log(id);
         return await this.prisma.group.delete({
             where: {
                 id: id

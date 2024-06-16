@@ -46,7 +46,7 @@ export class StudentService {
                         studentId: user.id
                     }
                 });
-            } else {
+            } else if (Type[dto.type] !== Type.adult) {
                 const parent = await this.userService.createWithRoles(
                     {
                         email: dto.parentEmail,
@@ -63,6 +63,22 @@ export class StudentService {
                 await prisma.familyStudents.create({
                     data: {
                         parentId: parent.id,
+                        studentId: user.id
+                    }
+                });
+            } else {
+                await this.prisma.user.update({
+                    where: {
+                        id: user.id
+                    },
+                    data: {
+                        roles: [Role.FAMILY, Role.STUDENT]
+                    }
+                });
+
+                await prisma.familyStudents.create({
+                    data: {
+                        parentId: user.id,
                         studentId: user.id
                     }
                 });
@@ -97,7 +113,24 @@ export class StudentService {
             },
 
             include: {
-                studentInfo: true
+                studentInfo: true,
+                familyStudentsAsStudent: {
+                    include: {
+                        parent: true
+                    }
+                },
+                groupStudents: {
+                    include: {
+                        student: false,
+                        group: true
+                    }
+                },
+                employeeInfo: {
+                    include: {
+                        user: true,
+                        payroll: true
+                    }
+                }
             }
         });
 
@@ -105,6 +138,8 @@ export class StudentService {
             delete item['password'];
             return item;
         });
+
+        console.log(data);
 
         return data;
     }

@@ -34,6 +34,7 @@ const AddStudentForm: React.FC = () => {
 
     const navigate = useNavigate();
     const hasFamily = useWatch('hasFamily', stepForm);
+    const studentType = useWatch('type', stepForm);
 
     const useCustomForm = () => {
         return useForm<AssignTeacherInfo>();
@@ -277,48 +278,52 @@ const AddStudentForm: React.FC = () => {
                 </Row>
 
                 {!hasFamily ? (
-                    <>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item
-                                    name="parentFirstName"
-                                    label="Parent First Name"
-                                    rules={[
-                                        {
-                                            required: !hasFamily,
-                                            message: 'Please input  '
-                                        }
-                                    ]}
-                                >
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}>
-                                <Form.Item label="Parent Last Name" name="parentLastName" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row gutter={10}>
-                            <Col span={11}>
-                                <Form.Item name="parentEmail" label="Email" rules={[{ required: !hasFamily }]}>
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                            <Col span={11}>
-                                <Form.Item label="Phone Number" name="parentPhoneNumber">
-                                    <Input />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col span={22}>
-                                <Form.Item name="parentAddress" label="Address" style={{ padding: 0 }}>
-                                    <TextArea rows={3} />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </>
+                    studentType !== 'adult' ? (
+                        <>
+                            <Row gutter={10}>
+                                <Col span={11}>
+                                    <Form.Item
+                                        name="parentFirstName"
+                                        label="Parent First Name"
+                                        rules={[
+                                            {
+                                                required: !hasFamily,
+                                                message: 'Please input  '
+                                            }
+                                        ]}
+                                    >
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={11}>
+                                    <Form.Item label="Parent Last Name" name="parentLastName" rules={[{ required: !hasFamily, message: 'Please input ' }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row gutter={10}>
+                                <Col span={11}>
+                                    <Form.Item name="parentEmail" label="Email" rules={[{ required: !hasFamily }]}>
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                                <Col span={11}>
+                                    <Form.Item label="Phone Number" name="parentPhoneNumber">
+                                        <Input />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col span={22}>
+                                    <Form.Item name="parentAddress" label="Address" style={{ padding: 0 }}>
+                                        <TextArea rows={3} />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </>
+                    ) : (
+                        <></>
+                    )
                 ) : (
                     <Row gutter={10}>
                         <Col span={11}>
