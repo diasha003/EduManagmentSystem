@@ -41,7 +41,7 @@ export const studentApiExtensions = baseApi.injectEndpoints({
         //groups and students
         createGroup: builder.mutation<void, CreateGroups>({
             query: (data) => ({
-                url: '/student/group',
+                url: '/group',
                 method: 'POST',
                 body: data
             }),
@@ -49,34 +49,34 @@ export const studentApiExtensions = baseApi.injectEndpoints({
         }),
         getAllGroups: builder.query<Group[], void>({
             query: () => ({
-                url: '/student/groups',
+                url: '/group',
                 method: 'GET'
             }),
-            async onQueryStarted(arg, api) {
-                try {
-                    //console.log(arg)
-                } catch (error) {
-                    console.log(error);
-                }
-            },
             providesTags: ['Group']
         }),
+
         deleteGroup: builder.mutation<Group, number>({
             query: (id) => ({
-                url: `/student/group/${id}`,
+                url: `/group/${id}`,
                 method: 'DELETE'
             }),
             invalidatesTags: ['Group']
         }),
         updateGroup: builder.mutation<void, UpdateGroup>({
             query: (data) => ({
-                url: '/student//updateGroup',
+                url: '/group',
                 method: 'PATCH',
                 body: data
             }),
 
             invalidatesTags: ['Group']
         })
+        // getRecordsGroups: builder.query<Group[], { offset: number; limit: number }>({
+        //     query: ({ offset, limit }) => ({
+        //         url: '/student/groups',
+        //         params: { offset, limit }
+        //     })
+        // }),
     })
 });
 

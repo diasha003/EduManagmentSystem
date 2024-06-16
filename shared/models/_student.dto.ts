@@ -62,8 +62,10 @@ export class Group {
 export class UpdateGroup {
     id: number;
     name: string;
-    groupStudents?: {
-        label: string;
-        value: number;
-    }[];
+    // groupStudents?: {
+    //     label: string;
+    //     value: number;
+    // }[];
+
+    groupStudents?: number[];
 }

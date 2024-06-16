@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { Button, Space, Dropdown, Form, Input } from 'antd';
 import { CaretDownOutlined, CloseCircleOutlined, DeleteOutlined, EditOutlined, MoreOutlined, PlusOutlined } from '@ant-design/icons';
@@ -46,8 +46,12 @@ const GroupsTable: React.FC = () => {
             if (isCreateModal) {
                 result = await createGroup(form.getFieldsValue());
             } else {
-                console.log(form.getFieldsValue());
-                result = await updateGroup(form.getFieldsValue()).unwrap();
+                try {
+                    console.log(form.getFieldsValue());
+                    result = await updateGroup(form.getFieldsValue());
+                } catch (err) {
+                    console.log(err);
+                }
             }
             form.resetFields();
 
@@ -83,7 +87,8 @@ const GroupsTable: React.FC = () => {
             key: 'name',
             width: 200,
             fixed: 'left',
-            hidden: false
+            hidden: false,
+            sorter: (a, b) => a.name.length - b.name.length
         },
         {
             title: 'Students',
@@ -91,14 +96,16 @@ const GroupsTable: React.FC = () => {
             key: 'studentsName',
             width: 200,
             fixed: 'left',
-            hidden: false
+            hidden: false,
+            sorter: (a, b) => (a.studentsName?.length ?? 0) - (b.studentsName?.length ?? 0)
         },
         {
             title: 'Number of Students',
             dataIndex: 'numberStudents',
             key: 'numberStudents',
             width: 150,
-            hidden: false
+            hidden: false,
+            sorter: (a, b) => a.numberStudents - b.numberStudents
         },
         {
             title: 'Action',
@@ -143,9 +150,12 @@ const GroupsTable: React.FC = () => {
                                     form.setFieldsValue({
                                         id: value.key,
                                         name: value.name,
-                                        groupStudents: value.studentsName.split('; ').map((item: any) => {
-                                            return { label: item, value: value.studentsId[index++] };
-                                        })
+                                        groupStudents:
+                                            value.studentsName.length !== 0
+                                                ? value.studentsName.split('; ').map((item: any) => {
+                                                      return { label: item, value: value.studentsId[index++] };
+                                                  })
+                                                : undefined
                                     });
                                     setIsCreateModal(false);
                                     showModal();
@@ -176,7 +186,7 @@ const GroupsTable: React.FC = () => {
         return {
             key: item.id,
             name: item.name,
-            studentsName: students?.join('; '),
+            studentsName: students ? students?.join('; ') : undefined,
             numberStudents: students?.length || 0,
             studentsId: studentsId
         };
@@ -207,6 +217,37 @@ const GroupsTable: React.FC = () => {
 
         setFilteredData(filteredData);
     };
+
+    const [tableData, setTableData] = useState(null);
+    const [totalItems, setTotalItems] = useState(0);
+    const [loadingSpinner, setLoadingSpinner] = useState(false);
+
+    // useEffect(() => {
+    //     setLoadingSpinner(true);
+    //     const countResponse = data;
+    //     // const recordResponse = axios.get(
+    //     //     'http://localhost:3001/api/records',
+    //     //     {
+    //     //         params: {
+    //     //             offset: 0,
+    //     //             e
+    //     //         }
+    //     //     },
+    //     //     { timeout: 5000 }
+    //     // );
+
+    //     Promise.all([countResponse, recordResponse])
+    //         .then(function (results) {
+    //             setTotalItems(results[0].data.count);
+    //             setTableData(results[1].data.records);
+    //         })
+    //         .catch(function (error) {
+    //             console.error("Couldn't get requested records: ", error);
+    //         })
+    //         .then(function () {
+    //             setLoadingSpinner(false);
+    //         });
+    // }, []);
 
     return (
         <>
