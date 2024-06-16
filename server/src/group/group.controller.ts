@@ -37,7 +37,9 @@ export class GroupController {
 
     @Get('/records')
     async getAllRecordGroupTable(@Query() query: { skipCount: number; takeCount: number }) {
-        return this.groupService.getAllRecordGroupTable(query);
+        const data = await this.groupService.getAllRecordGroupTable(query);
+        //console.log(data);
+        return data;
     }
 }
 

@@ -112,7 +112,14 @@ export class GroupService {
     async getAllRecordGroupTable(data: { skipCount: number; takeCount: number }) {
         return await this.prisma.group.findMany({
             skip: (data.skipCount - 1) * data.takeCount,
-            take: Number(data.takeCount)
+            take: Number(data.takeCount),
+            include: {
+                groupStudents: {
+                    include: {
+                        student: true
+                    }
+                }
+            }
         });
     }
 }
