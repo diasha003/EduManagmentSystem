@@ -29,6 +29,7 @@ const AddStudentForm: React.FC = () => {
 
     const [note, setNote] = useState<string>('');
     const [assignedTeachersMap, setAssignedTeachersMap] = useState(new Map<number, React.RefObject<FormInstance<AssignTeacherInfo>>>());
+    const [assignedTeachers, setAssignedTeacher] = useState<AssignTeacherInfo[]>([]);
     const [createStudent] = useCreateStudentMutation();
 
     const navigate = useNavigate();
@@ -39,21 +40,22 @@ const AddStudentForm: React.FC = () => {
     };
 
     const onNextFinish = () => {
+        const assigned: AssignTeacherInfo[] = [];
         assignedTeachersMap.forEach((value) => {
             value.current
                 ?.validateFields({ validateOnly: false })
                 .then((data) => {
-                    console.log(data);
-                    console.log(value.current!.getFieldsValue());
+                    assigned.push(data);
                 })
-                .catch(() => {
-                    console.log(2);
-                });
+                .catch(() => {});
         });
+        setAssignedTeacher(assigned);
+        console.log(assigned);
 
         stepForm
             .validateFields({ validateOnly: false })
             .then(() => {
+                console.log(assignedTeachersMap);
                 const formData = stepForm.getFieldsValue();
                 setFormData((prev) => {
                     return { ...prev, ...formData };
@@ -66,10 +68,10 @@ const AddStudentForm: React.FC = () => {
     };
 
     const onDoneFinish = async () => {
-        const data = { ...formData, ...stepForm.getFieldsValue(), assignedTeachers: Array.from(assignedTeachersMap.values()) } as CreateStudentDto;
+        const data = { ...formData, ...stepForm.getFieldsValue(), assignedTeachers: assignedTeachers } as CreateStudentDto;
 
         //console.log(Array.from(assignedTeachersMap.values()));
-        //console.log(data);
+        console.log(assignedTeachers);
 
         const result = await createStudent({
             ...data,
@@ -348,6 +350,8 @@ const AddStudentForm: React.FC = () => {
 
                 {Array.from(assignedTeachersMap).map(([key, value]) => {
                     const model = value.current?.getFieldsValue();
+
+                    console.log('model', model);
 
                     return (
                         <AssignTeacher

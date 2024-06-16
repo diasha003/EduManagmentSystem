@@ -14,6 +14,7 @@ export class StudentService {
     ) {}
 
     async createStudent(dto: CreateStudentDto) {
+        console.log(dto);
         const candidate = await this.userService.getUserByEmail(dto.email);
         if (candidate) {
             throw new BadRequestException('Such user is already exists');
@@ -107,6 +108,4 @@ export class StudentService {
 
         return data;
     }
-
-   
 }
