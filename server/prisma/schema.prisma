@@ -42,6 +42,7 @@ model User {
   groupStudents           GroupStudents[]
   TransactionAsTeacher    Transaction[]    @relation("TransactionTeacher")
   TransactionAsStudent    Transaction[]    @relation("TransactionStudent")
+  EventPayment            EventPayment[]
 }
 
 enum Role {
@@ -221,6 +222,7 @@ model CalendarEvent {
   everyYear          Int?           @map("every_year")
   publicDescription  String?
   privateDescription String?
+  EventPayment       EventPayment[]
 }
 
 model familyAccount {
@@ -247,4 +249,16 @@ model Transaction {
   teacherId    Int
   description  String?
   timestamp    DateTime
+  EventPayment EventPayment[]
+}
+
+model EventPayment {
+  id            Int               @id @default(autoincrement())
+  student       User              @relation(fields: [studentId], references: [id])
+  studentId     Int
+  event         CalendarEvent     @relation(fields: [eventId], references: [id])
+  eventId       Int
+  transaction   Transaction?      @relation(fields: [transactionId], references: [id])
+  transactionId Int
+  status        TransactionStatus
 }
