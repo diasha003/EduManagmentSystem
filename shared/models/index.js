@@ -19,3 +19,4 @@ __exportStar(require("./_user.dto"), exports);
 __exportStar(require("./_employee.dto"), exports);
 __exportStar(require("./_auth.dto"), exports);
 __exportStar(require("./_student.dto"), exports);
+__exportStar(require("./_payment.dto"), exports);

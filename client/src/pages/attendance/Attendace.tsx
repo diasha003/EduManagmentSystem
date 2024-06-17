@@ -5,15 +5,25 @@ import { CalendarOutlined, ClockCircleOutlined, LeftOutlined } from '@ant-design
 import { DateTimeService } from 'shared/services';
 import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
+import { useForm, useWatch } from 'antd/es/form/Form';
+import { CreateEventPaymentDto } from 'shared/models';
 
 const Attendace: React.FC = () => {
     const { eventId } = useParams();
     const { data: eventDetails } = useGetEventDetailsQuery(+eventId!);
     const [billing, setBilling] = useState('');
+    const [paid, setPaid] = useState(false);
+    const [absentBilling, setAbsentBilling] = useState('');
+    const [form] = useForm<CreateEventPaymentDto>();
+    const status = useWatch('status', form);
+
+    const onSave = () => {
+        console.log(form.getFieldsValue());
+    };
 
     return (
         eventDetails && (
-            <Form layout="vertical">
+            <Form layout="vertical" form={form}>
                 <Row style={{ alignItems: 'center', marginTop: '30px', marginBottom: '20px', marginLeft: '30px', color: 'blue', justifyContent: 'flex-start', cursor: 'pointer' }}>
                     <LeftOutlined />
                     Back to Calendar
@@ -65,13 +75,9 @@ const Attendace: React.FC = () => {
                             <h4 style={{ color: 'gray' }}>Record attendance for this lesson</h4>
 
                             <h3>Attendance Status</h3>
-                            <div>
+                            <Form.Item name="status">
                                 <Radio.Group
                                     options={[
-                                        {
-                                            label: 'Unrecorded',
-                                            value: 'Unrecorded'
-                                        },
                                         {
                                             label: 'Present',
                                             value: 'Present'
@@ -86,54 +92,74 @@ const Attendace: React.FC = () => {
                                         }
                                     ]}
                                 />
-                            </div>
-
-                            <Checkbox>Student was late</Checkbox>
-
-                            <h3 style={{ marginTop: '20px' }}>Attendance Billing</h3>
-                            <div>
-                                <Radio.Group
-                                    value={billing}
-                                    onChange={({ target: { value } }: RadioChangeEvent) => setBilling(value)}
-                                    options={[
-                                        {
-                                            label: 'Lesson is Billable',
-                                            value: 'Lesson is Billable'
-                                        },
-                                        {
-                                            label: 'Use Make-Up Credit',
-                                            value: 'Use Make-Up Credit'
-                                        }
-                                    ]}
-                                />
-                            </div>
-                            {billing == 'Lesson is Billable' && (
+                            </Form.Item>
+                            {status === 'Absent' && (
                                 <>
-                                    <Row style={{ justifyContent: 'flex-start', alignItems: 'center', gap: '25px', marginTop: '10px' }}>
-                                        <Col span={2}>
-                                            <Form.Item name="price" label="Lesson Price">
-                                                <Input suffix="$" />
-                                            </Form.Item>
-                                        </Col>
-                                        <Checkbox>Student paid at lesson</Checkbox>
-                                    </Row>
-                                    <Col span={6}>
-                                        <Form.Item name="amountPaid" label="Amout Paid">
-                                            <Input suffix="$" />
-                                        </Form.Item>
-                                    </Col>
-                                    <Col>
-                                        <Form.Item name="note" label="Add a Payment Note">
-                                            <TextArea rows={6} />
-                                        </Form.Item>
-                                    </Col>
+                                    <Radio.Group
+                                        value={absentBilling}
+                                        onChange={({ target: { value } }: RadioChangeEvent) => setAbsentBilling(value)}
+                                        options={[
+                                            {
+                                                label: 'Not Billable',
+                                                value: 'NotBillable'
+                                            },
+                                            {
+                                                label: 'Billable',
+                                                value: 'Billable'
+                                            }
+                                        ]}
+                                    />
                                 </>
                             )}
-                            {billing == 'Use Make-Up Credit' && <>Hello123</>}
+                            {(status === 'Present' || absentBilling === 'Billable') && (
+                                <>
+                                    <h3 style={{ marginTop: '20px' }}>Attendance Billing</h3>
+                                    <div>
+                                        <Radio.Group
+                                            value={billing}
+                                            onChange={({ target: { value } }: RadioChangeEvent) => setBilling(value)}
+                                            options={[
+                                                {
+                                                    label: 'Lesson is Billable',
+                                                    value: 'Lesson is Billable'
+                                                }
+                                            ]}
+                                        />
+                                    </div>
+                                    {billing == 'Lesson is Billable' && (
+                                        <>
+                                            <Row style={{ justifyContent: 'flex-start', alignItems: 'center', gap: '25px', marginTop: '10px' }}>
+                                                <Col span={2}>
+                                                    <Form.Item name="price" label="Lesson Price">
+                                                        <Input suffix="$" />
+                                                    </Form.Item>
+                                                </Col>
+                                                <Checkbox checked={paid} onChange={() => setPaid(!paid)}>
+                                                    Student paid at lesson
+                                                </Checkbox>
+                                            </Row>
+                                            {paid && (
+                                                <Col span={6}>
+                                                    <Form.Item name="amountPaid" label="Amout Paid">
+                                                        <Input suffix="$" />
+                                                    </Form.Item>
+                                                </Col>
+                                            )}
+                                            <Col>
+                                                <Form.Item name="note" label="Add a Payment Note">
+                                                    <TextArea rows={6} />
+                                                </Form.Item>
+                                            </Col>
+                                        </>
+                                    )}
+                                </>
+                            )}
                         </Card>
                         <Row style={{ justifyContent: 'flex-end', marginTop: '10px', gap: '10px' }}>
                             <Button>Cancel</Button>
-                            <Button type="primary">Save</Button>
+                            <Button type="primary" onClick={onSave}>
+                                Save
+                            </Button>
                             <Button type="primary">Save & Exit</Button>
                         </Row>
                     </div>

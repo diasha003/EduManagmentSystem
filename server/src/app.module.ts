@@ -9,6 +9,7 @@ import { CalendarModule } from './calendar/calendar.module';
 import { StudentModule } from './student/student.module';
 import { PaginationModule } from './pagination/pagination.module';
 import { GroupModule } from './group/group.module';
+import { PaymentModule } from './payment/payment.module';
 
 @Module({
     imports: [
@@ -21,7 +22,8 @@ import { GroupModule } from './group/group.module';
         CalendarModule,
         StudentModule,
         PaginationModule,
-        GroupModule
+        GroupModule,
+        PaymentModule
     ],
     controllers: [],
     providers: [],
