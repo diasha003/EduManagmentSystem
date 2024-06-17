@@ -125,10 +125,9 @@ export class StudentService {
                         group: true
                     }
                 },
-                employeeInfo: {
+                teacherStudentAsTeacher: {
                     include: {
-                        user: true,
-                        payroll: true
+                        teacher: true
                     }
                 }
             }

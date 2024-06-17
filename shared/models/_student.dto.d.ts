@@ -17,6 +17,9 @@ export interface Student extends User {
     groupStudents?: {
         group: Group;
     }[];
+    teacherStudentAsTeacher?: {
+        teacher: User;
+    }[];
 }
 export declare class CreateStudentDto extends CreateUserDto {
     birthdayDate?: Date;

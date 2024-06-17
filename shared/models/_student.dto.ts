@@ -5,8 +5,6 @@ export interface Student extends User {
     studentInfo?: {
         status: string;
         note: string;
-
-        //teachers
         //lastLesson
         //nextLesson
         //Attendance Average
@@ -17,6 +15,7 @@ export interface Student extends User {
     };
     familyStudentsAsStudent?: { parent: User; parentId: number; studentId: number }[];
     groupStudents?: { group: Group }[];
+    teacherStudentAsTeacher?: { teacher: User }[];
 }
 
 export class CreateStudentDto extends CreateUserDto {

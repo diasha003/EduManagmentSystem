@@ -1,5 +1,6 @@
 import { Tabs } from 'antd';
 import FamilyAccountsTable from './components/familyAccounts/FamilyAccountsTable';
+import InvoiceTransactionTable from './components/invoices_transactions/InvoiceTransactionTable';
 
 interface TabItem {
     label: string;
@@ -14,14 +15,9 @@ export const items: TabItem[] = [
         children: <FamilyAccountsTable />
     },
     {
-        label: 'Invoices',
+        label: 'Invoices & Transactions',
         key: '2',
-        children: <>Invoices</>
-    },
-    {
-        label: 'Transactions',
-        key: '3',
-        children: <>Transactions</>
+        children: <InvoiceTransactionTable />
     }
 ];
 
