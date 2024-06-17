@@ -8,6 +8,7 @@ import { useAppSelector } from '../../../hooks/redux';
 import { useDeleteEmployeeMutation, useGetAllCenterNameQuery, useGetAllEmployeesQuery } from '../../../features/api/extensions/employeesApiExtension';
 
 import stc from 'string-to-color';
+import Search from 'antd/es/input/Search';
 
 export interface EmployeeTableModel {
     key: number;
@@ -287,21 +288,24 @@ const EmployeesTable: React.FC = () => {
             showSort
             showSelectCenterName={user?.roles.includes('ADMIN') ? true : false}
             toolbar={
-                <Space>
-                    <Dropdown menu={{ items }} trigger={['click']}>
-                        <Button icon={<PlusOutlined />} type="primary" className="button">
-                            Add new
-                            <CaretDownOutlined />
-                        </Button>
-                    </Dropdown>
+                <>
+                    <Space>
+                        <Dropdown menu={{ items }} trigger={['click']}>
+                            <Button icon={<PlusOutlined />} type="primary" className="button">
+                                Add new
+                                <CaretDownOutlined />
+                            </Button>
+                        </Dropdown>
 
-                    <Button type="default" className="button" icon={<MailOutlined />}>
-                        Messaging
-                    </Button>
-                    <Button type="default" className="button" icon={<SettingOutlined />}>
-                        Options
-                    </Button>
-                </Space>
+                        {/* <Button type="default" className="button" icon={<MailOutlined />}>
+                            Messaging
+                        </Button> */}
+                        <Button type="default" className="button" icon={<SettingOutlined />}>
+                            Options
+                        </Button>
+                    </Space>
+                    <Search size="middle" placeholder="Search Records" style={{ width: '50%' }} />
+                </>
             }
         />
     );

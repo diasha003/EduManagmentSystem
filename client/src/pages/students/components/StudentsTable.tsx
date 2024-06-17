@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Space, Dropdown, Avatar, Badge } from 'antd';
-import { CaretDownOutlined, DeleteOutlined, EyeOutlined, HomeOutlined, MailOutlined, MoreOutlined, PhoneOutlined, PlusOutlined } from '@ant-design/icons';
+import { CaretDownOutlined, CloseCircleOutlined, DeleteOutlined, EyeOutlined, HomeOutlined, MailOutlined, MoreOutlined, PhoneOutlined, PlusOutlined } from '@ant-design/icons';
 
 import studentAddOptions from './constants/studentAddOptions';
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
@@ -9,6 +9,8 @@ import { useAppSelector } from '../../../hooks/redux';
 import { Group, Student, User } from 'shared/models';
 import { useGetAllStudentsQuery } from '../../../features/api/extensions/studentApiExtension';
 import stc from 'string-to-color';
+import Search from 'antd/es/input/Search';
+import { get, map } from 'lodash';
 
 export interface StudentTableModel {
     key: number;
@@ -18,7 +20,6 @@ export interface StudentTableModel {
     contact?: string;
     family?: string;
     note?: string;
-    teachers?: string[];
     lastLesson?: Date;
     nextLesson?: Date;
     avgAttendance?: number;
@@ -32,6 +33,7 @@ export interface StudentTableModel {
     status: string;
     familyStudentsAsStudent?: { parent: User; parentId: number; studentId: number };
     groupStudents?: { group: Group }[];
+    teacherStudentAsTeacher?: { teacher: User }[];
 }
 
 const StudentsTable: React.FC = () => {
@@ -77,7 +79,7 @@ const StudentsTable: React.FC = () => {
             title: 'Student Contact',
             dataIndex: 'contact',
             key: 'contact',
-            width: 180,
+            width: 200,
             hidden: true,
             render: (value, record) => {
                 return (
@@ -163,8 +165,21 @@ const StudentsTable: React.FC = () => {
             title: 'Teachers',
             dataIndex: 'teachers',
             key: 'teachers',
-            width: 150,
-            hidden: false
+            width: 120,
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        {record.teacherStudentAsTeacher?.map((item) => {
+                            return (
+                                <span key={item.teacher.id}>
+                                    {item.teacher.firstName} {item.teacher.lastName}
+                                </span>
+                            );
+                        })}
+                    </div>
+                );
+            }
         },
         {
             title: 'Last Lesson',
@@ -321,48 +336,76 @@ const StudentsTable: React.FC = () => {
             studentSince: dateRegister?.toDateString(),
             status: item.studentInfo?.status || '',
             familyStudentsAsStudent: item.familyStudentsAsStudent?.[0],
-            groupStudents: item.groupStudents
+            groupStudents: item.groupStudents,
+            teacherStudentAsTeacher: item.teacherStudentAsTeacher
 
-            // teachers: string[];
             // lastLesson: Date;
             // nextLesson: Date;
             // avgAttendance: number;
             // lastLog: Date;
-            
         };
     });
+
+    let [searchText, setSearchText] = useState<string>('');
+    const [filteredData, setFilteredData] = useState<StudentTableModel[]>([]);
+
+    const onSearch = (e: any) => {
+        setSearchText(e.target.value);
+        const reg = new RegExp(e.target.value, 'gi');
+        const filteredData = map(newData, (record) => {
+            const studentField = get(record, 'student') as string | undefined;
+            const studentMatch = studentField?.match(reg);
+
+            const emailField = get(record, 'email') as string | undefined;
+            const emailMatch = emailField?.match(reg);
+
+            const familyField = get(record, 'family') as string | undefined;
+            const familyMatch = familyField?.match(reg);
+
+            const ageField = (get(record, 'age') ?? '').toString();
+            const ageMatch = ageField.match(reg);
+
+            if (!studentMatch && !emailMatch && !familyMatch && !ageMatch) {
+                return null;
+            }
+
+            return record;
+        }).filter((record): record is StudentTableModel => record !== null);
+
+        setFilteredData(filteredData);
+    };
 
     return (
         <DataGrid
             columns={columns}
-            dataSource={newData ? newData : []}
+            dataSource={newData ? (searchText ? filteredData : newData) : []}
             showColumnsSelector
             showSort
             toolbar={
-                <Space>
-                    <Dropdown menu={{ items: studentAddOptions }} trigger={['click']}>
-                        <Button
-                            icon={<PlusOutlined />}
-                            type="primary"
-                            className="button"
-                            onClick={() => {
-                                nav('/students/add');
-                            }}
-                        >
-                            <Space>
-                                Add new
-                                <CaretDownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
+                <>
+                    <Space>
+                        <Dropdown menu={{ items: studentAddOptions }} trigger={['click']}>
+                            <Button
+                                icon={<PlusOutlined />}
+                                type="primary"
+                                className="button"
+                                onClick={() => {
+                                    nav('/students/add');
+                                }}
+                            >
+                                <Space>
+                                    Add new
+                                    <CaretDownOutlined />
+                                </Space>
+                            </Button>
+                        </Dropdown>
 
-                    <Button type="primary" className="button">
-                        Messaging
-                    </Button>
-                    <Button type="primary" className="button">
-                        Options
-                    </Button>
-                </Space>
+                        <Button type="primary" className="button">
+                            Options
+                        </Button>
+                    </Space>
+                    <Search size="middle" placeholder="Search Records" suffix={<CloseCircleOutlined onClick={() => setSearchText('')} />} onPressEnter={onSearch} onChange={onSearch} style={{ width: '50%' }} value={searchText} />
+                </>
             }
         />
     );
