@@ -40,6 +40,8 @@ model User {
   teacherStudentAsTeacher TeacherStudent[] @relation("StudentRelation")
   teacherStudentAsStudent TeacherStudent[] @relation("TeacherRelation")
   groupStudents           GroupStudents[]
+  TransactionAsTeacher    Transaction[]    @relation("TransactionTeacher")
+  TransactionAsStudent    Transaction[]    @relation("TransactionStudent")
 }
 
 enum Role {
@@ -161,6 +163,17 @@ enum Status {
   inactive
 }
 
+enum TransactionStatus {
+  pending
+  paid
+  canceled
+}
+
+enum TransactionType {
+  charge
+  payment
+}
+
 model Payroll {
   id            Int            @id @default(autoincrement())
   payrollType   PayrollType
@@ -222,18 +235,16 @@ model familyAccount {
   userId Int  @unique @map("user_id")
 }
 
-// model InvoiceEvent {
-//   id Int @id @default(autoincrement())
-
-//   nextBillingCycleStartDate DateTime? @map("next_billing_cycle_start_date")
-//   invoiceCreationDate       DateTime  @map("invoice_creation_date")
-//   invoiceDueDate            DateTime  @map("invoice_due_date")
-
-//   frequency       Frequency?
-//   repeatOnDaily   DayOfWeek[]    @map("repeat_on_daily")
-//   repeatOnMonthly RepeatMonthly? @map("repeat_on_monthly")
-//   repeatUntil     DateTime?      @map("repeat_until")
-//   everyWeek       Int?           @map("every_week")
-//   everyMonth      Int?           @map("every_month")
-//   everyYear       Int?           @map("every_year")
-// }
+model Transaction {
+  id           Int               @id @default(autoincrement())
+  type         TransactionType
+  status       TransactionStatus
+  amount       Decimal           @db.Decimal(10, 3)
+  currencyCode String            @map("currency_code")
+  student      User              @relation(name: "TransactionStudent", fields: [studentId], references: [id])
+  studentId    Int
+  teacher      User              @relation(name: "TransactionTeacher", fields: [teacherId], references: [id])
+  teacherId    Int
+  description  String?
+  timestamp    DateTime
+}
