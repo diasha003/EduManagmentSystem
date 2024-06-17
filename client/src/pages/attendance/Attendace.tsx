@@ -7,18 +7,27 @@ import { useState } from 'react';
 import TextArea from 'antd/es/input/TextArea';
 import { useForm, useWatch } from 'antd/es/form/Form';
 import { CreateEventPaymentDto } from 'shared/models';
+import { useAssignPaymentMutation } from '../../features/api/extensions/paymentApiExtension';
 
 const Attendace: React.FC = () => {
+    const [assignPayment] = useAssignPaymentMutation();
+
     const { eventId } = useParams();
     const { data: eventDetails } = useGetEventDetailsQuery(+eventId!);
     const [billing, setBilling] = useState('');
     const [paid, setPaid] = useState(false);
     const [absentBilling, setAbsentBilling] = useState('');
+
     const [form] = useForm<CreateEventPaymentDto>();
     const status = useWatch('status', form);
 
-    const onSave = () => {
-        console.log(form.getFieldsValue());
+    const onSave = async () => {
+        await assignPayment({
+            ...form.getFieldsValue(),
+            eventId: +eventId!,
+            studentId: eventDetails!.students[0].id,
+            teacherId: eventDetails!.teacher.id
+        });
     };
 
     return (
@@ -157,7 +166,7 @@ const Attendace: React.FC = () => {
                         </Card>
                         <Row style={{ justifyContent: 'flex-end', marginTop: '10px', gap: '10px' }}>
                             <Button>Cancel</Button>
-                            <Button type="primary" onClick={onSave}>
+                            <Button type="primary" onClick={() => void onSave()}>
                                 Save
                             </Button>
                             <Button type="primary">Save & Exit</Button>

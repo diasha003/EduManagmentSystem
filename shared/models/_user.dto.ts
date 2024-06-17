@@ -30,6 +30,7 @@ export class CreateUserDto {
 }
 
 export class ShortUserDto {
+    id: number;
     firstName: string;
     lastName: string;
     email: string;

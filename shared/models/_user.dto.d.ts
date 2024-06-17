@@ -24,6 +24,7 @@ export declare class CreateUserDto {
     access?: boolean;
 }
 export declare class ShortUserDto {
+    id: number;
     firstName: string;
     lastName: string;
     email: string;

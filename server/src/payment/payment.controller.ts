@@ -7,7 +7,10 @@ export class PaymentController {
     constructor(private readonly paymentService: PaymentService) {}
 
     @Post('/')
-    async createEventPayment(@Body() dto: CreateEventPaymentDto) {}
+    async assignPayment(@Body() dto: CreateEventPaymentDto) {
+      const res = await this.paymentService.assignPayment(dto);
+      return res;
+    }
 
     @Get('/')
     async getEventsPayment(@Headers() headers: any) {
