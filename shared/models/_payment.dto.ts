@@ -1,4 +1,3 @@
-import Decimal from 'decimal.js';
 import { User } from './_user.dto';
 
 export interface CreateEventPaymentDto {
@@ -16,7 +15,7 @@ export interface EventPaymentDto {
     status: string;
     studentId: number;
     teacherId: number;
-    amount: Decimal;
+    amount: number;
     timestamp: Date;
     description?: string;
     type: string;

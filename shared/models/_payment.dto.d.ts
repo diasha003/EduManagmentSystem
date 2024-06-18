@@ -13,10 +13,9 @@ export interface EventPaymentDto {
     status: string;
     studentId: number;
     teacherId: number;
-    price?: number;
-    amountPaid?: number;
+    amount: number;
     timestamp: Date;
-    note?: string;
+    description?: string;
     type: string;
     student: {
         familyStudentsAsParent: {

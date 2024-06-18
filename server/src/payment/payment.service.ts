@@ -36,11 +36,27 @@ export class PaymentService {
             }
         });
 
-        return data;
+        return data.map((x) => ({ ...x, amount: x.amount.toNumber() }));
     }
 
     async assignPayment(createPaymentDto: CreateEventPaymentDto) {
         const shouldInitTransaction = createPaymentDto.price && createPaymentDto.price !== createPaymentDto.amountPaid;
+
+        if (createPaymentDto.amountPaid) {
+            const paidTransaction = {
+                amount: new Prisma.Decimal(createPaymentDto.amountPaid),
+                description: 'Paid in cash',
+                currencyCode: 'BYR',
+                timestamp: new Date(),
+                type: TransactionType.payment,
+                studentId: createPaymentDto.studentId,
+                teacherId: createPaymentDto.teacherId,
+                status: TransactionStatus.paid
+            } as Transaction;
+
+            await this.prisma.transaction.create({ data: paidTransaction });
+        }
+
         const transaction = shouldInitTransaction
             ? ({
                   amount: new Prisma.Decimal(createPaymentDto.price - (createPaymentDto.amountPaid ?? 0)),
