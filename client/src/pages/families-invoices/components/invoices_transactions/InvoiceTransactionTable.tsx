@@ -4,7 +4,7 @@ import { useGetAllTransactionQuery } from '../../../../features/api/extensions/p
 import { EventPaymentDto } from 'shared/models';
 import { Button, Flex, Tag } from 'antd';
 import Decimal from 'decimal.js';
-import { DownloadOutlined, PayCircleOutlined } from '@ant-design/icons';
+import { DollarOutlined, DownloadOutlined, PayCircleOutlined } from '@ant-design/icons';
 
 export interface InvoiceTransactionModel {
     key: number;
@@ -13,7 +13,7 @@ export interface InvoiceTransactionModel {
     description?: string;
     status: string;
     date: string;
-    amount: Decimal;
+    amount: number;
 }
 
 const InvoiceTransactionTable: React.FC = () => {
@@ -61,9 +61,19 @@ const InvoiceTransactionTable: React.FC = () => {
                         <Tag color={record.transaction === 'charge' ? 'red' : 'green'} style={{ display: 'flex', alignItems: 'center' }}>
                             {record.transaction} {record.amount.toString()}
                         </Tag>
-                        {record.transaction === 'charge' && <Button icon={<PayCircleOutlined />} size="middle" />}
+                        {record.transaction === 'charge' && <Button icon={<DollarOutlined />} size="small" />}
                     </div>
                 );
+            }
+        },
+        {
+            title: 'Status',
+            dataIndex: 'status',
+            key: 'status',
+            width: 100,
+            hidden: false,
+            render: (value, record) => {
+                return <Tag color={record.status === 'pending' ? 'processing' : record.status === 'paid' ? 'green' : 'stop'}>{record.status}</Tag>;
             }
         },
         {
