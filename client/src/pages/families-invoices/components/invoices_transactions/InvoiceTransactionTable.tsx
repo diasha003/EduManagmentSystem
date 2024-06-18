@@ -19,8 +19,6 @@ export interface InvoiceTransactionModel {
 const InvoiceTransactionTable: React.FC = () => {
     const data: EventPaymentDto[] | undefined = useGetAllTransactionQuery().currentData;
 
-    console.log(data);
-
     const newData: InvoiceTransactionModel[] | undefined = data?.map((item) => {
         return {
             key: item.id,

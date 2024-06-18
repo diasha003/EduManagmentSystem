@@ -16,4 +16,9 @@ export class PaymentController {
     async getEventsPayment(@Headers() headers: any): Promise<EventPaymentDto[]> {
         return this.paymentService.getEventsPayment(headers);
     }
+
+    @Post('/pay')
+    async payTransaction() {
+        return this.paymentService.pay();
+    }
 }

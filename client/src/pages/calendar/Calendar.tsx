@@ -79,7 +79,7 @@ const AppCalendar: React.FC = () => {
     const [actionMenuDate, setActionMenuDate] = useState<dayjs.Dayjs | undefined>(undefined);
 
     const [eventsFilter, setEventsFilter] = useState<EventsFilter>({
-        userId: 1,
+        userId: 5,
         dateFrom: DateTimeService.toFirstDayOfMonth(new Date()),
         dateTo: DateTimeService.toLastDayOfMonth(new Date())
     });
@@ -89,7 +89,7 @@ const AppCalendar: React.FC = () => {
         const jsDate = new Date(date.format());
         setSelectedDate(jsDate);
         setEventsFilter({
-            userId: 1,
+            userId: 5,
             dateFrom: DateTimeService.toFirstDayOfMonth(jsDate),
             dateTo: DateTimeService.toLastDayOfMonth(jsDate)
         });

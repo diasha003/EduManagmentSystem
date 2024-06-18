@@ -4,13 +4,25 @@ import { EventPayment, Prisma, Transaction, TransactionStatus, TransactionType }
 import { CreateEventPaymentDto, EventPaymentDto } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 import { DatabaseService } from 'src/database/database.service';
+import Stripe from 'stripe';
 
 @Injectable()
 export class PaymentService {
+    private stripe = new Stripe('sk_test_51PT7Zk2N9fhAMMcv7PB3TadVa4WJg93OuPXuoAmgxBbMl8fupBhsSwE50WSti2j8UoFBn8QjLTot1BDnc3TVGUd100jrT3BzT2');
+    
     constructor(
         private readonly prisma: DatabaseService,
         private readonly jwtService: JwtService
     ) {}
+
+    async pay() {
+        const paymentIntent = await this.stripe.paymentIntents.create({
+            amount: 100,
+            currency: 'byn',
+        })
+
+        return paymentIntent.client_secret;
+    }
 
     async getEventsPayment(headers: any): Promise<EventPaymentDto[]> {
         const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);

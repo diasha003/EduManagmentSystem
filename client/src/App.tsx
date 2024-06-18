@@ -18,6 +18,7 @@ import { useAppSelector } from './hooks/redux';
 import Home from './pages/home/Home';
 import PersonDetails from './pages/personDetails/personDetails';
 import Attendace from './pages/attendance/Attendace';
+import Payment from './pages/payment/Payment';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -42,6 +43,7 @@ const App: React.FC = () => {
     routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: 'Families & Invoices' });
     routes.push({ path: '/person', element: <PersonDetails />, name: '' });
     routes.push({ path: '/attendance/:eventId', element: <Attendace />, name: 'Attendace' });
+    routes.push({ path: '/payment', element: <Payment />, name: 'Payment' });
 
     const user = useAppSelector((state) => state.auth.user);
 

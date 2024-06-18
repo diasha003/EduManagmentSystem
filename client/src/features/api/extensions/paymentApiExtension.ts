@@ -16,11 +16,18 @@ export const paymentApi = baseApi.injectEndpoints({
                 method: 'GET'
             }),
             providesTags: ['Transaction']
+        }),
+        createIntent: builder.mutation({
+            query: (payload) => ({
+                url: '/payment/pay',
+                method: 'POST',
+                body: payload
+            })
         })
     })
 });
 
-export const { useAssignPaymentMutation, useGetAllTransactionQuery } = paymentApi;
+export const { useAssignPaymentMutation, useGetAllTransactionQuery, useCreateIntentMutation } = paymentApi;
 export const {
-    endpoints: { assignPayment }
+    endpoints: { assignPayment, getAllTransaction, createIntent }
 } = paymentApi;
