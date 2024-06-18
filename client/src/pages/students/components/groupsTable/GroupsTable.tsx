@@ -52,7 +52,7 @@ const GroupsTable: React.FC = () => {
                 result = await createGroup(form.getFieldsValue());
             } else {
                 try {
-                    console.log(form.getFieldsValue());
+                    //console.log(form.getFieldsValue());
                     result = await updateGroup(form.getFieldsValue());
                 } catch (err) {
                     console.log(err);

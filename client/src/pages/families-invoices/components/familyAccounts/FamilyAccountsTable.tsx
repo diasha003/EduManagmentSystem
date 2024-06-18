@@ -15,7 +15,6 @@ export interface StudentTableModel {
     //autoInvoiceSetting
     //lastInvoiceDate
     //lastPaymentDate
-  
 }
 
 const FamilyAccountsTable: React.FC = () => {
@@ -97,26 +96,6 @@ const FamilyAccountsTable: React.FC = () => {
                     >
                         Add Transaction
                     </Button>
-
-                    <Button type="default" className="button" icon={<TableOutlined />}>
-                        Charge Categories
-                    </Button>
-
-                    <Dropdown menu={{ items: [] }} trigger={['click']}>
-                        <Button
-                            icon={<ReloadOutlined />}
-                            type="default"
-                            className="button"
-                            onClick={() => {
-                                //nav('/students/add');
-                            }}
-                        >
-                            <Space>
-                                Auto-Invoicing
-                                <CaretDownOutlined />
-                            </Space>
-                        </Button>
-                    </Dropdown>
                 </Space>
             }
         />

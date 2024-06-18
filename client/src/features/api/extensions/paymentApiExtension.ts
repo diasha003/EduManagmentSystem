@@ -1,4 +1,4 @@
-import { CreateEventPaymentDto } from 'shared/models';
+import { CreateEventPaymentDto, EventPaymentDto } from 'shared/models';
 import { baseApi } from '../api';
 
 export const paymentApi = baseApi.injectEndpoints({
@@ -9,11 +9,18 @@ export const paymentApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: paymentData
             })
+        }),
+        getAllTransaction: builder.query<EventPaymentDto[], void>({
+            query: () => ({
+                url: '/payment',
+                method: 'GET'
+            }),
+            providesTags: ['Transaction']
         })
     })
 });
 
-export const { useAssignPaymentMutation } = paymentApi;
+export const { useAssignPaymentMutation, useGetAllTransactionQuery } = paymentApi;
 export const {
     endpoints: { assignPayment }
 } = paymentApi;

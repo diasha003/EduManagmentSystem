@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventPayment, Prisma, Transaction, TransactionStatus, TransactionType } from '@prisma/client';
-import { CreateEventPaymentDto } from 'shared/models';
+import { CreateEventPaymentDto, EventPaymentDto } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 import { DatabaseService } from 'src/database/database.service';
 
@@ -12,7 +12,7 @@ export class PaymentService {
         private readonly jwtService: JwtService
     ) {}
 
-    async getEventsPayment(headers: any) {
+    async getEventsPayment(headers: any): Promise<EventPaymentDto[]> {
         const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
 
         const data = await this.prisma.transaction.findMany({
@@ -22,8 +22,21 @@ export class PaymentService {
                         equals: decoded.centerName
                     }
                 }
+            },
+            include: {
+                student: {
+                    include: {
+                        familyStudentsAsParent: {
+                            include: {
+                                parent: true
+                            }
+                        }
+                    }
+                }
             }
         });
+
+        return data;
     }
 
     async assignPayment(createPaymentDto: CreateEventPaymentDto) {
