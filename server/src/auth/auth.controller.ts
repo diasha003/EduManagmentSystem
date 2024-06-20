@@ -1,6 +1,7 @@
 import { CreateUserDto } from 'shared/models';
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -12,10 +13,7 @@ export class AuthController {
     }
 
     @Post('/login')
-    async login(@Body() dto: CreateUserDto) {
-        //const userData = await this.authService.login(dto.email, dto.password);
-        return await this.authService.login(dto.email, dto.password);
+    async login(@Body() dto: CreateUserDto, @Res({ passthrough: true }) res: Response) {
+        return await this.authService.login(dto.email, dto.password, res);
     }
-
- 
 }

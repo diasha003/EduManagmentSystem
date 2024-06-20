@@ -160,7 +160,7 @@ export class EmployeeService {
         return data;
     }
 
-    async getAllTeachers(headers: any): Promise<User[]> {
+    async getAllTeachers(headers): Promise<User[]> {
         const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
 
         let allEmployees = await this.prisma.user.findMany({

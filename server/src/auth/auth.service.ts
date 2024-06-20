@@ -5,6 +5,7 @@ import { Role, User } from '@prisma/client';
 import { CreateUserDto } from 'shared/models';
 
 import { UserService } from 'src/user/user.service';
+import { Response } from 'express';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +14,7 @@ export class AuthService {
         private readonly jwtService: JwtService
     ) {}
 
-    async login(email: string, password: string) {
+    async login(email: string, password: string, res: Response) {
         const user = await this.validateUser(email, password);
 
         return {
@@ -31,10 +32,13 @@ export class AuthService {
         const salt = 10;
         const hashPassword = await bcrypt.hash(createUserDto.password, salt);
 
-        const newUser = await this.userService.createWithRoles({
-            ...createUserDto,
-            password: hashPassword
-        }, [Role.ADMIN]);
+        const newUser = await this.userService.createWithRoles(
+            {
+                ...createUserDto,
+                password: hashPassword
+            },
+            [Role.ADMIN]
+        );
 
         return {
             ...newUser,

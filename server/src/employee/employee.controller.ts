@@ -21,7 +21,7 @@ export class EmployeeController {
 
     //auth
     @Get('/allCenterName')
-    async getAllCenterName(@Headers() headers: any): Promise<string[]> {
+    async getAllCenterName(@Headers() headers): Promise<string[]> {
         return await this.employeeService.getAllCenterName(headers);
     }
 

@@ -17,10 +17,12 @@ const Payment: React.FC = () => {
             const errorResponse = response as { error: FetchBaseQueryError | SerializedError };
 
             if (errorResponse.error) {
+                console.log('Error', errorResponse);
                 // Handle error
             } else {
-                const succededResponse = response as { data: any };
-                setClientSecret(succededResponse.data.clientSecret);
+                const succeededResponse = response as { data: any };
+                console.log(succeededResponse);
+                setClientSecret(succeededResponse.data.clientSecret);
             }
         };
 
