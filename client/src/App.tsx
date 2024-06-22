@@ -19,6 +19,8 @@ import Home from './pages/home/Home';
 import PersonDetails from './pages/personDetails/personDetails';
 import Attendace from './pages/attendance/Attendace';
 import Payment from './pages/payment/Payment';
+import AttendaceInfo from './pages/attendance/AttendanceInfo';
+import ProfileStudent from './pages/students/components/profile/ProfileStudents';
 
 // const { Header } = Layout;
 const { Header, Content } = Layout;
@@ -31,21 +33,23 @@ const App: React.FC = () => {
         hideWrapper?: boolean;
     }[] = [];
 
+    const user = useAppSelector((state) => state.auth.user);
+
     routes.push({ path: '/home', element: <Home></Home>, name: 'Home' });
     routes.push({ path: '/employees', element: <InfoEmployees />, name: 'Teachers & Staff' });
     routes.push({ path: '/employees/add/*', element: <CreateEmployeeForm />, name: 'Teachers & Staff' });
     routes.push({ path: '/students', element: <InfoStudents />, name: 'Students' });
     routes.push({ path: '/students/add', element: <AddStudentForm />, name: 'Students' });
+    routes.push({ path: '/students/:id', element: <ProfileStudent />, name: 'Students' });
     routes.push({ path: '/calendar', element: <AppCalendar />, name: 'Calendar' });
     routes.push({ path: '/new-event', element: <NewCalendarEvent selectedDate={new Date()} />, name: 'Calendar' });
     routes.push({ path: '/login', element: <Login />, hideWrapper: true });
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
-    routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: 'Families & Invoices' });
+    routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: user?.roles.includes('ADMIN') ? 'Families & Invoices' : 'Invoices' });
     routes.push({ path: '/person', element: <PersonDetails />, name: '' });
+    routes.push({ path: '/attendance', element: <AttendaceInfo />, name: 'Attendace' });
     routes.push({ path: '/attendance/:eventId', element: <Attendace />, name: 'Attendace' });
     routes.push({ path: '/payment', element: <Payment />, name: 'Payment' });
-
-    const user = useAppSelector((state) => state.auth.user);
 
     return (
         <Routes>

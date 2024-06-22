@@ -64,7 +64,7 @@ const StudentsTable: React.FC = () => {
                             </Avatar>
                         </div>
                         <div style={{ display: 'flex', flexDirection: 'column', marginLeft: '5px' }}>
-                            <Link to="" style={{ fontWeight: 500, color: 'blue', marginBottom: 0, cursor: 'pointer' }}>
+                            <Link to={`/students/${record.key}`} style={{ fontWeight: 500, color: 'blue', marginBottom: 0, cursor: 'pointer' }}>
                                 {record.name}
                             </Link>
                             <Space>

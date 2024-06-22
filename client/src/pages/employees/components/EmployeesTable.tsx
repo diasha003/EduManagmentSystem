@@ -1,7 +1,8 @@
-import { Avatar, Badge, Button, Dropdown, MenuProps, Space } from 'antd';
+import { Avatar, Badge, Button, Calendar, Dropdown, MenuProps, Space } from 'antd';
 import { CaretDownOutlined, DeleteOutlined, HomeOutlined, MailOutlined, MoreOutlined, PhoneOutlined, PlusOutlined, SettingOutlined } from '@ant-design/icons';
 import { Link, useNavigate } from 'react-router-dom';
 import { Employee } from 'shared/models';
+import dayjs, { Dayjs } from 'dayjs';
 
 import { DataGrid, DataGridColumn } from '../../../components/DataGrid/DataGrid';
 import { useAppSelector } from '../../../hooks/redux';
@@ -9,6 +10,7 @@ import { useDeleteEmployeeMutation, useGetAllCenterNameQuery, useGetAllEmployees
 
 import stc from 'string-to-color';
 import Search from 'antd/es/input/Search';
+import { useState } from 'react';
 
 export interface EmployeeTableModel {
     key: number;
@@ -279,35 +281,77 @@ const EmployeesTable: React.FC = () => {
         }
     ];
 
-    return (
-        <DataGrid
-            columns={columns}
-            dataSource={newData ? newData : []}
-            allCenterName={allCenterName}
-            showColumnsSelector
-            showSort
-            showSelectCenterName={user?.roles.includes('ADMIN') ? true : false}
-            toolbar={
-                <>
-                    <Space>
-                        <Dropdown menu={{ items }} trigger={['click']}>
-                            <Button icon={<PlusOutlined />} type="primary" className="button">
-                                Add new
-                                <CaretDownOutlined />
-                            </Button>
-                        </Dropdown>
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
 
-                        {/* <Button type="default" className="button" icon={<MailOutlined />}>
-                            Messaging
-                        </Button> */}
-                        <Button type="default" className="button" icon={<SettingOutlined />}>
-                            Options
-                        </Button>
-                    </Space>
-                    <Search size="middle" placeholder="Search Records" style={{ width: '50%' }} />
-                </>
-            }
-        />
+    const onSelectDate = (date: dayjs.Dayjs) => {
+        const jsDate = new Date(date.format());
+        setSelectedDate(jsDate);
+    };
+    const dateSelectionOption: MenuProps['items'] = [
+        {
+            key: 0,
+            label: (
+                <div style={{ width: 290, border: '1px solid #d9d9d9', borderRadius: 4 }}>
+                    <Calendar fullscreen={false} mode="year" defaultValue={dayjs(selectedDate)} onSelect={(date) => onSelectDate(date)} />
+                </div>
+            )
+        }
+    ];
+
+    return (
+        <div style={{ display: 'flex', flexDirection: 'column' }}>
+            <div
+                style={{
+                    margin: '15px 15px',
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between'
+                }}
+            >
+                <div
+                    style={{
+                        display: 'flex',
+                        flexDirection: 'row',
+                        alignItems: 'flex-start'
+                    }}
+                >
+                    <h3>Payroll Balance as of</h3>
+                    <Dropdown menu={{ items: dateSelectionOption }} trigger={['click']}>
+                        <Space style={{ fontSize: '18px', marginLeft: "10px" }}>
+                            {selectedDate.toDateString()}
+
+                            <CaretDownOutlined style={{ marginRight: '10px' }} />
+                        </Space>
+                    </Dropdown>
+                </div>
+            </div>
+
+            <DataGrid
+                columns={columns}
+                dataSource={newData ? newData : []}
+                allCenterName={allCenterName}
+                showColumnsSelector
+                showSort
+                showSelectCenterName={user?.roles.includes('ADMIN') ? true : false}
+                toolbar={
+                    <>
+                        <Space>
+                            <Dropdown menu={{ items }} trigger={['click']}>
+                                <Button icon={<PlusOutlined />} type="primary" className="button">
+                                    Add new
+                                    <CaretDownOutlined />
+                                </Button>
+                            </Dropdown>
+
+                            <Button type="default" className="button" icon={<SettingOutlined />}>
+                                Options
+                            </Button>
+                        </Space>
+                        <Search size="middle" placeholder="Search Records" style={{ width: '50%' }} />
+                    </>
+                }
+            />
+        </div>
     );
 };
 

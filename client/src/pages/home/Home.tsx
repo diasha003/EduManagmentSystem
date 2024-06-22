@@ -23,6 +23,11 @@ const Home: React.FC = () => {
 
     const teachers: User[] | undefined = useGetAllTeachersQuery().currentData;
 
+    const onSelectDate = (date: dayjs.Dayjs) => {
+        const jsDate = new Date(date.format());
+        setSelectedDate(jsDate);
+    };
+
     const dateSelectionOption: MenuProps['items'] = [
         {
             key: 0,
@@ -44,11 +49,6 @@ const Home: React.FC = () => {
             )
         };
     });
-
-    const onSelectDate = (date: dayjs.Dayjs) => {
-        const jsDate = new Date(date.format());
-        setSelectedDate(jsDate);
-    };
 
     const handleDropdownItemClick = (e: any) => {
         const currentTeacher = teachers?.find((item) => item.id === Number(e.key));
