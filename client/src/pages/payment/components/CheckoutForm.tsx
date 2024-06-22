@@ -3,12 +3,14 @@ import { PaymentElement, LinkAuthenticationElement, useStripe, useElements } fro
 import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
+import { useConfirmTransactionMutation } from '../../../features/api/extensions/paymentApiExtension';
 
-export default function CheckoutForm() {
+export default function CheckoutForm(props: { transactionId: number }) {
     const navigate = useNavigate();
     const stripe = useStripe();
     const elements = useElements();
 
+    const [confirm] = useConfirmTransactionMutation();
     const [_email, setEmail] = useState('');
     const [message, setMessage] = useState<string | null | undefined>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -27,7 +29,10 @@ export default function CheckoutForm() {
 
             switch (paymentIntent?.status) {
                 case 'succeeded':
-                    navigate('/home');
+                    await confirm({
+                        intentId: paymentIntent.id,
+                        transactionId: props.transactionId
+                    });
                     break;
                 case 'processing':
                     setMessage('Your payment is processing.');
@@ -36,7 +41,7 @@ export default function CheckoutForm() {
                     setMessage('Your payment was not successful, please try again.');
                     break;
                 case 'requires_capture':
-                   // TODO:
+                    // TODO:
                     break;
                 default:
                     setMessage('Something went wrong.');
@@ -58,21 +63,32 @@ export default function CheckoutForm() {
 
         setIsLoading(true);
 
-        const { error } = await stripe.confirmPayment({
+        const res = await stripe.confirmPayment({
             elements,
+            redirect: 'if_required',
             confirmParams: {
                 // Make sure to change this to your payment completion page
-                return_url: `${window.location.origin}/adverts/details`
+                return_url: `${window.location.origin}/calendar`
             }
         });
+
+        if (!res.error) {
+            await confirm({
+                intentId: res.paymentIntent.id,
+                transactionId: props.transactionId
+            });
+
+            navigate('/calendar');
+            return;
+        }
 
         // This point will only be reached if there is an immediate error when
         // confirming the payment. Otherwise, your customer will be redirected to
         // your `return_url`. For some payment methods like iDEAL, your customer will
         // be redirected to an intermediate site first to authorize the payment, then
         // redirected to the `return_url`.
-        if (error.type === 'card_error' || error.type === 'validation_error') {
-            setMessage(error.message);
+        if (res.error.type === 'card_error' || res.error.type === 'validation_error') {
+            setMessage(res.error?.message ?? '');
         } else {
             setMessage('An unexpected error occurred.');
         }
@@ -88,7 +104,7 @@ export default function CheckoutForm() {
         <form id="payment-form" onSubmit={handleSubmit}>
             <LinkAuthenticationElement id="link-authentication-element" onChange={(e: any) => setEmail(e.value.email)} />
             <PaymentElement id="payment-element" options={paymentElementOptions} className="mb-2" />
-            <Button disabled={isLoading || !stripe || !elements}>
+            <Button disabled={isLoading || !stripe || !elements} htmlType="submit">
                 <span id="button-text">{isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}</span>
             </Button>
             {/* Show any error or success messages */}

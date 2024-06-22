@@ -235,6 +235,7 @@ model Transaction {
   teacherId    Int
   description  String?
   timestamp    DateTime
+  intentId     String?
   EventPayment EventPayment[]
 }
 

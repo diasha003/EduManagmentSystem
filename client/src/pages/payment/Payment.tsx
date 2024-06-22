@@ -1,19 +1,22 @@
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
 import { useEffect, useState } from 'react';
+
+import { Elements } from '@stripe/react-stripe-js';
+import { SerializedError } from '@reduxjs/toolkit';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
+
 import CheckoutForm from './components/CheckoutForm';
 import { useCreateIntentMutation } from '../../features/api/extensions/paymentApiExtension';
-import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
-import { SerializedError } from '@reduxjs/toolkit';
 import { stripePromise } from '../../features/store/stripeStore';
+import { useParams } from 'react-router-dom';
 
 const Payment: React.FC = () => {
+    const { transactionId } = useParams();
     const [clientSecret, setClientSecret] = useState('');
     const [createIntent] = useCreateIntentMutation();
 
     useEffect(() => {
         const init = async () => {
-            const response = await createIntent({});
+            const response = await createIntent({ transactionId: +transactionId! });
             const errorResponse = response as { error: FetchBaseQueryError | SerializedError };
 
             if (errorResponse.error) {
@@ -41,7 +44,7 @@ const Payment: React.FC = () => {
         <div className="App">
             {clientSecret ? (
                 <Elements options={options as any} stripe={stripePromise}>
-                    <CheckoutForm />
+                    <CheckoutForm transactionId={+transactionId!} />
                 </Elements>
             ) : (
                 <></>

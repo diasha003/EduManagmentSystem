@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventPayment, Prisma, Transaction, TransactionStatus, TransactionType } from '@prisma/client';
-import { CreateEventPaymentDto, EventPaymentDto } from 'shared/models';
+import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 import { DatabaseService } from 'src/database/database.service';
 import Stripe from 'stripe';
@@ -15,10 +15,28 @@ export class PaymentService {
         private readonly jwtService: JwtService
     ) {}
 
-    async pay() {
+    async pay(params: CreateIntentDto): Promise<IntentDto> {
+        const transaction = await this.prisma.transaction.findFirst({
+            where: {
+                id: params.transactionId
+            }
+        });
+
         const paymentIntent = await this.stripe.paymentIntents.create({
-            amount: 30000,
-            currency: 'byn'
+            amount: transaction.amount.toNumber() * 100,
+            currency: transaction.currencyCode,
+            automatic_payment_methods: {
+                enabled: true
+            }
+        });
+
+        await this.prisma.transaction.update({
+            where: {
+                id: transaction.id
+            },
+            data: {
+                intentId: paymentIntent.id
+            }
         });
 
         return {
@@ -60,7 +78,7 @@ export class PaymentService {
             const paidTransaction = {
                 amount: new Prisma.Decimal(createPaymentDto.amountPaid),
                 description: 'Paid in cash',
-                currencyCode: 'BYR',
+                currencyCode: 'BYN',
                 timestamp: new Date(),
                 type: TransactionType.payment,
                 studentId: createPaymentDto.studentId,
@@ -75,7 +93,7 @@ export class PaymentService {
             ? ({
                   amount: new Prisma.Decimal(createPaymentDto.price - (createPaymentDto.amountPaid ?? 0)),
                   description: createPaymentDto.note,
-                  currencyCode: 'BYR',
+                  currencyCode: 'BYN',
                   status: TransactionStatus.pending,
                   timestamp: new Date(),
                   type: TransactionType.charge,
@@ -96,5 +114,75 @@ export class PaymentService {
         const persistedEventPayment = await this.prisma.eventPayment.create({ data: eventPayment });
 
         return persistedEventPayment;
+    }
+
+    async getUnpaidTransactions() {
+        const query = await this.prisma.transaction.findMany({
+            where: {
+                status: TransactionStatus.pending,
+                type: TransactionType.charge
+            }
+        });
+
+        return query;
+    }
+
+    async getTransactionActualStatus(transaction: Transaction) {
+        if (!transaction.intentId) throw new Error('Cannot get actual status of transaction without intentId');
+
+        return await this.stripe.paymentIntents.retrieve(transaction.intentId);
+    }
+
+    async succeedTransaction(transaction: Transaction) {
+        await this.prisma.transaction.update({
+            where: {
+                id: transaction.id
+            },
+            data: {
+                status: TransactionStatus.paid
+            }
+        });
+
+        const incomeTransaction = {
+            amount: new Prisma.Decimal(transaction.amount),
+            description: 'Paid',
+            currencyCode: 'BYN',
+            timestamp: new Date(),
+            type: TransactionType.payment,
+            studentId: transaction.studentId,
+            teacherId: transaction.teacherId,
+            status: TransactionStatus.paid
+        } as Transaction;
+
+        await this.prisma.transaction.create({ data: incomeTransaction });
+    }
+
+    async cancelTransaction(transaction: Transaction) {
+        this.prisma.transaction.update({
+            where: {
+                id: transaction.id
+            },
+            data: {
+                status: TransactionStatus.canceled
+            }
+        });
+    }
+
+    async confirmTransaction(confirmation: ConfirmTransactionDto) {
+        const actualStatus = await this.stripe.paymentIntents.retrieve(confirmation.intentId);
+        if (actualStatus.status === 'succeeded') {
+            const transaction = await this.prisma.transaction.findFirst({
+                where: {
+                    id: confirmation.transactionId
+                }
+            });
+
+            if (actualStatus.latest_charge) {
+                let charge = await this.stripe.charges.retrieve(actualStatus.latest_charge.toString());
+                console.log(charge);
+            }
+
+            await this.succeedTransaction(transaction);
+        }
     }
 }

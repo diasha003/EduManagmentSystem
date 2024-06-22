@@ -22,7 +22,7 @@ const InvoiceTransactionTable: React.FC = () => {
     const newData: InvoiceTransactionModel[] | undefined = data?.map((item) => {
         return {
             key: item.id,
-            family: item.student.familyStudentsAsParent[0].parent.firstName + ' ' + item.student.familyStudentsAsParent[0].parent.lastName,
+            family: item.student.familyStudentsAsParent[0]?.parent?.firstName + ' ' + item.student.familyStudentsAsParent[0]?.parent?.lastName,
             date: item.timestamp.toDateString(),
             status: item.status,
             transaction: item.type,

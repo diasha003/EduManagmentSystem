@@ -49,7 +49,7 @@ const App: React.FC = () => {
     routes.push({ path: '/person', element: <PersonDetails />, name: '' });
     routes.push({ path: '/attendance', element: <AttendaceInfo />, name: 'Attendace' });
     routes.push({ path: '/attendance/:eventId', element: <Attendace />, name: 'Attendace' });
-    routes.push({ path: '/payment', element: <Payment />, name: 'Payment' });
+    routes.push({ path: '/payment/:transactionId', element: <Payment />, name: 'Payment' });
 
     return (
         <Routes>

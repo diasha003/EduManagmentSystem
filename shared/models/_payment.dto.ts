@@ -25,3 +25,16 @@ export interface EventPaymentDto {
         }[];
     };
 }
+
+export interface CreateIntentDto {
+    transactionId: number;
+}
+
+export interface IntentDto {
+    clientSecret: string;
+}
+
+export interface ConfirmTransactionDto {
+    transactionId: number;
+    intentId: string;
+}

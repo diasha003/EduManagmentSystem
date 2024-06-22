@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { CreateEventPaymentDto, EventPaymentDto } from 'shared/models';
+import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto } from 'shared/models';
 
 @Controller('payment')
 export class PaymentController {
@@ -18,7 +18,12 @@ export class PaymentController {
     }
 
     @Post('/pay')
-    async payTransaction() {
-        return this.paymentService.pay();
+    async payTransaction(@Body() dto: CreateIntentDto) {
+        return this.paymentService.pay(dto);
+    }
+
+    @Post('/confirm')
+    async confirmTransaction(@Body() dto: ConfirmTransactionDto) {
+        await this.paymentService.confirmTransaction(dto);
     }
 }
