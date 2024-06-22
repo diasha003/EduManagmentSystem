@@ -24,6 +24,13 @@ export const studentApiExtensions = baseApi.injectEndpoints({
             },
             providesTags: ['Students']
         }),
+        getStudent: builder.query<Student, number>({
+            query: (id) => ({
+                url: `/student/${id}`,
+                method: 'GET'
+            }),
+            providesTags: ['Students']
+        }),
 
         //family
         getAllFamily: builder.query<User[], void>({
@@ -84,4 +91,4 @@ export const studentApiExtensions = baseApi.injectEndpoints({
     })
 });
 
-export const { useCreateStudentMutation, useGetAllStudentsQuery, useGetAllFamilyQuery, useCreateGroupMutation, useGetAllGroupsQuery, useDeleteGroupMutation, useUpdateGroupMutation, useGetCountRecordsGroupsQuery, useGetRecordsGroupsQuery } = studentApiExtensions;
+export const { useCreateStudentMutation, useGetAllStudentsQuery, useGetAllFamilyQuery, useCreateGroupMutation, useGetAllGroupsQuery, useDeleteGroupMutation, useUpdateGroupMutation, useGetCountRecordsGroupsQuery, useGetRecordsGroupsQuery, useGetStudentQuery } = studentApiExtensions;

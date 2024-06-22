@@ -19,3 +19,31 @@ export const items: TabItem[] = [
         children: <GroupsTable />
     }
 ];
+
+export const itemsProfile: TabItem[] = [
+    {
+        label: 'Student Overview',
+        key: '1',
+        children: <>Student Overview</>
+    },
+    {
+        label: 'Family Contacts',
+        key: '2',
+        children: <>Family Contacts</>
+    },
+    {
+        label: 'Assigned Teachers',
+        key: '3',
+        children: <>Assigned Teachers</>
+    },
+    {
+        label: 'Attendance',
+        key: '4',
+        children: <>Attendance</>
+    },
+    {
+        label: 'Student Portal',
+        key: '5',
+        children: <>Student Portal</>
+    }
+];

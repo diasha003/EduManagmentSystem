@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import { CalendarOutlined, CaretDownOutlined, CarryOutOutlined, CloudUploadOutlined, PlusOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
-import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card, Badge } from 'antd';
+import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card, Badge, Cascader } from 'antd';
 import Meta from 'antd/es/card/Meta';
-import { EventsFilter } from 'shared/models';
+import { EventsFilter, User } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 
 import QuickAddLessonModalForm from './components/QuickAddLessonModalForm';
@@ -13,6 +13,15 @@ import { useGetEventsQuery } from '../../features/api/extensions/calendarApiExte
 
 import './Calendar.style.css';
 import { useNavigate } from 'react-router-dom';
+import { useAppSelector } from '../../hooks/redux';
+import { useGetAllCenterNameQuery } from '../../features/api/extensions/employeesApiExtension';
+import { useGetAllUserQuery } from '../../features/api/extensions/userApiExtension';
+
+interface Option {
+    value: string;
+    label: string;
+    children?: Option[];
+}
 
 const calendarOptions: MenuProps['items'] = [
     {
@@ -51,6 +60,59 @@ const calendarDisplayType: MenuProps['items'] = [
 
 const AppCalendar: React.FC = () => {
     const navigator = useNavigate();
+    const user = useAppSelector((state) => state.auth.user);
+
+    const centerUsersMap = new Map<string, { teachers: any[]; students: any[] }>();
+    const allUser = useGetAllUserQuery().currentData;
+
+    allUser?.forEach((user) => {
+        const { centerName, roles } = user;
+        const role = roles.includes('TEACHER') ? 'teachers' : 'students';
+
+        if (!centerUsersMap.has(centerName)) {
+            centerUsersMap.set(centerName, { teachers: [], students: [] });
+        }
+
+        centerUsersMap.get(centerName)?.[role].push(user);
+    });
+
+    const options: Option[] = [];
+
+    centerUsersMap?.forEach((usersData, centerName) => {
+        const centerOption: Option = {
+            value: centerName,
+            label: centerName,
+            children: []
+        };
+
+        if (usersData && usersData.teachers) {
+            usersData.teachers.forEach((teacher) => {
+                const teacherOption: Option = {
+                    value: teacher.id,
+                    label: `${teacher.firstName} ${teacher.lastName}`,
+                    children: []
+                };
+
+                if (teacher.students) {
+                    teacher.students.forEach((student: User) => {
+                        const studentOption: Option = {
+                            value: student.id.toString(),
+                            label: `${student.firstName} ${student.lastName}`
+                        };
+
+                        teacherOption?.children?.push(studentOption);
+                    });
+                }
+
+                centerOption?.children?.push(teacherOption);
+            });
+        }
+
+        options.push(centerOption);
+    });
+
+    console.log(options);
+
     const [isQuickLessonFormOpen, setIsQuickLessonFormOpen] = useState(false);
     const [isNonTeachingEventFormOpen, setIsNonTeachingEventFormOpen] = useState(false);
 
@@ -79,7 +141,7 @@ const AppCalendar: React.FC = () => {
     const [actionMenuDate, setActionMenuDate] = useState<dayjs.Dayjs | undefined>(undefined);
 
     const [eventsFilter, setEventsFilter] = useState<EventsFilter>({
-        userId: 5,
+        userId: user && user.id ? user.id : 0,
         dateFrom: DateTimeService.toFirstDayOfMonth(new Date()),
         dateTo: DateTimeService.toLastDayOfMonth(new Date())
     });
@@ -89,7 +151,7 @@ const AppCalendar: React.FC = () => {
         const jsDate = new Date(date.format());
         setSelectedDate(jsDate);
         setEventsFilter({
-            userId: 5,
+            userId: user && user.id ? user.id : 0,
             dateFrom: DateTimeService.toFirstDayOfMonth(jsDate),
             dateTo: DateTimeService.toLastDayOfMonth(jsDate)
         });
@@ -241,15 +303,16 @@ const AppCalendar: React.FC = () => {
                         </Button>
                     </Space>
                     <Space>
-                        <Dropdown menu={{ items: calendarDisplayType }} trigger={['click']}>
+                        {/* <Dropdown menu={{ items: calendarDisplayType }} trigger={['click']}>
                             <Button type="default" className="button">
                                 <Space>
                                     Display Type
                                     <CaretDownOutlined />
                                 </Space>
                             </Button>
-                        </Dropdown>
+                        </Dropdown> */}
 
+                        <Cascader options={options} placeholder="Please select" style={{ width: '150px', height: 'auto', marginRight: '120px' }} />
                         <Button>Search</Button>
                     </Space>
                 </div>

@@ -6,11 +6,14 @@ import { User } from '@prisma/client';
 export class UserController {
     constructor(private readonly userService: UserService) {}
 
-     //auth
-     @Get('/family')
-     async getAllFamily(@Headers() headers: any): Promise<User[]> {
-         return await this.userService.getAllFamily(headers);
-     }
+    //auth
+    @Get('/family')
+    async getAllFamily(@Headers() headers: any): Promise<User[]> {
+        return await this.userService.getAllFamily(headers);
+    }
 
-
+    @Get('/all')
+    async getAllUsers(@Headers() headers: any) {
+        return await this.userService.getAllUsers(headers);
+    }
 }

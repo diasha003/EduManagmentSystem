@@ -4,7 +4,7 @@ import { ShortUserDto } from './_user.dto';
 // import { Type } from 'class-transformer';
 
 export class EventsFilter {
-    @IsNumber()
+    //@IsNumber()
     userId: number;
 
     @IsDateString()

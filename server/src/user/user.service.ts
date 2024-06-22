@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Role, User } from '@prisma/client';
+import { Prisma, Role, User } from '@prisma/client';
 import { CreateUserDto } from 'shared/models';
 
 import { DatabaseService } from 'src/database/database.service';
@@ -69,5 +69,40 @@ export class UserService {
         });
 
         return data;
+    }
+
+    async getAllUsers(headers: any) {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        // const allStudents = await this.prisma.user.groupBy({
+        //     by: ['centerName', 'centerName']
+        // });
+
+        // const query = Prisma.sql`
+        //     SELECT ID, FIRST_NAME, LAST_NAME, "centerName", ROLES
+        //     FROM PUBLIC."User"
+        //     WHERE EXISTS (
+        //         SELECT 1
+        //         FROM UNNEST(ROLES) AS R
+        //         WHERE R = 'STUDENT' OR R = 'TEACHER'
+        //     )
+        //     GROUP BY ID, FIRST_NAME, LAST_NAME, "centerName"
+        //     ORDER BY "centerName"
+        // `;
+
+        // const result = await this.prisma.$queryRaw(query);
+
+        const allStudents = await this.prisma.user.findMany({
+            where: {
+                roles: {
+                    hasSome: [Role.STUDENT, Role.TEACHER]
+                }
+            },
+            orderBy: {
+                centerName: 'asc'
+            }
+        });
+
+        return allStudents;
     }
 }

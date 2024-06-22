@@ -20,4 +20,9 @@ export class StudentController {
     async getAllStudents(@Headers() headers: any): Promise<Student[]> {
         return await this.studentService.getAllStudents(headers);
     }
+
+    @Get('/:id')
+    async getStudent(@Headers() headers: any, @Param('id', ParseIntPipe) studentId: number): Promise<Student> {
+        return await this.studentService.getStudent(headers, studentId);
+    }
 }

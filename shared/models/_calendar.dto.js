@@ -13,9 +13,6 @@ var EventsFilter = /** @class */ (function () {
     function EventsFilter() {
     }
     __decorate([
-        (0, class_validator_1.IsNumber)()
-    ], EventsFilter.prototype, "userId");
-    __decorate([
         (0, class_validator_1.IsDateString)()
         // @Type(() => Date)
     ], EventsFilter.prototype, "dateFrom");

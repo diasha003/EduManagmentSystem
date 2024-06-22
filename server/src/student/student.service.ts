@@ -139,4 +139,38 @@ export class StudentService {
 
         return data;
     }
+
+    async getStudent(headers: any, studentId: number): Promise<Student> {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        const currentUser = await this.prisma.user.findFirstOrThrow({
+            where: {
+                id: studentId
+            },
+
+            include: {
+                studentInfo: true,
+                familyStudentsAsStudent: {
+                    include: {
+                        parent: true
+                    }
+                },
+                groupStudents: {
+                    include: {
+                        student: false,
+                        group: true
+                    }
+                },
+                teacherStudentAsTeacher: {
+                    include: {
+                        teacher: true
+                    }
+                }
+            }
+        });
+
+        delete currentUser['password'];
+
+        return currentUser;
+    }
 }
