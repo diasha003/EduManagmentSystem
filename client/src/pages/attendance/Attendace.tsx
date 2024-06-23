@@ -26,7 +26,7 @@ const Attendace: React.FC = () => {
             ...form.getFieldsValue(),
             eventId: +eventId!,
             studentId: eventDetails!.students[0].id,
-            teacherId: eventDetails!.teacher.id
+            teacherId: eventDetails!.teacher.id,
         });
     };
 

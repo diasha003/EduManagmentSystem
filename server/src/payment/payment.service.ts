@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventPayment, Prisma, Transaction, TransactionStatus, TransactionType } from '@prisma/client';
-import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
+import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, EventStudentDto, IntentDto } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 import { DatabaseService } from 'src/database/database.service';
 import Stripe from 'stripe';
@@ -72,6 +72,7 @@ export class PaymentService {
     }
 
     async assignPayment(createPaymentDto: CreateEventPaymentDto) {
+        console.log(createPaymentDto);
         const shouldInitTransaction = createPaymentDto.price && createPaymentDto.price !== createPaymentDto.amountPaid;
 
         if (createPaymentDto.amountPaid) {
@@ -107,7 +108,7 @@ export class PaymentService {
         const eventPayment = {
             transactionId: persistedTransaction?.id,
             eventId: createPaymentDto.eventId,
-            status: TransactionStatus.pending,
+            status: createPaymentDto.status,
             studentId: createPaymentDto.studentId
         } as EventPayment;
 
@@ -184,5 +185,37 @@ export class PaymentService {
 
             await this.succeedTransaction(transaction);
         }
+    }
+
+    async getStudentEvents(headers: any, id: number): Promise<EventStudentDto[]> {
+        const decoded: { id: number; roles: string[]; centerName: string } = this.jwtService.decode(headers.authorization.split(' ')[1]);
+
+        const data = await this.prisma.eventPayment.findMany({
+            where: {
+                student: {
+                    id: {
+                        equals: id
+                    }
+                }
+            },
+            include: {
+                event: {
+                    select: {
+                        date: true,
+                        duration: true,
+                        teacher: {
+                            select: {
+                                firstName: true,
+                                lastName: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        console.log(data);
+        return data;
+        //return data.map((x) => ({ ...x, amount: x.amount.toNumber() }));
     }
 }

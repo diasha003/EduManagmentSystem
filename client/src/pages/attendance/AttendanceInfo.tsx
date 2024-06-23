@@ -1,35 +1,56 @@
 import React, { useEffect, useState } from 'react';
 
-import { Dropdown, Flex, Form, Input, MenuProps, Progress, Space } from 'antd';
+import { Dropdown, Flex, Form, Input, MenuProps, Progress, Space, Tag } from 'antd';
 import { DataGrid, DataGridColumn } from '../../components/DataGrid/DataGrid';
 import './AttendanceInfo.style.css';
 import { CaretDownOutlined } from '@ant-design/icons';
 import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { useGetStudentEventsQuery } from '../../features/api/extensions/paymentApiExtension';
+import { useAppSelector } from '../../hooks/redux';
+import { useParams } from 'react-router-dom';
+import dayjs, { Dayjs } from 'dayjs';
 
 //import _ from 'lodash';
 
 const Search = Input.Search;
 
-export interface GroupsTableModel {
+export interface StudentEventTableModel {
     key: number;
-    name: string;
-    numberStudents: number;
-    studentsName?: string;
-    operation?: React.ReactElement;
-    studentsId?: number[];
+    status: string;
+    event: {
+        date: Date;
+        duration: number;
+        teacher: {
+            firstName: string;
+            lastName: string;
+        };
+    };
 }
 
 const AttendanceInfo: React.FC = () => {
     const [selectedPeriod, setSelectedPeriod] = useState<string | undefined>('entire history');
 
-    const columns: DataGridColumn<GroupsTableModel>[] = [
+    const user = useAppSelector((state) => state.auth.user);
+    const { studentId } = useParams();
+
+    const columns: DataGridColumn<StudentEventTableModel>[] = [
         {
             title: 'Event',
             dataIndex: 'event',
             key: 'event',
             width: 150,
             fixed: 'left',
-            hidden: false
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                            <p>Lesson</p>
+                            <Tag color={record.status === 'Present' ? 'green' : 'red'} style={{width: "100px"}}>{record.status}</Tag>
+                        </div>
+                    </div>
+                );
+            }
         },
         {
             title: 'Date & Time',
@@ -37,30 +58,42 @@ const AttendanceInfo: React.FC = () => {
             key: 'dateTime',
             width: 150,
             fixed: 'left',
-            hidden: false
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div>
+                        <p>{record.event.date.toDateString()}</p>
+                    </div>
+                );
+            }
         },
         {
             title: 'Teacher',
             dataIndex: 'teacher',
             key: 'teacher',
             width: 150,
-            hidden: false
+            hidden: false,
+            render: (value, record) => {
+                return (
+                    <div>
+                        <p>
+                            {record.event.teacher.firstName} {record.event.teacher.lastName}
+                        </p>
+                    </div>
+                );
+            }
         },
-        {
-            title: 'Day of Week',
-            dataIndex: 'dayOfWeek',
-            key: 'dayOfWeek',
-            fixed: 'right',
-            width: 100,
-            hidden: false
-        },
+
         {
             title: 'Duration',
             dataIndex: 'dayOfWeek',
             key: 'dayOfWeek',
             fixed: 'right',
             width: 100,
-            hidden: false
+            hidden: false,
+            render: (value, record) => {
+                return <div>{record.event.duration}</div>;
+            }
         }
     ];
 
@@ -71,23 +104,24 @@ const AttendanceInfo: React.FC = () => {
         { key: 4, label: 'entire history' }
     ];
 
-    // const newData: GroupsTableModel[] | undefined = groupsData?.map((item) => {
-    //     const students = item.groupStudents?.map((item) => {
-    //         return item.student.firstName.concat(' ').concat(item.student.lastName);
-    //     });
+    const data = useGetStudentEventsQuery(Number(studentId)).currentData;
 
-    //     const studentsId = item.groupStudents?.map((item) => {
-    //         return item.student.id;
-    //     });
+    console.log(data);
 
-    //     return {
-    //         key: item.id,
-    //         name: item.name,
-    //         studentsName: students ? students?.join('; ') : undefined,
-    //         numberStudents: students?.length || 0,
-    //         studentsId: studentsId
-    //     };
-    // });
+    const newData: StudentEventTableModel[] | undefined = data?.map((item) => {
+        return {
+            key: item.id,
+            status: item.status,
+            event: {
+                date: new Date(item.event.date),
+                duration: item.event.duration,
+                teacher: {
+                    firstName: item.event.teacher.firstName,
+                    lastName: item.event.teacher.lastName
+                }
+            }
+        };
+    });
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -149,7 +183,7 @@ const AttendanceInfo: React.FC = () => {
                 </div>
             </div>
 
-            <DataGrid columns={columns} dataSource={[]} showSort showColumnsSelector toolbar={<div></div>} />
+            <DataGrid columns={columns} dataSource={newData ? newData : []} showSort showColumnsSelector toolbar={<div></div>} />
         </div>
     );
 };
