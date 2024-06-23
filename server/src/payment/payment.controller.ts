@@ -1,6 +1,6 @@
-import { Body, Controller, Get, Headers, Post } from '@nestjs/common';
+import { Body, Controller, Get, Headers, Param, ParseIntPipe, Post } from '@nestjs/common';
 import { PaymentService } from './payment.service';
-import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto } from 'shared/models';
+import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, EventStudentDto } from 'shared/models';
 
 @Controller('payment')
 export class PaymentController {
@@ -25,5 +25,10 @@ export class PaymentController {
     @Post('/confirm')
     async confirmTransaction(@Body() dto: ConfirmTransactionDto) {
         return await this.paymentService.confirmTransaction(dto);
+    }
+
+    @Get('/:id')
+    async getStudentEvents(@Headers() headers: any, @Param('id', ParseIntPipe) studentId: number): Promise<EventStudentDto[]> {
+        return await this.paymentService.getStudentEvents(headers, studentId);
     }
 }

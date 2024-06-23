@@ -33,3 +33,17 @@ export interface ConfirmTransactionDto {
     transactionId: number;
     intentId: string;
 }
+export interface EventStudentDto {
+    id: number;
+    status: string;
+    studentId: number;
+    transactionId: number;
+    event: {
+        date: Date;
+        duration: number;
+        teacher: {
+            firstName: string;
+            lastName: string;
+        };
+    };
+}

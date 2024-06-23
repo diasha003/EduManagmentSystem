@@ -1,5 +1,7 @@
 import StudentsTable from '../StudentsTable';
 import GroupsTable from '../groupsTable/GroupsTable';
+import AssignedTeachers from '../profile/assignedTeachers/AssignedTeachers';
+import FamilyContact from '../profile/familyContact/FamilyContact';
 
 interface TabItem {
     label: string;
@@ -22,19 +24,14 @@ export const items: TabItem[] = [
 
 export const itemsProfile: TabItem[] = [
     {
-        label: 'Student Overview',
-        key: '1',
-        children: <>Student Overview</>
-    },
-    {
         label: 'Family Contacts',
         key: '2',
-        children: <>Family Contacts</>
+        children: <FamilyContact />
     },
     {
         label: 'Assigned Teachers',
         key: '3',
-        children: <>Assigned Teachers</>
+        children: <AssignedTeachers/>
     },
     {
         label: 'Attendance',

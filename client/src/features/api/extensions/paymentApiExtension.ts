@@ -30,11 +30,17 @@ export const paymentApi = baseApi.injectEndpoints({
                 method: 'POST',
                 body: payload
             })
+        }),
+        getStudentEvents: builder.query<EventStudentDto[], number>({
+            query: (id) => ({
+                url: `/payment/${id}`,
+                method: 'GET'
+            })
         })
     })
 });
 
-export const { useAssignPaymentMutation, useGetAllTransactionQuery, useCreateIntentMutation, useConfirmTransactionMutation } = paymentApi;
+export const { useAssignPaymentMutation, useGetAllTransactionQuery, useCreateIntentMutation, useConfirmTransactionMutation, useGetStudentEventsQuery } = paymentApi;
 export const {
     endpoints: { assignPayment, getAllTransaction, createIntent, confirmTransaction }
 } = paymentApi;

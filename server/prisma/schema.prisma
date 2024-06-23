@@ -240,12 +240,12 @@ model Transaction {
 }
 
 model EventPayment {
-  id            Int               @id @default(autoincrement())
-  student       User              @relation(fields: [studentId], references: [id])
+  id            Int           @id @default(autoincrement())
+  student       User          @relation(fields: [studentId], references: [id])
   studentId     Int
-  event         CalendarEvent     @relation(fields: [eventId], references: [id])
+  event         CalendarEvent @relation(fields: [eventId], references: [id])
   eventId       Int
-  transaction   Transaction?      @relation(fields: [transactionId], references: [id])
+  transaction   Transaction?  @relation(fields: [transactionId], references: [id])
   transactionId Int
-  status        TransactionStatus
+  status        String
 }

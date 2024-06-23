@@ -47,7 +47,7 @@ const App: React.FC = () => {
     routes.push({ path: '/signup', element: <Register />, hideWrapper: true });
     routes.push({ path: '/families-invoices', element: <FamiliesInvoicesInfo />, name: user?.roles.includes('ADMIN') ? 'Families & Invoices' : 'Invoices' });
     routes.push({ path: '/person', element: <PersonDetails />, name: '' });
-    routes.push({ path: '/attendance', element: <AttendaceInfo />, name: 'Attendace' });
+    routes.push({ path: '/attendance/student/:studentId', element: <AttendaceInfo />, name: 'Attendace' });
     routes.push({ path: '/attendance/:eventId', element: <Attendace />, name: 'Attendace' });
     routes.push({ path: '/payment/:transactionId', element: <Payment />, name: 'Payment' });
 

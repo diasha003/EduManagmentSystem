@@ -151,8 +151,10 @@ export class StudentService {
             include: {
                 studentInfo: true,
                 familyStudentsAsStudent: {
-                    include: {
-                        parent: true
+                    select: {
+                        parent: true,
+                        parentId: true,
+                        studentId: true
                     }
                 },
                 groupStudents: {
@@ -162,7 +164,11 @@ export class StudentService {
                     }
                 },
                 teacherStudentAsTeacher: {
-                    include: {
+                    select: {
+                        defaultBilling: true,
+                        defaultLessonCategory: true,
+                        defaultLessonLength: true,
+                        defaultPrice: true,
                         teacher: true
                     }
                 }
@@ -171,6 +177,6 @@ export class StudentService {
 
         delete currentUser['password'];
 
-        return currentUser;
+        return currentUser ;
     }
 }
