@@ -24,6 +24,6 @@ export class PaymentController {
 
     @Post('/confirm')
     async confirmTransaction(@Body() dto: ConfirmTransactionDto) {
-        await this.paymentService.confirmTransaction(dto);
+        return await this.paymentService.confirmTransaction(dto);
     }
 }

@@ -4,6 +4,9 @@ import { StripePaymentElementOptions } from '@stripe/stripe-js';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'antd';
 import { useConfirmTransactionMutation } from '../../../features/api/extensions/paymentApiExtension';
+import { SerializedError } from '@reduxjs/toolkit';
+import { ConfirmationResultDto } from 'shared/models';
+import { FetchBaseQueryError } from '@reduxjs/toolkit/query';
 
 export default function CheckoutForm(props: { transactionId: number }) {
     const navigate = useNavigate();
@@ -29,10 +32,11 @@ export default function CheckoutForm(props: { transactionId: number }) {
 
             switch (paymentIntent?.status) {
                 case 'succeeded':
-                    await confirm({
+                    const result = await confirm({
                         intentId: paymentIntent.id,
                         transactionId: props.transactionId
                     });
+
                     break;
                 case 'processing':
                     setMessage('Your payment is processing.');
@@ -73,10 +77,24 @@ export default function CheckoutForm(props: { transactionId: number }) {
         });
 
         if (!res.error) {
-            await confirm({
+            const result = await confirm({
                 intentId: res.paymentIntent.id,
                 transactionId: props.transactionId
             });
+
+            const resultAsError = result as {
+                error: FetchBaseQueryError | SerializedError;
+            };
+
+            if (resultAsError.error) {
+                return;
+            }
+
+            const resultAsData = result as {
+                data: ConfirmationResultDto;
+            };
+
+            if (resultAsData.data.receiptUrl) window.open(resultAsData.data.receiptUrl, '_blank')?.focus();
 
             navigate('/calendar');
             return;

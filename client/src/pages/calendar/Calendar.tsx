@@ -3,7 +3,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { CalendarOutlined, CaretDownOutlined, CarryOutOutlined, CloudUploadOutlined, PlusOutlined, PrinterOutlined, SettingOutlined } from '@ant-design/icons';
 import { Button, Dropdown, MenuProps, Space, Calendar, CalendarProps, Divider, Row, Col, DropdownProps, Layout, Card, Badge, Cascader } from 'antd';
 import Meta from 'antd/es/card/Meta';
-import { EventsFilter, User } from 'shared/models';
+import { EventDto, EventsFilter, User } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 
 import QuickAddLessonModalForm from './components/QuickAddLessonModalForm';
@@ -16,6 +16,8 @@ import { useNavigate } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/redux';
 import { useGetAllCenterNameQuery } from '../../features/api/extensions/employeesApiExtension';
 import { useGetAllUserQuery } from '../../features/api/extensions/userApiExtension';
+import CalendarEvent from './components/CalendarEvent';
+import CalendarDay from './components/CalendarDay';
 
 interface Option {
     value: string;
@@ -111,8 +113,6 @@ const AppCalendar: React.FC = () => {
         options.push(centerOption);
     });
 
-    console.log(options);
-
     const [isQuickLessonFormOpen, setIsQuickLessonFormOpen] = useState(false);
     const [isNonTeachingEventFormOpen, setIsNonTeachingEventFormOpen] = useState(false);
 
@@ -169,68 +169,7 @@ const AppCalendar: React.FC = () => {
     ];
 
     const cellRenderer: CalendarProps<Dayjs>['fullCellRender'] = (current, info) => {
-        const renderAction = (icon: JSX.Element, title: string, description: string, onClick?: () => void) => {
-            return (
-                <Row gutter={14} style={{ marginBottom: '8px', cursor: 'pointer' }} onClick={onClick}>
-                    <Col span={2}>{icon}</Col>
-                    <Col span={12}>
-                        <h4>{title}</h4>
-                        <span>{description}</span>
-                    </Col>
-                </Row>
-            );
-        };
-
-        const items: MenuProps['items'] = [];
-
-        const dropdownRender: DropdownProps['dropdownRender'] = (origin) => {
-            return (
-                <Card>
-                    <Meta title={`${dayOfWeek(current.day())}, ${monthOfYear(current.month())} ${current.date()}, ${current.year()}`} description="0 Scheduled Event(s)" />
-                    <Divider />
-                    {renderAction(<CarryOutOutlined />, 'Quick-Add Lesson', 'Create a new lesson with your default category, length, and price', () => {
-                        setActionMenuDate(undefined);
-                        setIsQuickLessonFormOpen(true);
-                    })}
-                    {renderAction(<CarryOutOutlined />, 'New Event', 'Create a new event with custom settings', () => {
-                        navigator('/new-event');
-                    })}
-                    {renderAction(<CarryOutOutlined />, 'New Non-Teaching Event', "Create a new event that doesn't require students", () => {
-                        setActionMenuDate(undefined);
-                        setIsNonTeachingEventFormOpen(true);
-                    })}
-                </Card>
-            );
-        };
-
-        const date = new Date(current.format('YYYY-MM-DD'));
-        const cellEvents = events?.filter((x) => DateTimeService.isSameDate(x.date, date)) ?? [];
-
-        return (
-            <Dropdown open={!!actionMenuDate && current.isSame(actionMenuDate)} menu={{ items }} dropdownRender={dropdownRender}>
-                <div className="ant-picker-cell-inner ant-picker-calendar-date" onClick={() => setActionMenuDate(current)}>
-                    <div className="ant-picker-calendar-date-value">{current.date()}</div>
-                    <div className="ant-picker-calendar-date-content" style={{ minHeight: '86px', height: 'min-content' }}>
-                        <ul className="events">
-                            {cellEvents.map((x) => (
-                                <li>
-                                    <div style={{ backgroundColor: '#afe9f8', paddingLeft: '4px', marginBottom: '4px' }}>
-                                        <div style={{ borderLeft: 'solid 3px #2e568e', padding: '4px', color: '#2e568e' }}>
-                                            <div>
-                                                <strong>
-                                                    {DateTimeService.toUiTime(x.date)} - {DateTimeService.toUiTime(DateTimeService.addMinutes(x.date, x.duration))}
-                                                </strong>
-                                            </div>
-                                            <div>Lesson with {x.teacherDisplayName}</div>
-                                        </div>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                </div>
-            </Dropdown>
-        );
+        return <CalendarDay day={current} events={events ?? []} onOpenQuickLessonForm={() => setIsQuickLessonFormOpen(true)} onOpenNonTeachingForm={() => setIsNonTeachingEventFormOpen(true)} onCellClick={(day) => setActionMenuDate(day)} selectedDate={actionMenuDate} />;
     };
 
     return (

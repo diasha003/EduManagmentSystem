@@ -1,4 +1,4 @@
-import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
+import { ConfirmTransactionDto, ConfirmationResultDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
 import { baseApi } from '../api';
 
 export const paymentApi = baseApi.injectEndpoints({
@@ -24,7 +24,7 @@ export const paymentApi = baseApi.injectEndpoints({
                 body: payload
             })
         }),
-        confirmTransaction: builder.mutation<void, ConfirmTransactionDto>({
+        confirmTransaction: builder.mutation<ConfirmationResultDto, ConfirmTransactionDto>({
             query: (payload) => ({
                 url: '/payment/confirm',
                 method: 'POST',

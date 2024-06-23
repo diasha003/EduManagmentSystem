@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EventPayment, Prisma, Transaction, TransactionStatus, TransactionType } from '@prisma/client';
-import { ConfirmTransactionDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
+import { ConfirmTransactionDto, ConfirmationResultDto, CreateEventPaymentDto, CreateIntentDto, EventPaymentDto, IntentDto } from 'shared/models';
 import { DateTimeService } from 'shared/services';
 import { DatabaseService } from 'src/database/database.service';
 import Stripe from 'stripe';
@@ -168,7 +168,7 @@ export class PaymentService {
         });
     }
 
-    async confirmTransaction(confirmation: ConfirmTransactionDto) {
+    async confirmTransaction(confirmation: ConfirmTransactionDto): Promise<ConfirmationResultDto> {
         const actualStatus = await this.stripe.paymentIntents.retrieve(confirmation.intentId);
         if (actualStatus.status === 'succeeded') {
             const transaction = await this.prisma.transaction.findFirst({
@@ -177,12 +177,17 @@ export class PaymentService {
                 }
             });
 
+            let receipt_url: string | undefined;
             if (actualStatus.latest_charge) {
-                let charge = await this.stripe.charges.retrieve(actualStatus.latest_charge.toString());
-                console.log(charge);
+                const charge = await this.stripe.charges.retrieve(actualStatus.latest_charge.toString());
+                receipt_url = charge.receipt_url;
             }
 
             await this.succeedTransaction(transaction);
+
+            return {
+                receiptUrl: receipt_url
+            }
         }
     }
 }

@@ -38,3 +38,7 @@ export interface ConfirmTransactionDto {
     transactionId: number;
     intentId: string;
 }
+
+export interface ConfirmationResultDto {
+    receiptUrl?: string;
+}
