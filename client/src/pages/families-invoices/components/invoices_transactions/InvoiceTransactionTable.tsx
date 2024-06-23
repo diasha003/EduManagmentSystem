@@ -5,6 +5,7 @@ import { EventPaymentDto } from 'shared/models';
 import { Button, Flex, Tag } from 'antd';
 import Decimal from 'decimal.js';
 import { DollarOutlined, DownloadOutlined, PayCircleOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
 export interface InvoiceTransactionModel {
     key: number;
@@ -18,6 +19,7 @@ export interface InvoiceTransactionModel {
 
 const InvoiceTransactionTable: React.FC = () => {
     const data: EventPaymentDto[] | undefined = useGetAllTransactionQuery().currentData;
+    const navigate = useNavigate();
 
     const newData: InvoiceTransactionModel[] | undefined = data?.map((item) => {
         return {
@@ -59,7 +61,7 @@ const InvoiceTransactionTable: React.FC = () => {
                         <Tag color={record.transaction === 'charge' ? 'red' : 'green'} style={{ display: 'flex', alignItems: 'center' }}>
                             {record.transaction} {record.amount.toString()}
                         </Tag>
-                        {record.transaction === 'charge' && <Button icon={<DollarOutlined />} size="small" />}
+                        {record.transaction === 'charge' && <Button icon={<DollarOutlined />} size="small" onClick={() => navigate(`/payment/${record.key}`)} />}
                     </div>
                 );
             }

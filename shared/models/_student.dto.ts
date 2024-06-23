@@ -1,4 +1,5 @@
 import { Billing, Gender, Status, Type } from '../enums';
+import { Employee } from './_employee.dto';
 import { CreateUserDto, User } from './_user.dto';
 
 export interface Student extends User {
@@ -15,7 +16,7 @@ export interface Student extends User {
     };
     familyStudentsAsStudent?: { parent: User; parentId: number; studentId: number }[];
     groupStudents?: { group: Group }[];
-    teacherStudentAsTeacher?: { teacher: User }[];
+    teacherStudentAsTeacher?: { teacher: Employee; defaultLessonCategory: string; defaultLessonLength: number; defaultBilling: string; defaultPrice?: number }[];
 }
 
 export class CreateStudentDto extends CreateUserDto {
